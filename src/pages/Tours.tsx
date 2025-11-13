@@ -4,13 +4,13 @@ import Footer from "@/components/Footer";
 
 const Tours = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <>
       <Navigation />
-      <div className="pt-16">
+      <div className="min-h-screen bg-background pt-16">
         <ToursSection />
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </>
   );
 };
 
