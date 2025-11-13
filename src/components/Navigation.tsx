@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const scrollToSection = (id: string) => {
+    if (location.pathname !== "/") {
+      window.location.href = `/#${id}`;
+      return;
+    }
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -17,7 +23,9 @@ const Navigation = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="text-2xl font-bold tracking-tighter">ARTIST</div>
+          <Link to="/" className="text-2xl font-bold tracking-tighter">
+            ARTIST
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -33,18 +41,18 @@ const Navigation = () => {
             >
               VIDEOS
             </button>
-            <button
-              onClick={() => scrollToSection("tours")}
+            <Link
+              to="/tours"
               className="text-sm font-medium hover:text-gray-medium transition-colors"
             >
               TOURS
-            </button>
-            <button
-              onClick={() => scrollToSection("shop")}
+            </Link>
+            <Link
+              to="/shop"
               className="text-sm font-medium hover:text-gray-medium transition-colors"
             >
               SHOP
-            </button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -75,18 +83,20 @@ const Navigation = () => {
             >
               VIDEOS
             </button>
-            <button
-              onClick={() => scrollToSection("tours")}
+            <Link
+              to="/tours"
+              onClick={() => setIsOpen(false)}
               className="block w-full text-left px-3 py-2 text-base font-medium hover:bg-muted transition-colors"
             >
               TOURS
-            </button>
-            <button
-              onClick={() => scrollToSection("shop")}
+            </Link>
+            <Link
+              to="/shop"
+              onClick={() => setIsOpen(false)}
               className="block w-full text-left px-3 py-2 text-base font-medium hover:bg-muted transition-colors"
             >
               SHOP
-            </button>
+            </Link>
           </div>
         </div>
       )}
