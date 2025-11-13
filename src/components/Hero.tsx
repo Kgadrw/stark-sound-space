@@ -15,14 +15,14 @@ const Hero = () => {
           <div className="relative">
             <h1
               className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter relative z-10"
-              style={{ fontFamily: '"Oi", cursive' }}
+              style={{ fontFamily: '"Kablammo", "Oi", cursive' }}
             >
               NEL NGABO
             </h1>
             {/* Glitch effect text shadow */}
             <h1
               className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter absolute top-0 left-0 opacity-50 text-gray-medium"
-              style={{ transform: "translate(2px, 2px)", fontFamily: '"Oi", cursive' }}
+              style={{ transform: "translate(2px, 2px)", fontFamily: '"Kablammo", "Oi", cursive' }}
               aria-hidden="true"
             >
               NEL NGABO
