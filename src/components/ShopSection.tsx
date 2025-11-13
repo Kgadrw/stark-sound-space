@@ -11,7 +11,7 @@ const products = [
   },
   {
     id: 2,
-    name: "ARTIST HOODIE",
+    name: "NEL NGABO HOODIE",
     price: "$65",
     image: merch2,
   },

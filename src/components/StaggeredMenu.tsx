@@ -1,5 +1,6 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { Link } from 'react-router-dom';
 import './StaggeredMenu.css';
 
 interface MenuItem {
@@ -362,7 +363,6 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       </div>
       <header className="staggered-menu-header" aria-label="Main navigation header">
         <div className="sm-logo" aria-label="Logo">
-          <div className="text-2xl font-bold tracking-tighter text-foreground">ARTIST</div>
         </div>
         <button
           ref={toggleBtnRef}
@@ -393,13 +393,39 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         <div className="sm-panel-inner">
           <ul className="sm-panel-list" role="list" data-numbering={displayItemNumbering || undefined}>
             {items && items.length ? (
-              items.map((it, idx) => (
-                <li className="sm-panel-itemWrap" key={it.label + idx}>
-                  <a className="sm-panel-item" href={it.link} aria-label={it.ariaLabel} data-index={idx + 1}>
-                    <span className="sm-panel-itemLabel">{it.label}</span>
-                  </a>
-                </li>
-              ))
+              items.map((it, idx) => {
+                const isExternalLink = it.link.startsWith('http://') || it.link.startsWith('https://');
+                const isHashLink = it.link.includes('#');
+                const isInternalRoute = it.link.startsWith('/') && !isExternalLink && !isHashLink;
+                
+                if (isInternalRoute) {
+                  return (
+                    <li className="sm-panel-itemWrap" key={it.label + idx}>
+                      <Link 
+                        className="sm-panel-item" 
+                        to={it.link} 
+                        aria-label={it.ariaLabel} 
+                        data-index={idx + 1}
+                        onClick={() => {
+                          if (open) {
+                            toggleMenu();
+                          }
+                        }}
+                      >
+                        <span className="sm-panel-itemLabel">{it.label}</span>
+                      </Link>
+                    </li>
+                  );
+                } else {
+                  return (
+                    <li className="sm-panel-itemWrap" key={it.label + idx}>
+                      <a className="sm-panel-item" href={it.link} aria-label={it.ariaLabel} data-index={idx + 1}>
+                        <span className="sm-panel-itemLabel">{it.label}</span>
+                      </a>
+                    </li>
+                  );
+                }
+              })
             ) : (
               <li className="sm-panel-itemWrap" aria-hidden="true">
                 <span className="sm-panel-item">

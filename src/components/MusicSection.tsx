@@ -1,6 +1,3 @@
-import album1 from "@/assets/album-1.jpg";
-import album2 from "@/assets/album-2.jpg";
-import album3 from "@/assets/album-3.jpg";
 import { Play } from "lucide-react";
 
 const albums = [
@@ -8,32 +5,32 @@ const albums = [
     id: 1,
     title: "LATEST ALBUM",
     year: "2024",
-    image: album1,
+    image: "/Album.jpeg",
   },
   {
     id: 2,
     title: "SECOND ALBUM",
     year: "2023",
-    image: album2,
+    image: "/Album.jpeg",
   },
   {
     id: 3,
     title: "DEBUT ALBUM",
     year: "2022",
-    image: album3,
+    image: "/Album.jpeg",
   },
 ];
 
 const MusicSection = () => {
   return (
-    <section id="music" className="py-24 bg-background relative overflow-hidden">
+    <section id="music" className="py-24 bg-background relative overflow-hidden p-4">
       {/* Creative background pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 border border-foreground rounded-full animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 border border-foreground" />
       </div>
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         <h2 className="text-5xl md:text-7xl font-bold mb-16 tracking-tighter animate-fade-in">MUSIC</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

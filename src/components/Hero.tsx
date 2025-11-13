@@ -1,12 +1,11 @@
-import heroImage from "@/assets/hero-image.jpg";
 import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative h-screen w-full overflow-hidden border-0 p-4">
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroImage})` }}
+        style={{ backgroundImage: `url(/hero.jpeg)` }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         {/* Animated overlay lines */}
@@ -20,11 +19,11 @@ const Hero = () => {
         <div className="space-y-6 max-w-2xl animate-fade-in">
           <div className="relative">
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter relative z-10">
-              ARTIST
+              NEL NGABO
             </h1>
             {/* Glitch effect text shadow */}
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter absolute top-0 left-0 opacity-50 text-gray-medium" style={{ transform: 'translate(2px, 2px)' }} aria-hidden="true">
-              ARTIST
+              NEL NGABO
             </h1>
           </div>
           <p className="text-xl md:text-2xl text-gray-medium font-mono">

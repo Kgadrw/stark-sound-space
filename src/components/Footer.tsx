@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="bg-black text-white py-12 border-t border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center space-y-8">
-          <div className="text-3xl font-bold tracking-tighter">ARTIST</div>
+          <div className="text-3xl font-bold tracking-tighter">NEL NGABO</div>
           
           <div className="flex space-x-6">
             <a
@@ -47,7 +47,7 @@ const Footer = () => {
           </div>
           
           <p className="text-sm text-gray-400">
-            © 2024 ARTIST. ALL RIGHTS RESERVED.
+            © 2024 NEL NGABO. ALL RIGHTS RESERVED.
           </p>
         </div>
       </div>
