@@ -8,51 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Strictly black and white palette */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
-
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 0 0% 95%;
-    --secondary-foreground: 0 0% 0%;
-
-    --muted: 0 0% 90%;
-    --muted-foreground: 0 0% 40%;
-
-    --accent: 0 0% 10%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 0% 0%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 0 0% 20%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 0%;
-
-    --radius: 0rem;
-
-    /* Custom design tokens */
-    --gray-light: 0 0% 95%;
-    --gray-medium: 0 0% 60%;
-    --gray-dark: 0 0% 20%;
-    
-    /* Typography scale */
-    --font-display: 'Arial Black', 'Arial Bold', sans-serif;
-    
-    /* Transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-fast: all 0.15s ease-in-out;
-  }
-
-  .dark {
+    /* Black primary palette - inverted */
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
 
@@ -62,8 +18,8 @@ All colors MUST be HSL.
     --popover: 0 0% 5%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 10%;
     --secondary-foreground: 0 0% 100%;
@@ -77,13 +33,57 @@ All colors MUST be HSL.
     --destructive: 0 0% 100%;
     --destructive-foreground: 0 0% 0%;
 
-    --border: 0 0% 80%;
+    --border: 0 0% 20%;
     --input: 0 0% 15%;
     --ring: 0 0% 100%;
-    
+
+    --radius: 0rem;
+
+    /* Custom design tokens */
     --gray-light: 0 0% 10%;
-    --gray-medium: 0 0% 40%;
+    --gray-medium: 0 0% 60%;
     --gray-dark: 0 0% 80%;
+    
+    /* Typography scale */
+    --font-display: 'Arial Black', 'Arial Bold', sans-serif;
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease-in-out;
+  }
+
+  .dark {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 0%;
+
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 0% 0%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 80%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 0%;
+    
+    --gray-light: 0 0% 95%;
+    --gray-medium: 0 0% 40%;
+    --gray-dark: 0 0% 20%;
   }
 }
 
