@@ -27,7 +27,7 @@ const Navigation = () => {
       openMenuButtonColor="#000"
       changeMenuColorOnOpen={true}
       colors={['#1a1a1a', '#000000']}
-      accentColor="#fff"
+      accentColor="#ff3fa5"
       isFixed={true}
     />
   );
