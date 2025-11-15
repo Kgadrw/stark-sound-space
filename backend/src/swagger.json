@@ -9,12 +9,90 @@
     { "url": "http://localhost:4000/api", "description": "Local development" }
   ],
   "tags": [
+    { "name": "Auth" },
     { "name": "Hero" },
     { "name": "Albums" },
     { "name": "Videos" },
     { "name": "Tours" }
   ],
   "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Authenticate admin user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "password"],
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "username": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/auth/credentials": {
+      "put": {
+        "tags": ["Auth"],
+        "summary": "Update admin username or password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["currentPassword"],
+                "properties": {
+                  "currentPassword": { "type": "string" },
+                  "username": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Credentials updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "username": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
     "/admin/hero": {
       "get": {
         "tags": ["Hero"],

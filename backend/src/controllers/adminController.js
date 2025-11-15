@@ -32,6 +32,8 @@ const ensureHeroSetting = async () => {
   return hero;
 };
 
+const createId = (prefix) => `${prefix}-${Math.random().toString(36).slice(2, 8)}`;
+
 const formatAlbum = (album) => ({
   id: album.id ?? album._id,
   title: album.title,
@@ -72,8 +74,6 @@ const ensureLinks = (links = []) =>
     url: link.url,
     description: link.description ?? "",
   }));
-
-const createId = (prefix) => `${prefix}-${Math.random().toString(36).slice(2, 8)}`;
 
 const getHeroImage = async (_req, res, next) => {
   try {

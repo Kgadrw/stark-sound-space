@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const adminRouter = require("./routes/admin");
+const authRouter = require("./routes/auth");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
@@ -21,6 +22,7 @@ app.use(morgan("dev"));
 app.use("/admin", express.static(path.join(__dirname, "..", "public", "admin")));
 
 app.use("/api/admin", adminRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get("/health", (_req, res) => {
