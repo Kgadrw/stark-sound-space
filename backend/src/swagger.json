@@ -1,0 +1,469 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Stark Sound Space Admin API",
+    "description": "Endpoints powering the admin dashboard for hero, albums, videos, and tours.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:4000/api", "description": "Local development" }
+  ],
+  "tags": [
+    { "name": "Hero" },
+    { "name": "Albums" },
+    { "name": "Videos" },
+    { "name": "Tours" }
+  ],
+  "paths": {
+    "/admin/hero": {
+      "get": {
+        "tags": ["Hero"],
+        "summary": "Get hero background",
+        "responses": {
+          "200": {
+            "description": "Hero image info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "imageUrl": { "type": "string", "example": "/hero.jpeg" },
+                    "updatedAt": { "type": "string", "format": "date-time" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Hero"],
+        "summary": "Update hero background image",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["imageUrl"],
+                "properties": {
+                  "imageUrl": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "$ref": "#/components/responses/HeroResponse" },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/admin/albums": {
+      "get": {
+        "tags": ["Albums"],
+        "summary": "List albums",
+        "responses": {
+          "200": {
+            "description": "Albums list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "albums": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Album" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Albums"],
+        "summary": "Create album",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AlbumInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/AlbumResponse" },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/admin/albums/{id}": {
+      "put": {
+        "tags": ["Albums"],
+        "summary": "Update album",
+        "parameters": [
+          { "$ref": "#/components/parameters/ResourceId" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AlbumInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "$ref": "#/components/responses/AlbumResponse" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "tags": ["Albums"],
+        "summary": "Delete album",
+        "parameters": [
+          { "$ref": "#/components/parameters/ResourceId" }
+        ],
+        "responses": {
+          "200": { "$ref": "#/components/responses/DeleteResponse" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/admin/videos": {
+      "get": {
+        "tags": ["Videos"],
+        "summary": "List videos",
+        "responses": {
+          "200": {
+            "description": "Videos list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "videos": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Video" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Videos"],
+        "summary": "Create video",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VideoInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/VideoResponse" },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/admin/videos/{id}": {
+      "put": {
+        "tags": ["Videos"],
+        "summary": "Update video",
+        "parameters": [{ "$ref": "#/components/parameters/ResourceId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VideoInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "$ref": "#/components/responses/VideoResponse" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "tags": ["Videos"],
+        "summary": "Delete video",
+        "parameters": [{ "$ref": "#/components/parameters/ResourceId" }],
+        "responses": {
+          "200": { "$ref": "#/components/responses/DeleteResponse" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/admin/tours": {
+      "get": {
+        "tags": ["Tours"],
+        "summary": "List tours",
+        "responses": {
+          "200": {
+            "description": "Tours list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tours": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Tour" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Tours"],
+        "summary": "Create tour stop",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TourInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/TourResponse" },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/admin/tours/{id}": {
+      "put": {
+        "tags": ["Tours"],
+        "summary": "Update tour stop",
+        "parameters": [{ "$ref": "#/components/parameters/ResourceId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TourInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "$ref": "#/components/responses/TourResponse" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "tags": ["Tours"],
+        "summary": "Delete tour stop",
+        "parameters": [{ "$ref": "#/components/parameters/ResourceId" }],
+        "responses": {
+          "200": { "$ref": "#/components/responses/DeleteResponse" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/admin/uploads/signature": {
+      "get": {
+        "tags": ["Hero"],
+        "summary": "Get Cloudinary upload signature",
+        "responses": {
+          "200": {
+            "description": "Signature payload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Album": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "year": { "type": "string" },
+          "coverUrl": { "type": "string" },
+          "summary": { "type": "string" },
+          "tracks": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "label": { "type": "string" },
+                "url": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "AlbumInput": {
+        "type": "object",
+        "required": ["title", "coverUrl"],
+        "properties": {
+          "title": { "type": "string" },
+          "year": { "type": "string" },
+          "coverUrl": { "type": "string" },
+          "summary": { "type": "string" },
+          "tracks": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "label": { "type": "string" },
+                "url": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "Video": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "youtubeUrl": { "type": "string" },
+          "videoId": { "type": "string" },
+          "views": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      },
+      "VideoInput": {
+        "type": "object",
+        "required": ["title", "youtubeUrl"],
+        "properties": {
+          "title": { "type": "string" },
+          "youtubeUrl": { "type": "string" },
+          "views": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      },
+      "Tour": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "date": { "type": "string" },
+          "city": { "type": "string" },
+          "venue": { "type": "string" },
+          "ticketUrl": { "type": "string" }
+        }
+      },
+      "TourInput": {
+        "type": "object",
+        "required": ["date", "city", "venue", "ticketUrl"],
+        "properties": {
+          "date": { "type": "string" },
+          "city": { "type": "string" },
+          "venue": { "type": "string" },
+          "ticketUrl": { "type": "string" }
+        }
+      }
+    },
+    "parameters": {
+      "ResourceId": {
+        "in": "path",
+        "name": "id",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    },
+    "responses": {
+      "HeroResponse": {
+        "description": "Hero image payload",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "imageUrl": { "type": "string" },
+                "updatedAt": { "type": "string", "format": "date-time" }
+              }
+            }
+          }
+        }
+      },
+      "AlbumResponse": {
+        "description": "Album payload",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Album" } }
+        }
+      },
+      "VideoResponse": {
+        "description": "Video payload",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Video" } }
+        }
+      },
+      "TourResponse": {
+        "description": "Tour payload",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Tour" } }
+        }
+      },
+      "BadRequest": {
+        "description": "Validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "DeleteResponse": {
+        "description": "Deletion confirmation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

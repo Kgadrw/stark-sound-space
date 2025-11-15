@@ -6,6 +6,8 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const adminRouter = require("./routes/admin");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -19,6 +21,7 @@ app.use(morgan("dev"));
 app.use("/admin", express.static(path.join(__dirname, "..", "public", "admin")));
 
 app.use("/api/admin", adminRouter);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
