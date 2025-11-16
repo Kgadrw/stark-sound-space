@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+ reimport { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -331,9 +331,9 @@ const Hero = () => {
           style={{ pointerEvents: "none" }}
           title="Background Video"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10 pointer-events-none" />
       </div>
-      <div className="relative h-full flex items-end justify-between pb-20 px-4 sm:px-8 lg:px-12 gap-8">
+      <div className="relative z-20 h-full flex items-end justify-between pb-20 px-4 sm:px-8 lg:px-12 gap-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
