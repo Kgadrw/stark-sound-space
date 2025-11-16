@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router-dom";
 import { Home, Music4, Clapperboard, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, type LucideIcon } from "lucide-react";
@@ -40,33 +40,61 @@ const waveAnimation = `
 
 const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const navLinks = variant === "admin" ? adminNavLinks : frontendNavLinks;
+
+  useEffect(() => {
+    const animated = sessionStorage.getItem("sidebarAnimated");
+    if (animated === "true") {
+      setHasAnimated(true);
+    } else {
+      sessionStorage.setItem("sidebarAnimated", "true");
+    }
+  }, []);
 
   return (
     <>
       <style>{waveAnimation}</style>
       <motion.aside
-        initial={{ x: -100, opacity: 0 }}
+        initial={hasAnimated ? { x: 0, opacity: 1 } : { x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={hasAnimated ? { duration: 0 } : { duration: 0.5 }}
         className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-white/10 bg-black/80 px-8 py-10 text-white backdrop-blur-xl md:flex"
       >
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={hasAnimated ? { duration: 0 } : { delay: 0.2 }}
           className="space-y-2"
         >
           <p className="text-xs uppercase tracking-[0.5em] text-white/50">Artist</p>
-          <div className="text-3xl font-bold tracking-[0.45em]">NEL NGABO</div>
+          <div className="relative">
+            <div
+              className="text-2xl md:text-3xl font-normal tracking-tighter relative z-10"
+              style={{ fontFamily: '"Kablammo", "Oi", cursive' }}
+            >
+              NEL NGABO
+            </div>
+            {/* Glitch effect text shadow */}
+            <div
+              className="text-2xl md:text-3xl font-normal tracking-tighter absolute top-0 left-0 opacity-50 text-gray-medium"
+              style={{
+                transform: "translate(2px, 2px)",
+                fontFamily: '"Kablammo", "Oi", cursive',
+              }}
+              aria-hidden="true"
+            >
+              NEL NGABO
+            </div>
+          </div>
         </motion.div>
         <nav className="mt-12 flex flex-1 flex-col gap-3">
           {navLinks.map(({ to, label, icon: Icon }, index) => (
             <motion.div
               key={label}
-              initial={{ opacity: 0, x: -20 }}
+              initial={hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 + index * 0.1 }}
+              transition={hasAnimated ? { duration: 0 } : { delay: 0.3 + index * 0.1 }}
             >
               <NavLink
                 to={to}
@@ -86,9 +114,9 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
         </nav>
         {variant === "frontend" && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
+            transition={hasAnimated ? { duration: 0 } : { delay: 0.7 }}
             className="space-y-4"
           >
             <p className="text-xs uppercase tracking-[0.4em] text-white/40">Latest release</p>
@@ -104,17 +132,17 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
                         animation: "wavePulse 1.4s ease-in-out infinite",
                         animationDelay: `${index * 60}ms`,
                       }}
-                      initial={{ scaleY: 0 }}
+                      initial={hasAnimated ? { scaleY: 1 } : { scaleY: 0 }}
                       animate={{ scaleY: 1 }}
-                      transition={{ delay: 0.8 + index * 0.05, duration: 0.3 }}
+                      transition={hasAnimated ? { duration: 0 } : { delay: 0.8 + index * 0.05, duration: 0.3 }}
                     />
                   ))}
                 </div>
               </div>
               <motion.div
-                initial={{ opacity: 0 }}
+                initial={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
+                transition={hasAnimated ? { duration: 0 } : { delay: 1 }}
                 className="text-[0.6rem] font-semibold tracking-[0.4em] text-white"
               >
                 VIBRANIUM
