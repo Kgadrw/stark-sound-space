@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router-dom";
-import { Home, Music4, Clapperboard, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, type LucideIcon } from "lucide-react";
+import { Home, Music4, Clapperboard, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSidebar } from "@/context/SidebarContext";
 
 type SidebarNavLink = {
   label: string;
@@ -41,6 +42,7 @@ const waveAnimation = `
 const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const { isHidden, setIsHidden } = useSidebar();
   const navLinks = variant === "admin" ? adminNavLinks : frontendNavLinks;
 
   useEffect(() => {
@@ -52,19 +54,55 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
     }
   }, []);
 
+  const handleMouseEnterLeft = () => {
+    if (isHidden) {
+      setIsHidden(false);
+    }
+  };
+
   return (
     <>
       <style>{waveAnimation}</style>
+      {/* Hover zone on left side when sidebar is hidden */}
+      {isHidden && (
+        <div
+          className="fixed left-0 top-0 h-full w-12 z-40 md:block hidden"
+          onMouseEnter={handleMouseEnterLeft}
+        />
+      )}
+      {/* Show arrow button when sidebar is hidden */}
+      {isHidden && (
+        <motion.button
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          onClick={() => setIsHidden(false)}
+          className="fixed left-2 top-1/2 -translate-y-1/2 z-40 hidden md:flex items-center justify-center w-10 h-10 bg-black/80 border border-white/30 text-white hover:bg-black hover:border-white transition"
+          aria-label="Show sidebar"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </motion.button>
+      )}
       <motion.aside
         initial={hasAnimated ? { x: 0, opacity: 1 } : { x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={hasAnimated ? { duration: 0 } : { duration: 0.5 }}
+        animate={isHidden ? { x: -256, opacity: 0 } : { x: 0, opacity: 1 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
         className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-white/10 bg-black/80 px-8 py-10 text-white backdrop-blur-xl md:flex"
       >
+        {/* Hide arrow button */}
+        <motion.button
+          onClick={() => setIsHidden(true)}
+          className="absolute right-2 top-4 flex items-center justify-center w-8 h-8 bg-black/50 border border-white/20 text-white hover:bg-black hover:border-white transition rounded"
+          aria-label="Hide sidebar"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </motion.button>
         <motion.div
-          initial={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+          initial={hasAnimated || isHidden ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={hasAnimated ? { duration: 0 } : { delay: 0.2 }}
+          transition={hasAnimated || isHidden ? { duration: 0 } : { delay: 0.2 }}
           className="space-y-2"
         >
           <p className="text-xs uppercase tracking-[0.5em] text-white/50">Artist</p>
@@ -92,9 +130,9 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
           {navLinks.map(({ to, label, icon: Icon }, index) => (
             <motion.div
               key={label}
-              initial={hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+              initial={hasAnimated || isHidden ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={hasAnimated ? { duration: 0 } : { delay: 0.3 + index * 0.1 }}
+              transition={hasAnimated || isHidden ? { duration: 0 } : { delay: 0.3 + index * 0.1 }}
             >
               <NavLink
                 to={to}
@@ -114,9 +152,9 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
         </nav>
         {variant === "frontend" && (
           <motion.div
-            initial={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            initial={hasAnimated || isHidden ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={hasAnimated ? { duration: 0 } : { delay: 0.7 }}
+            transition={hasAnimated || isHidden ? { duration: 0 } : { delay: 0.7 }}
             className="space-y-4"
           >
             <p className="text-xs uppercase tracking-[0.4em] text-white/40">Latest release</p>
@@ -132,17 +170,17 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
                         animation: "wavePulse 1.4s ease-in-out infinite",
                         animationDelay: `${index * 60}ms`,
                       }}
-                      initial={hasAnimated ? { scaleY: 1 } : { scaleY: 0 }}
+                      initial={hasAnimated || isHidden ? { scaleY: 1 } : { scaleY: 0 }}
                       animate={{ scaleY: 1 }}
-                      transition={hasAnimated ? { duration: 0 } : { delay: 0.8 + index * 0.05, duration: 0.3 }}
+                      transition={hasAnimated || isHidden ? { duration: 0 } : { delay: 0.8 + index * 0.05, duration: 0.3 }}
                     />
                   ))}
                 </div>
               </div>
               <motion.div
-                initial={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
+                initial={hasAnimated || isHidden ? { opacity: 1 } : { opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={hasAnimated ? { duration: 0 } : { delay: 1 }}
+                transition={hasAnimated || isHidden ? { duration: 0 } : { delay: 1 }}
                 className="text-[0.6rem] font-semibold tracking-[0.4em] text-white"
               >
                 VIBRANIUM
