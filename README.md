@@ -1,73 +1,186 @@
-# Welcome to your Lovable project
+# Nel Ngabo - Official Artist Website
 
-## Project info
+A modern, professional career website showcasing the music, videos, tours, and exclusive content of Nel Ngabo.
 
-**URL**: https://lovable.dev/projects/68c23284-ae66-4611-8480-946edfb7eebb
+## 🎵 About Nel Ngabo
 
-## How can I edit this code?
+Nel Ngabo is a talented music artist dedicated to creating authentic and impactful music. This website serves as the central hub for fans to discover new releases, watch exclusive videos, stay updated on tour dates, and connect with the artist.
 
-There are several ways of editing your application.
+## ✨ Features
 
-**Use Lovable**
+### 🎶 Music Section
+- Complete discography with album covers and track listings
+- Streaming platform links (Spotify, Apple Music, YouTube, SoundCloud)
+- Latest releases prominently featured
+- Easy navigation through music catalog
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/68c23284-ae66-4611-8480-946edfb7eebb) and start prompting.
+### 🎬 Videos
+- Official music videos
+- Behind-the-scenes content
+- Live performances
+- YouTube integration
 
-Changes made via Lovable will be committed automatically to this repo.
+### 🎤 Tours & Live Events
+- Upcoming tour dates and venues
+- Ticket purchase links
+- Tour schedule and locations
+- Event information
 
-**Use your preferred IDE**
+### 🎨 Modern Design
+- Responsive design for all devices
+- Smooth animations and transitions
+- Professional video background
+- Intuitive navigation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 🔐 Admin Dashboard
+- Content management system
+- Easy updates for music, videos, and tours
+- Image upload functionality
+- Secure authentication
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Technology Stack
 
-Follow these steps:
+This website is built with modern web technologies:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- **Frontend Framework**: React 18 with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn-ui & Radix UI
+- **Animations**: Framer Motion
+- **Routing**: React Router DOM
+- **State Management**: React Context API
+- **Backend**: Node.js with Express
+- **Database**: MongoDB with Mongoose
+- **API Documentation**: Swagger/OpenAPI
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🚀 Getting Started
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Prerequisites
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+- Node.js (v18 or higher)
+- npm or yarn
+- MongoDB (for backend)
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd stark-sound-space
+```
+
+2. Install frontend dependencies:
+```bash
+npm install
+```
+
+3. Install backend dependencies:
+```bash
+cd backend
+npm install
+```
+
+4. Set up environment variables:
+   - Create a `.env` file in the `backend` directory
+   - Add your MongoDB connection string and other required variables
+
+5. Start the development servers:
+
+Frontend (runs on http://localhost:8080):
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Backend (runs on http://localhost:4000):
+```bash
+cd backend
+npm run dev
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📁 Project Structure
 
-**Use GitHub Codespaces**
+```
+stark-sound-space/
+├── src/
+│   ├── components/      # React components
+│   │   ├── Hero.tsx     # Hero section with video background
+│   │   ├── Sidebar.tsx  # Navigation sidebar
+│   │   └── ...
+│   ├── pages/           # Page components
+│   ├── context/         # React Context providers
+│   ├── lib/             # Utility functions
+│   └── types/           # TypeScript type definitions
+├── backend/
+│   ├── src/
+│   │   ├── controllers/ # API controllers
+│   │   ├── models/      # MongoDB models
+│   │   ├── routes/      # API routes
+│   │   └── server.js    # Express server
+│   └── package.json
+└── public/              # Static assets
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔑 Admin Access
 
-## What technologies are used for this project?
+The website includes a secure admin dashboard for content management:
 
-This project is built with:
+- **Login**: Access at `/admin/login`
+- **Features**: 
+  - Manage hero section content
+  - Add/edit/delete albums and tracks
+  - Manage video content
+  - Update tour dates and ticket links
+  - Update account credentials
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🌐 API Documentation
 
-## How can I deploy this project?
+API documentation is available at `/api/docs` when the backend server is running. The documentation includes:
 
-Simply open [Lovable](https://lovable.dev/projects/68c23284-ae66-4611-8480-946edfb7eebb) and click on Share -> Publish.
+- Hero settings endpoints
+- Albums CRUD operations
+- Videos management
+- Tours management
+- Authentication endpoints
 
-## Can I connect a custom domain to my Lovable project?
+## 📱 Responsive Design
 
-Yes, you can!
+The website is fully responsive and optimized for:
+- Desktop computers
+- Tablets
+- Mobile devices
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🎨 Customization
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+All content can be managed through the admin dashboard:
+- Artist name and branding
+- Hero background video
+- Social media links
+- Streaming platform links
+- Navigation menu items
+- Album covers and track listings
+
+## 🔒 Security
+
+- Secure authentication for admin access
+- Password hashing with bcrypt
+- Protected API routes
+- Input validation and sanitization
+
+## 📞 Contact & Social Media
+
+- **Instagram**: [@nelngabo](https://www.instagram.com/nelngabo/)
+- **Twitter/X**: [@nelngabo](https://twitter.com/nelngabo)
+- **YouTube**: [Nel Ngabo](https://www.youtube.com/@nelngabo9740)
+- **Facebook**: [Nel Ngabo](https://facebook.com/nelngabo)
+
+## 📄 License
+
+All content and music are the property of Nel Ngabo. Unauthorized use is prohibited.
+
+## 🙏 Acknowledgments
+
+Built with modern web technologies to provide the best experience for fans and visitors.
+
+---
+
+**© 2024 Nel Ngabo. All Rights Reserved.**

@@ -72,97 +72,74 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
       )}
       {/* Show arrow button when sidebar is hidden */}
       {isHidden && (
-        <motion.button
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
+        <button
           onClick={() => setIsHidden(false)}
-          className="fixed left-2 top-1/2 -translate-y-1/2 z-40 hidden md:flex items-center justify-center w-10 h-10 bg-black/80 border border-white/30 text-white hover:bg-black hover:border-white transition"
+          className="fixed left-2 top-1/2 -translate-y-1/2 z-40 hidden md:flex items-center justify-center w-10 h-10 bg-black/80 border border-white/30 text-white hover:bg-black hover:border-white transition-all duration-300"
           aria-label="Show sidebar"
         >
           <ChevronRight className="h-5 w-5" />
-        </motion.button>
+        </button>
       )}
       <motion.aside
-        initial={hasAnimated ? { x: 0, opacity: 1 } : { x: -100, opacity: 0 }}
-        animate={isHidden ? { x: -256, opacity: 0 } : { x: 0, opacity: 1 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-white/10 bg-black/80 px-8 py-10 text-white backdrop-blur-xl md:flex"
+        initial={hasAnimated ? false : { x: -100, opacity: 0 }}
+        animate={hasAnimated ? false : { x: 0, opacity: 1 }}
+        transition={hasAnimated ? {} : { duration: 0.5 }}
+        className={`fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-white/10 bg-black/80 px-8 py-10 text-white backdrop-blur-xl md:flex transition-transform duration-300 ease-in-out ${
+          isHidden ? "-translate-x-full opacity-0" : "translate-x-0 opacity-100"
+        }`}
       >
         {/* Hide arrow button */}
-        <motion.button
+        <button
           onClick={() => setIsHidden(true)}
-          className="absolute right-2 top-4 flex items-center justify-center w-8 h-8 bg-black/50 border border-white/20 text-white hover:bg-black hover:border-white transition rounded"
+          className="absolute right-2 top-4 flex items-center justify-center w-8 h-8 bg-black/50 border border-white/20 text-white hover:bg-black hover:border-white hover:scale-110 active:scale-95 transition-all rounded"
           aria-label="Hide sidebar"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
         >
           <ChevronLeft className="h-4 w-4" />
-        </motion.button>
-        <motion.div
-          initial={hasAnimated || isHidden ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={hasAnimated || isHidden ? { duration: 0 } : { delay: 0.2 }}
-          className="space-y-2"
-        >
+        </button>
+        <div className="space-y-2">
           <p className="text-xs uppercase tracking-[0.5em] text-white/50">Artist</p>
           <div className="relative">
-            <div
-              className="text-2xl md:text-3xl font-normal tracking-tighter relative z-10"
-              style={{ fontFamily: '"Kablammo", "Oi", cursive' }}
-            >
+            <div className="text-2xl md:text-3xl font-bold tracking-[0.45em] relative z-10">
               NEL NGABO
             </div>
             {/* Glitch effect text shadow */}
             <div
-              className="text-2xl md:text-3xl font-normal tracking-tighter absolute top-0 left-0 opacity-50 text-gray-medium"
+              className="text-2xl md:text-3xl font-bold tracking-[0.45em] absolute top-0 left-0 opacity-50 text-gray-medium"
               style={{
                 transform: "translate(2px, 2px)",
-                fontFamily: '"Kablammo", "Oi", cursive',
               }}
               aria-hidden="true"
             >
               NEL NGABO
             </div>
           </div>
-        </motion.div>
+        </div>
         <nav className="mt-12 flex flex-1 flex-col gap-3">
-          {navLinks.map(({ to, label, icon: Icon }, index) => (
-            <motion.div
+          {navLinks.map(({ to, label, icon: Icon }) => (
+            <NavLink
               key={label}
-              initial={hasAnimated || isHidden ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={hasAnimated || isHidden ? { duration: 0 } : { delay: 0.3 + index * 0.1 }}
+              to={to}
+              end={variant === "admin" && to === "/admin"}
+              className={({ isActive }) =>
+                [
+                  "flex items-center gap-3 px-4 py-3 text-sm uppercase tracking-[0.3em] transition",
+                  isActive ? "bg-white text-black" : "text-white/60 hover:bg-white/10 rounded-2xl",
+                ].join(" ")
+              }
             >
-              <NavLink
-                to={to}
-                end={variant === "admin" && to === "/admin"}
-                className={({ isActive }) =>
-                  [
-                    "flex items-center gap-3 px-4 py-3 text-sm uppercase tracking-[0.3em] transition",
-                    isActive ? "bg-white text-black" : "text-white/60 hover:bg-white/10 rounded-2xl",
-                  ].join(" ")
-                }
-              >
-                <Icon className="h-4 w-4" />
-                <span>{label}</span>
-              </NavLink>
-            </motion.div>
+              <Icon className="h-4 w-4" />
+              <span>{label}</span>
+            </NavLink>
           ))}
         </nav>
         {variant === "frontend" && (
-          <motion.div
-            initial={hasAnimated || isHidden ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={hasAnimated || isHidden ? { duration: 0 } : { delay: 0.7 }}
-            className="space-y-4"
-          >
+          <div className="space-y-4">
             <p className="text-xs uppercase tracking-[0.4em] text-white/40">Latest release</p>
             <div className="flex items-center gap-3 px-2 py-1">
               <div className="flex flex-1 items-center gap-2">
                 <div className="flex items-end gap-[2px]">
                   {waveHeights.map((height, index) => (
-                    <motion.span
+                    <span
                       key={index}
                       className="w-[3px] rounded-full bg-gradient-to-t from-pink-500 via-purple-500 to-sky-500"
                       style={{
@@ -170,28 +147,18 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
                         animation: "wavePulse 1.4s ease-in-out infinite",
                         animationDelay: `${index * 60}ms`,
                       }}
-                      initial={hasAnimated || isHidden ? { scaleY: 1 } : { scaleY: 0 }}
-                      animate={{ scaleY: 1 }}
-                      transition={hasAnimated || isHidden ? { duration: 0 } : { delay: 0.8 + index * 0.05, duration: 0.3 }}
                     />
                   ))}
                 </div>
               </div>
-              <motion.div
-                initial={hasAnimated || isHidden ? { opacity: 1 } : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={hasAnimated || isHidden ? { duration: 0 } : { delay: 1 }}
-                className="text-[0.6rem] font-semibold tracking-[0.4em] text-white"
-              >
+              <div className="text-[0.6rem] font-semibold tracking-[0.4em] text-white">
                 VIBRANIUM
-              </motion.div>
+              </div>
             </div>
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button variant="secondary" asChild className="w-full uppercase tracking-[0.3em]">
-                <a href="/music">Listen</a>
-              </Button>
-            </motion.div>
-          </motion.div>
+            <Button variant="secondary" asChild className="w-full uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-transform">
+              <a href="/music">Listen</a>
+            </Button>
+          </div>
         )}
       </motion.aside>
       <div className="fixed inset-x-0 top-0 z-30 flex items-center justify-between border-b border-white/10 bg-black/80 px-6 py-4 text-xs uppercase tracking-[0.4em] text-white/70 md:hidden">
