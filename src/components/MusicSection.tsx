@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Music2, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -106,47 +106,14 @@ const MusicSection = () => {
                     <p className="text-xs tracking-[0.4em] text-white/50 uppercase">{album.year}</p>
                   )}
 
-                  {/* Description */}
-                  {album.description && (
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-3">About This Album</p>
-                      <p className="text-base text-white/70 leading-relaxed whitespace-pre-line elms-sans">{album.description}</p>
-                    </div>
-                  )}
-
                   {/* Summary */}
-                  {album.summary && !album.description && (
+                  {album.summary && (
                     <p className="text-base text-white/70 leading-relaxed elms-sans">{album.summary}</p>
-                  )}
-
-                  {/* Tracklist */}
-                  {album.tracks && album.tracks.length > 0 && (
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-3">Tracklist</p>
-                      <ul className="space-y-3">
-                        {album.tracks.map((track, trackIndex) => (
-                          <motion.li
-                            key={`${track}-${trackIndex}`}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: trackIndex * 0.05 }}
-                            className="flex items-center justify-between rounded-xl border border-white/10 bg-black/40 backdrop-blur-sm px-3 py-2 hover:border-white/20 transition"
-                          >
-                            <span className="flex items-center gap-3 text-sm text-white/90">
-                              <span className="text-xs text-white/50 w-6">{String(trackIndex + 1).padStart(2, "0")}</span>
-                              {track}
-                            </span>
-                            <Music2 className="h-4 w-4 text-pink-400" />
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </div>
                   )}
 
                   {/* Streaming Platform Links */}
                   {album.links && album.links.length > 0 && (
                     <div>
-                      <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-3">Streaming Platforms</p>
                       <div className="flex flex-wrap items-center gap-3">
                         {album.links.map((link, linkIndex) => (
                           <motion.div
