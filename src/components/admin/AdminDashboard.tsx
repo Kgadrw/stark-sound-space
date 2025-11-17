@@ -11,6 +11,7 @@ import { readFileAsDataUrl } from "@/lib/file";
 import { adminApi } from "@/lib/api";
 import { Trash2, Plus } from "lucide-react";
 import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
+import { toast } from "sonner";
 
 type ContentSetter = React.Dispatch<React.SetStateAction<ContentState>>;
 
@@ -51,6 +52,7 @@ export const HeroEditor = ({
   refreshContent: () => Promise<void>;
 }) => {
   const hero = content.hero;
+  const [savingHero, setSavingHero] = useState(false);
   const updateHero = (patch: Partial<ContentState["hero"]>) =>
     setContent((prev) => ({
       ...prev,
@@ -132,16 +134,24 @@ export const HeroEditor = ({
   const persistHeroVideo = async (videoUrl: string) => {
     updateHero({ backgroundVideoUrl: videoUrl });
     try {
-      await adminApi.updateHero({ videoUrl });
+      const response = await adminApi.updateHero({ videoUrl });
+      console.log("Hero video updated successfully:", response);
+      toast.success("Hero video updated!", {
+        description: "The background video has been saved successfully.",
+      });
       await refreshContent();
     } catch (error) {
       console.error("Failed to update hero video", error);
+      toast.error("Failed to update hero video", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     }
   };
 
   const persistHeroData = async () => {
+    setSavingHero(true);
     try {
-      await adminApi.updateHero({ 
+      const response = await adminApi.updateHero({ 
         artistName: hero.artistName,
         videoUrl: hero.backgroundVideoUrl || "",
         imageUrl: hero.backgroundImage,
@@ -149,19 +159,35 @@ export const HeroEditor = ({
         streamingPlatforms: hero.streamingPlatforms,
         socialLinks: hero.socialLinks,
       });
+      console.log("Hero saved successfully:", response);
+      toast.success("Hero saved successfully!", {
+        description: "All hero data has been saved to the database.",
+      });
       await refreshContent();
     } catch (error) {
       console.error("Failed to save hero data", error);
+      toast.error("Failed to save hero data", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
+    } finally {
+      setSavingHero(false);
     }
   };
 
   const persistArtistName = async (name: string) => {
     updateHero({ artistName: name });
     try {
-      await adminApi.updateHero({ artistName: name });
+      const response = await adminApi.updateHero({ artistName: name });
+      console.log("Artist name updated successfully:", response);
+      toast.success("Artist name updated!", {
+        description: "The artist name has been saved successfully.",
+      });
       await refreshContent();
     } catch (error) {
       console.error("Failed to update artist name", error);
+      toast.error("Failed to update artist name", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     }
   };
 
@@ -170,9 +196,16 @@ export const HeroEditor = ({
   return (
     <div className="space-y-8">
       <Card className="border-white/10 bg-black/40 text-white">
-        <CardHeader>
+        <CardHeader className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-4">
+            <div>
           <CardTitle className="text-white">Hero Basics</CardTitle>
           <CardDescription className="text-white/60">Update the artist name and background YouTube video.</CardDescription>
+            </div>
+            <Button size="sm" onClick={persistHeroData} disabled={savingHero}>
+              {savingHero ? "Saving..." : "Save Changes"}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="space-y-2">
@@ -290,12 +323,8 @@ export const AlbumsEditor = ({
   const [deletingAlbumId, setDeletingAlbumId] = useState<string | null>(null);
   const [newTracks, setNewTracks] = useState<Record<string, string>>({});
 
-  const syncAlbumState = (updater: (prev: ContentState) => ContentState) => {
-    setContent(updater);
-  };
-
   const updateAlbum = (albumId: string, patch: Partial<ContentState["albums"][number]>) => {
-    syncAlbumState((prev) => ({
+    setContent((prev) => ({
       ...prev,
       albums: prev.albums.map((album) => (album.id === albumId ? { ...album, ...patch } : album)),
     }));
@@ -312,10 +341,17 @@ export const AlbumsEditor = ({
       links: [],
     };
     try {
-      await adminApi.createAlbum(placeholder);
+      const response = await adminApi.createAlbum(placeholder);
+      console.log("Album created successfully:", response);
+      toast.success("Album created successfully!", {
+        description: "A new album has been added. You can now edit it.",
+      });
       await refreshContent();
     } catch (error) {
       console.error("Failed to create album", error);
+      toast.error("Failed to create album", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     }
   };
 
@@ -324,7 +360,7 @@ export const AlbumsEditor = ({
     if (!album) return;
     setSavingAlbumId(albumId);
     try {
-      await adminApi.updateAlbum(albumId, {
+      const response = await adminApi.updateAlbum(albumId, {
         title: album.title,
         year: album.year,
         coverUrl: album.image,
@@ -333,21 +369,42 @@ export const AlbumsEditor = ({
         tracks: album.tracks,
         links: album.links,
       });
+      console.log("Album saved successfully:", response);
+      toast.success("Album saved successfully!", {
+        description: `"${album.title}" has been saved to the database.`,
+      });
       await refreshContent();
     } catch (error) {
       console.error("Failed to save album", error);
+      toast.error("Failed to save album", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     } finally {
       setSavingAlbumId(null);
     }
   };
 
   const removeAlbum = async (albumId: string) => {
+    const album = albums.find((item) => item.id === albumId);
+    if (!album) return;
+    
+    if (!confirm(`Are you sure you want to delete "${album.title}"? This action cannot be undone.`)) {
+      return;
+    }
+    
     setDeletingAlbumId(albumId);
     try {
       await adminApi.deleteAlbum(albumId);
       await refreshContent();
+      console.log("Album deleted successfully");
+      toast.success("Album deleted successfully!", {
+        description: `"${album.title}" has been removed from the database.`,
+      });
     } catch (error) {
       console.error("Failed to delete album", error);
+      toast.error("Failed to delete album", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     } finally {
       setDeletingAlbumId(null);
     }
@@ -585,10 +642,17 @@ export const VideosEditor = ({
       description: "Add description",
     };
     try {
-      await adminApi.createVideo(placeholder);
+      const response = await adminApi.createVideo(placeholder);
+      console.log("Video created successfully:", response);
+      toast.success("Video created successfully!", {
+        description: "A new video has been added. You can now edit it.",
+      });
       await refreshContent();
     } catch (error) {
       console.error("Failed to create video", error);
+      toast.error("Failed to create video", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     }
   };
 
@@ -597,26 +661,47 @@ export const VideosEditor = ({
     if (!video) return;
     setSavingVideoId(videoId);
     try {
-      await adminApi.updateVideo(videoId, {
+      const response = await adminApi.updateVideo(videoId, {
         title: video.title,
         description: video.description,
         youtubeUrl: `https://www.youtube.com/watch?v=${video.videoId}`,
       });
+      console.log("Video saved successfully:", response);
+      toast.success("Video saved successfully!", {
+        description: `"${video.title}" has been saved to the database.`,
+      });
       await refreshContent();
     } catch (error) {
       console.error("Failed to save video", error);
+      toast.error("Failed to save video", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     } finally {
       setSavingVideoId(null);
     }
   };
 
   const removeVideo = async (videoId: string) => {
+    const video = videos.find((item) => item.id === videoId);
+    if (!video) return;
+    
+    if (!confirm(`Are you sure you want to delete "${video.title}"? This action cannot be undone.`)) {
+      return;
+    }
+    
     setDeletingVideoId(videoId);
     try {
       await adminApi.deleteVideo(videoId);
       await refreshContent();
+      console.log("Video deleted successfully");
+      toast.success("Video deleted successfully!", {
+        description: `"${video.title}" has been removed from the database.`,
+      });
     } catch (error) {
       console.error("Failed to delete video", error);
+      toast.error("Failed to delete video", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     } finally {
       setDeletingVideoId(null);
     }
@@ -725,10 +810,17 @@ export const ToursEditor = ({
       ticketUrl: "https://tickets.example.com",
     };
     try {
-      await adminApi.createTour(placeholder);
+      const response = await adminApi.createTour(placeholder);
+      console.log("Tour created successfully:", response);
+      toast.success("Tour created successfully!", {
+        description: "A new tour has been added. You can now edit it.",
+      });
       await refreshContent();
     } catch (error) {
       console.error("Failed to create tour", error);
+      toast.error("Failed to create tour", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     }
   };
 
@@ -737,27 +829,48 @@ export const ToursEditor = ({
     if (!tour) return;
     setSavingTourId(tourId);
     try {
-      await adminApi.updateTour(tourId, {
+      const response = await adminApi.updateTour(tourId, {
         date: tour.date,
         city: tour.city,
         venue: tour.venue,
         ticketUrl: tour.ticketUrl,
       });
+      console.log("Tour saved successfully:", response);
+      toast.success("Tour saved successfully!", {
+        description: `Tour on ${tour.date} at ${tour.venue}, ${tour.city} has been saved.`,
+      });
       await refreshContent();
     } catch (error) {
       console.error("Failed to save tour", error);
+      toast.error("Failed to save tour", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     } finally {
       setSavingTourId(null);
     }
   };
 
   const removeTour = async (tourId: string) => {
+    const tour = tours.find((item) => item.id === tourId);
+    if (!tour) return;
+    
+    if (!confirm(`Are you sure you want to delete the tour on ${tour.date} at ${tour.venue}, ${tour.city}? This action cannot be undone.`)) {
+      return;
+    }
+    
     setDeletingTourId(tourId);
     try {
       await adminApi.deleteTour(tourId);
       await refreshContent();
+      console.log("Tour deleted successfully");
+      toast.success("Tour deleted successfully!", {
+        description: `Tour on ${tour.date} at ${tour.venue}, ${tour.city} has been removed.`,
+      });
     } catch (error) {
       console.error("Failed to delete tour", error);
+      toast.error("Failed to delete tour", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     } finally {
       setDeletingTourId(null);
     }
@@ -845,7 +958,7 @@ export const AboutEditor = ({
   const handleSave = async () => {
     setSaving(true);
     try {
-      await adminApi.updateAbout({
+      const response = await adminApi.updateAbout({
         biography: about.biography,
         careerHighlights: about.careerHighlights,
         achievements: about.achievements,
@@ -856,9 +969,16 @@ export const AboutEditor = ({
         phone: about.phone,
         artistImage: about.artistImage,
       });
+      console.log("About saved successfully:", response);
+      toast.success("About page saved successfully!", {
+        description: "All about page content has been saved to the database.",
+      });
       await refreshContent();
     } catch (error) {
       console.error("Failed to save about", error);
+      toast.error("Failed to save about page", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
     } finally {
       setSaving(false);
     }

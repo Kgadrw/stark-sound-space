@@ -14,7 +14,8 @@
     { "name": "Hero" },
     { "name": "Albums" },
     { "name": "Videos" },
-    { "name": "Tours" }
+    { "name": "Tours" },
+    { "name": "About" }
   ],
   "paths": {
     "/auth/login": {
@@ -97,19 +98,13 @@
     "/admin/hero": {
       "get": {
         "tags": ["Hero"],
-        "summary": "Get hero background",
+        "summary": "Get hero settings",
         "responses": {
           "200": {
-            "description": "Hero image info",
+            "description": "Hero settings",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "imageUrl": { "type": "string", "example": "/hero.jpeg" },
-                    "updatedAt": { "type": "string", "format": "date-time" }
-                  }
-                }
+                "schema": { "$ref": "#/components/schemas/Hero" }
               }
             }
           }
@@ -117,18 +112,12 @@
       },
       "post": {
         "tags": ["Hero"],
-        "summary": "Update hero background image",
+        "summary": "Update hero settings",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["imageUrl"],
-                "properties": {
-                  "imageUrl": { "type": "string" }
-                }
-              }
+              "schema": { "$ref": "#/components/schemas/HeroInput" }
             }
           }
         },
@@ -346,6 +335,43 @@
         }
       }
     },
+    "/admin/about": {
+      "get": {
+        "tags": ["About"],
+        "summary": "Get about page content",
+        "responses": {
+          "200": {
+            "description": "About page content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "about": { "$ref": "#/components/schemas/About" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["About"],
+        "summary": "Update about page content",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AboutInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "$ref": "#/components/responses/AboutResponse" },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
     "/admin/uploads/signature": {
       "get": {
         "tags": ["Hero"],
@@ -376,6 +402,7 @@
           "year": { "type": "string" },
           "coverUrl": { "type": "string" },
           "summary": { "type": "string" },
+          "description": { "type": "string" },
           "tracks": {
             "type": "array",
             "items": { "type": "string" }
@@ -391,17 +418,19 @@
                 "description": { "type": "string" }
               }
             }
-          }
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
       "AlbumInput": {
         "type": "object",
-        "required": ["title", "coverUrl"],
         "properties": {
           "title": { "type": "string" },
           "year": { "type": "string" },
           "coverUrl": { "type": "string" },
           "summary": { "type": "string" },
+          "description": { "type": "string" },
           "tracks": {
             "type": "array",
             "items": { "type": "string" }
@@ -453,12 +482,219 @@
       },
       "TourInput": {
         "type": "object",
-        "required": ["date", "city", "venue", "ticketUrl"],
         "properties": {
           "date": { "type": "string" },
           "city": { "type": "string" },
           "venue": { "type": "string" },
           "ticketUrl": { "type": "string" }
+        }
+      },
+      "Hero": {
+        "type": "object",
+        "properties": {
+          "artistName": { "type": "string", "example": "NEL NGABO" },
+          "imageUrl": { "type": "string", "example": "/hero.jpeg" },
+          "videoUrl": { "type": "string", "example": "" },
+          "navLinks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "label": { "type": "string" },
+                "targetType": { "type": "string", "enum": ["scroll", "route", "external"] },
+                "targetValue": { "type": "string" }
+              }
+            }
+          },
+          "primaryCta": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string" },
+              "targetType": { "type": "string", "enum": ["scroll", "route", "external", "externalBlank"] },
+              "targetValue": { "type": "string" }
+            }
+          },
+          "secondaryCta": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string" },
+              "url": { "type": "string" }
+            }
+          },
+          "streamingPlatforms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "label": { "type": "string" },
+                "url": { "type": "string" },
+                "preset": {
+                  "type": "string",
+                  "enum": ["spotify", "appleMusic", "youtube", "soundcloud", "tiktok", "instagram", "x", "facebook", "mail", "phone", "website"]
+                }
+              }
+            }
+          },
+          "socialLinks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "url": { "type": "string" }
+              }
+            }
+          },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "HeroInput": {
+        "type": "object",
+        "properties": {
+          "artistName": { "type": "string" },
+          "imageUrl": { "type": "string" },
+          "videoUrl": { "type": "string" },
+          "navLinks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "label": { "type": "string" },
+                "targetType": { "type": "string", "enum": ["scroll", "route", "external"] },
+                "targetValue": { "type": "string" }
+              }
+            }
+          },
+          "primaryCta": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string" },
+              "targetType": { "type": "string", "enum": ["scroll", "route", "external", "externalBlank"] },
+              "targetValue": { "type": "string" }
+            }
+          },
+          "secondaryCta": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string" },
+              "url": { "type": "string" }
+            }
+          },
+          "streamingPlatforms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "label": { "type": "string" },
+                "url": { "type": "string" },
+                "preset": {
+                  "type": "string",
+                  "enum": ["spotify", "appleMusic", "youtube", "soundcloud", "tiktok", "instagram", "x", "facebook", "mail", "phone", "website"]
+                }
+              }
+            }
+          },
+          "socialLinks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "url": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "About": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "biography": { "type": "string" },
+          "careerHighlights": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "achievements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "year": { "type": "string" },
+                "title": { "type": "string" },
+                "organization": { "type": "string" }
+              }
+            }
+          },
+          "awards": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "musicLabel": { "type": "string" },
+          "location": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "type": "string" },
+          "artistImage": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "AboutInput": {
+        "type": "object",
+        "properties": {
+          "biography": { "type": "string" },
+          "careerHighlights": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "achievements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "year": { "type": "string" },
+                "title": { "type": "string" },
+                "organization": { "type": "string" }
+              }
+            }
+          },
+          "awards": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "musicLabel": { "type": "string" },
+          "location": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "type": "string" },
+          "artistImage": { "type": "string" }
         }
       }
     },
@@ -472,16 +708,10 @@
     },
     "responses": {
       "HeroResponse": {
-        "description": "Hero image payload",
+        "description": "Hero settings payload",
         "content": {
           "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "imageUrl": { "type": "string" },
-                "updatedAt": { "type": "string", "format": "date-time" }
-              }
-            }
+            "schema": { "$ref": "#/components/schemas/Hero" }
           }
         }
       },
@@ -500,7 +730,15 @@
       "TourResponse": {
         "description": "Tour payload",
         "content": {
-          "application/json": { "schema": { "$ref": "#/components/schemas/Tour" } }
+          "application/json": { "schema": { "$ref": "#/components/schemas/Tour" }           }
+        }
+      },
+      "AboutResponse": {
+        "description": "About page content payload",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/About" }
+          }
         }
       },
       "BadRequest": {

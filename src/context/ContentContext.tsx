@@ -72,31 +72,53 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
   const refreshContent = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [heroResponse, albumsResponse, videosResponse, toursResponse, aboutResponse] = await Promise.all([
+      const [heroResponse, albumsResponse, videosResponse, toursResponse, aboutResponse] = await Promise.allSettled([
         adminApi.getHero(),
         adminApi.getAlbums(),
         adminApi.getVideos(),
         adminApi.getTours(),
-        adminApi.getAbout(),
+        adminApi.getAbout().catch(() => ({ about: null })),
       ]);
+      
+      const hero = heroResponse.status === "fulfilled" ? heroResponse.value : null;
+      const albums = albumsResponse.status === "fulfilled" ? albumsResponse.value : { albums: [] };
+      const videos = videosResponse.status === "fulfilled" ? videosResponse.value : { videos: [] };
+      const tours = toursResponse.status === "fulfilled" ? toursResponse.value : { tours: [] };
+      const about = aboutResponse.status === "fulfilled" ? aboutResponse.value : { about: null };
+      
       setContent((prev) => ({
         ...prev,
-        hero: {
-          artistName: heroResponse.artistName ?? prev.hero.artistName,
-          backgroundImage: heroResponse.imageUrl ?? prev.hero.backgroundImage,
-          backgroundVideoUrl: heroResponse.videoUrl ?? prev.hero.backgroundVideoUrl ?? "",
-          navLinks: heroResponse.navLinks ?? prev.hero.navLinks,
-          primaryCta: heroResponse.primaryCta ?? prev.hero.primaryCta,
-          secondaryCta: heroResponse.secondaryCta ?? prev.hero.secondaryCta,
-          streamingPlatforms: heroResponse.streamingPlatforms ?? prev.hero.streamingPlatforms,
-          socialLinks: heroResponse.socialLinks ?? prev.hero.socialLinks,
-        },
-        albums: (albumsResponse.albums ?? []).map(mapAlbum),
-        videos: (videosResponse.videos ?? []).map(mapVideo),
-        tours: (toursResponse.tours ?? []).map(mapTour),
-        about: aboutResponse.about ? mapAbout(aboutResponse.about) : prev.about,
+        hero: hero ? {
+          artistName: hero.artistName ?? prev.hero.artistName,
+          backgroundImage: hero.imageUrl ?? prev.hero.backgroundImage,
+          backgroundVideoUrl: hero.videoUrl ?? prev.hero.backgroundVideoUrl ?? "",
+          navLinks: hero.navLinks ?? prev.hero.navLinks,
+          primaryCta: hero.primaryCta ?? prev.hero.primaryCta,
+          secondaryCta: hero.secondaryCta ?? prev.hero.secondaryCta,
+          streamingPlatforms: hero.streamingPlatforms ?? prev.hero.streamingPlatforms,
+          socialLinks: hero.socialLinks ?? prev.hero.socialLinks,
+        } : prev.hero,
+        albums: (albums.albums ?? []).map(mapAlbum),
+        videos: (videos.videos ?? []).map(mapVideo),
+        tours: (tours.tours ?? []).map(mapTour),
+        about: about.about ? mapAbout(about.about) : prev.about,
       }));
-      setError(null);
+      
+      // Only set error if critical requests failed
+      if (heroResponse.status === "rejected" && albumsResponse.status === "rejected") {
+        const message = heroResponse.reason instanceof Error ? heroResponse.reason.message : "Failed to load content";
+        setError(message);
+      } else {
+        setError(null);
+      }
+      
+      // Log individual failures without breaking the app
+      if (heroResponse.status === "rejected") {
+        console.warn("Failed to load hero:", heroResponse.reason);
+      }
+      if (aboutResponse.status === "rejected") {
+        console.warn("Failed to load about (route may not be deployed yet):", aboutResponse.reason);
+      }
     } catch (fetchError) {
       const message = fetchError instanceof Error ? fetchError.message : "Failed to load content";
       setError(message);

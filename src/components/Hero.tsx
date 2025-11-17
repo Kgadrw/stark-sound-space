@@ -459,34 +459,34 @@ const Hero = () => {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10 pointer-events-none" />
       </div>
-      <div className="relative z-20 h-full flex flex-col justify-end pb-6 sm:pb-8 md:pb-12 lg:pb-16 px-4 sm:px-6 gap-4 sm:gap-5 md:gap-6">
-        <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4 sm:gap-5 md:gap-6 lg:gap-8 w-full">
+      <div className="relative z-20 h-full flex flex-col justify-end pb-12 sm:pb-10 md:pb-12 lg:pb-16 px-4 sm:px-6 gap-4 sm:gap-5 md:gap-6">
+        <div className="flex flex-col lg:flex-row items-center lg:items-end justify-center lg:justify-between gap-4 sm:gap-5 md:gap-6 lg:gap-8 w-full">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="space-y-3 sm:space-y-4 md:space-y-5 max-w-2xl text-left"
+            className="space-y-3 sm:space-y-4 md:space-y-5 max-w-2xl text-center lg:text-left w-full lg:w-auto"
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}
-              className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 items-start sm:items-center"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-3 md:gap-4 items-center justify-center lg:items-start lg:justify-start"
             >
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   type="button"
                   size="lg"
-                  className="text-xs sm:text-sm md:text-base lg:text-lg px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2.5 md:py-3 group relative overflow-hidden"
+                  className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto"
                   onClick={() => handleHeroCta(primaryCta)}
                 >
                   <span className="relative z-10">{primaryCta.label}</span>
                   <div className="absolute inset-0 bg-foreground/10 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
-              </Button>
+                </Button>
               </motion.div>
 
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button asChild size="lg" variant="outline" className="text-xs sm:text-sm md:text-base lg:text-lg px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2.5 md:py-3 group relative overflow-hidden">
+              <Button asChild size="lg" variant="outline" className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto">
                 <a
                     href={secondaryCta.url}
                   target="_blank"
@@ -494,7 +494,7 @@ const Hero = () => {
                   className="relative flex items-center justify-center"
                 >
                   <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 opacity-0 group-hover:opacity-20 group-hover:scale-110 transition-all duration-300 transform origin-center" />
-                  <Play className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1.5 sm:mr-2 fill-pink-500 text-pink-500 play-icon-glow" />
+                  <Play className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1.5 sm:mr-2 fill-pink-500 text-pink-500 play-icon-glow" />
                   <span className="relative z-10 group-hover:tracking-wider transition-all duration-300">
                       {secondaryCta.label}
                   </span>

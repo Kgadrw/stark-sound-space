@@ -84,9 +84,9 @@ export const adminApi = {
       json: payload,
     }),
   updateAlbum: (id: string, payload: {
-    title: string;
+    title?: string;
     year?: string;
-    coverUrl: string;
+    coverUrl?: string;
     summary?: string;
     description?: string;
     tracks?: string[];
