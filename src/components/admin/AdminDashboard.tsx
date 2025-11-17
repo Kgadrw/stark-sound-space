@@ -218,6 +218,45 @@ export const HeroEditor = ({
             />
           </div>
           <div className="space-y-2">
+            <label className="text-sm font-medium text-white">Background Image URL</label>
+            <Input
+              value={hero.backgroundImage || ""}
+              onChange={(event) => updateHero({ backgroundImage: event.target.value })}
+              placeholder="/hero.jpeg or full URL"
+              className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+            />
+            <label className="text-sm text-white/50">Or upload from computer</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={async (event) => {
+                const file = event.target.files?.[0];
+                if (!file) return;
+                try {
+                  const dataUrl = await readFileAsDataUrl(file);
+                  updateHero({ backgroundImage: dataUrl });
+                  // Reset input to allow uploading same file again
+                  event.target.value = '';
+                } catch (error) {
+                  console.error("Error reading file:", error);
+                  toast.error("Failed to load image", {
+                    description: "Could not read the selected file.",
+                  });
+                }
+              }}
+              className="w-full text-sm text-white file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
+            />
+            {hero.backgroundImage && (
+              <div className="mt-4">
+                <img
+                  src={hero.backgroundImage}
+                  alt="Hero background preview"
+                  className="w-full h-48 object-cover rounded-lg border border-white/10"
+                />
+              </div>
+            )}
+          </div>
+          <div className="space-y-2">
             <label className="text-sm font-medium text-white">YouTube Video URL (Background)</label>
             <Input
               value={hero.backgroundVideoUrl || ""}
@@ -357,18 +396,29 @@ export const AlbumsEditor = ({
 
   const handleSaveAlbum = async (albumId: string) => {
     const album = albums.find((item) => item.id === albumId);
-    if (!album) return;
+    if (!album) {
+      console.error("Album not found in state:", albumId);
+      toast.error("Album not found", {
+        description: "The album could not be found. Please refresh the page.",
+      });
+      return;
+    }
+    
     setSavingAlbumId(albumId);
     try {
-      const response = await adminApi.updateAlbum(albumId, {
-        title: album.title,
-        year: album.year,
-        coverUrl: album.image,
-        summary: album.summary,
-        description: album.description,
-        tracks: album.tracks,
-        links: album.links,
-      });
+      const payload = {
+        title: album.title || "Untitled",
+        year: album.year || "",
+        coverUrl: album.image || "/Album.jpeg",
+        summary: album.summary || "",
+        description: album.description || "",
+        tracks: Array.isArray(album.tracks) ? album.tracks : [],
+        links: Array.isArray(album.links) ? album.links : [],
+      };
+      
+      console.log("Saving album:", { albumId, payload });
+      
+      const response = await adminApi.updateAlbum(albumId, payload);
       console.log("Album saved successfully:", response);
       toast.success("Album saved successfully!", {
         description: `"${album.title}" has been saved to the database.`,
@@ -376,8 +426,17 @@ export const AlbumsEditor = ({
       await refreshContent();
     } catch (error) {
       console.error("Failed to save album", error);
+      console.error("Album ID:", albumId);
+      console.error("Album data:", album);
+      
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : typeof error === 'object' && error !== null && 'message' in error
+        ? String(error.message)
+        : "Unknown error";
+        
       toast.error("Failed to save album", {
-        description: error instanceof Error ? error.message : "Unknown error",
+        description: errorMessage,
       });
     } finally {
       setSavingAlbumId(null);
@@ -511,6 +570,19 @@ export const AlbumsEditor = ({
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white">Cover Image URL</label>
                 <Input value={album.image} onChange={(event) => updateAlbum(album.id, { image: event.target.value })} placeholder="Image URL" className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
+                {album.image && (
+                  <div className="mt-2">
+                    <img
+                      src={album.image}
+                      alt="Album cover preview"
+                      className="w-full h-48 object-cover rounded-lg border border-white/10"
+                      onError={(e) => {
+                        console.error("Failed to load album image:", album.image);
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
                 <label className="text-sm text-white/50">Or upload from computer</label>
                 <input
                   type="file"
@@ -518,8 +590,29 @@ export const AlbumsEditor = ({
                   onChange={async (event) => {
                     const file = event.target.files?.[0];
                     if (!file) return;
-                    const dataUrl = await readFileAsDataUrl(file);
-                    updateAlbum(album.id, { image: dataUrl });
+                    try {
+                      // Check file size (limit to 5MB to avoid MongoDB issues)
+                      if (file.size > 5 * 1024 * 1024) {
+                        toast.error("Image too large", {
+                          description: "Please select an image smaller than 5MB.",
+                        });
+                        event.target.value = '';
+                        return;
+                      }
+                      const dataUrl = await readFileAsDataUrl(file);
+                      updateAlbum(album.id, { image: dataUrl });
+                      // Reset input to allow uploading same file again
+                      event.target.value = '';
+                      toast.success("Image loaded", {
+                        description: "Click 'Save' to update the album cover.",
+                      });
+                    } catch (error) {
+                      console.error("Error reading file:", error);
+                      toast.error("Failed to load image", {
+                        description: "Could not read the selected file.",
+                      });
+                      event.target.value = '';
+                    }
                   }}
                   className="w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
                 />
@@ -1312,8 +1405,29 @@ export const AboutEditor = ({
                 onChange={async (event) => {
                   const file = event.target.files?.[0];
                   if (!file) return;
-                  const dataUrl = await readFileAsDataUrl(file);
-                  updateAbout({ artistImage: dataUrl });
+                  try {
+                    // Check file size (limit to 5MB to avoid MongoDB issues)
+                    if (file.size > 5 * 1024 * 1024) {
+                      toast.error("Image too large", {
+                        description: "Please select an image smaller than 5MB.",
+                      });
+                      event.target.value = '';
+                      return;
+                    }
+                    const dataUrl = await readFileAsDataUrl(file);
+                    updateAbout({ artistImage: dataUrl });
+                    // Reset input to allow uploading same file again
+                    event.target.value = '';
+                    toast.success("Image loaded", {
+                      description: "Click 'Save Changes' to update the artist image.",
+                    });
+                  } catch (error) {
+                    console.error("Error reading file:", error);
+                    toast.error("Failed to load image", {
+                      description: "Could not read the selected file.",
+                    });
+                    event.target.value = '';
+                  }
                 }}
                 className="w-full text-sm text-white file:mr-3 file:rounded-md file:border-0 file:bg-white file:px-4 file:py-2 file:text-sm file:text-black file:font-medium hover:file:bg-white/90 cursor-pointer"
               />

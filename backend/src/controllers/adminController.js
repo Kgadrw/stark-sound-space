@@ -36,16 +36,16 @@ const ensureHeroSetting = async () => {
 const createId = (prefix) => `${prefix}-${Math.random().toString(36).slice(2, 8)}`;
 
 const formatAlbum = (album) => ({
-  id: album.id ?? album._id,
-  title: album.title,
-  year: album.year,
-  coverUrl: album.coverUrl,
-  summary: album.summary,
-  description: album.description,
-  tracks: album.tracks,
-  links: album.links,
-  createdAt: album.createdAt,
-  updatedAt: album.updatedAt,
+  id: album.id ?? (album._id ? album._id.toString() : null),
+  title: album.title || "",
+  year: album.year || "",
+  coverUrl: album.coverUrl || "/Album.jpeg",
+  summary: album.summary || "",
+  description: album.description || "",
+  tracks: Array.isArray(album.tracks) ? album.tracks : [],
+  links: Array.isArray(album.links) ? album.links : [],
+  createdAt: album.createdAt ? album.createdAt.toISOString() : new Date().toISOString(),
+  updatedAt: album.updatedAt ? album.updatedAt.toISOString() : new Date().toISOString(),
 });
 
 const formatVideo = (video) => ({
@@ -69,13 +69,19 @@ const formatTour = (tour) => ({
   updatedAt: tour.updatedAt,
 });
 
-const ensureLinks = (links = []) =>
-  links.map((link) => ({
-    id: link.id ?? createId("link"),
-    label: link.label,
-    url: link.url,
-    description: link.description ?? "",
-  }));
+const ensureLinks = (links = []) => {
+  if (!Array.isArray(links)) {
+    return [];
+  }
+  return links
+    .filter(link => link && typeof link === 'object')
+    .map((link) => ({
+      id: link.id && typeof link.id === 'string' ? link.id : createId("link"),
+      label: link.label && typeof link.label === 'string' ? link.label : "",
+      url: link.url && typeof link.url === 'string' ? link.url : "",
+      description: link.description && typeof link.description === 'string' ? link.description : "",
+    }));
+};
 
 const formatHero = (hero) => ({
   artistName: hero.artistName || "NEL NGABO",
@@ -179,10 +185,25 @@ const updateAlbumHandler = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { title, year, coverUrl, tracks, summary, description, links } = req.body;
-    const album = await Album.findById(id);
-    if (!album) {
-      return res.status(404).json({ message: "Album not found" });
+    
+    // Validate ID format
+    if (!id || id.trim() === "") {
+      return res.status(400).json({ message: "Album ID is required" });
     }
+    
+    // Try to find album by ID (MongoDB ObjectId or custom ID)
+    let album = await Album.findById(id);
+    
+    // If not found by ObjectId, try finding by a custom id field if it exists
+    if (!album) {
+      album = await Album.findOne({ id: id });
+    }
+    
+    if (!album) {
+      console.error(`Album not found with ID: ${id}`);
+      return res.status(404).json({ message: `Album not found with ID: ${id}` });
+    }
+    
     // Update fields only if they are provided in the request
     if (title !== undefined) {
       album.title = title || "Untitled";
@@ -200,16 +221,86 @@ const updateAlbumHandler = async (req, res, next) => {
       album.description = description || "";
     }
     if (tracks !== undefined) {
-      album.tracks = normalizeTracks(tracks);
+      try {
+        album.tracks = normalizeTracks(tracks);
+      } catch (tracksError) {
+        console.error("Error processing tracks:", tracksError);
+        album.tracks = [];
+      }
     }
     if (links !== undefined) {
-      album.links = ensureLinks(Array.isArray(links) ? links : []);
+      try {
+        album.links = ensureLinks(Array.isArray(links) ? links : []);
+      } catch (linksError) {
+        console.error("Error processing links:", linksError);
+        album.links = [];
+      }
     }
-    await album.save();
-    res.json(formatAlbum(album));
+    
+    // Validate required fields before saving
+    if (!album.title || !album.coverUrl) {
+      return res.status(400).json({ 
+        message: "Title and coverUrl are required fields",
+        album: formatAlbum(album)
+      });
+    }
+    
+    try {
+      await album.save();
+      console.log(`Album updated successfully: ${album.id || album._id?.toString() || 'unknown'}`);
+      res.json(formatAlbum(album));
+    } catch (saveError) {
+      console.error("Error saving album to database:", saveError);
+      console.error("Save error details:", {
+        name: saveError.name,
+        message: saveError.message,
+        errors: saveError.errors
+      });
+      
+      if (saveError.name === "ValidationError") {
+        return res.status(400).json({ 
+          message: "Validation error",
+          errors: saveError.errors,
+          details: Object.keys(saveError.errors || {}).map(key => ({
+            field: key,
+            message: saveError.errors[key].message
+          }))
+        });
+      }
+      
+      throw saveError; // Re-throw to be caught by outer catch
+    }
   } catch (error) {
     console.error("Error updating album:", error);
-    next(error);
+    console.error("Error stack:", error.stack);
+    console.error("Album ID:", req.params.id);
+    console.error("Request body:", JSON.stringify(req.body, null, 2));
+    
+    // Provide more specific error messages
+    if (error.name === "CastError") {
+      return res.status(400).json({ 
+        message: `Invalid album ID format: ${req.params.id}`,
+        error: error.message 
+      });
+    }
+    if (error.name === "ValidationError") {
+      const validationErrors = {};
+      if (error.errors) {
+        Object.keys(error.errors).forEach(key => {
+          validationErrors[key] = error.errors[key].message;
+        });
+      }
+      return res.status(400).json({ 
+        message: "Validation error",
+        errors: validationErrors
+      });
+    }
+    
+    // Return a proper error response instead of calling next() to prevent internal server error
+    return res.status(500).json({ 
+      message: "Internal server error while updating album",
+      error: process.env.NODE_ENV === 'development' ? error.message : "An error occurred"
+    });
   }
 };
 
