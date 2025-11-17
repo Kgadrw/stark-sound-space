@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? "https://nel-backend-ymxe.onrender.com/api";
 
 type RequestOptions = RequestInit & { json?: unknown };
 
@@ -24,9 +24,38 @@ const request = async <TResponse>(path: string, options: RequestOptions = {}): P
 };
 
 export const adminApi = {
-  getHero: () => request<{ imageUrl: string; updatedAt: string }>("/admin/hero"),
-  updateHero: (payload: { imageUrl: string }) =>
-    request<{ imageUrl: string; updatedAt: string }>("/admin/hero", {
+  getHero: () => request<{ 
+    artistName?: string;
+    imageUrl: string; 
+    videoUrl?: string; 
+    navLinks?: any[];
+    primaryCta?: any;
+    secondaryCta?: any;
+    streamingPlatforms?: any[];
+    socialLinks?: any[];
+    updatedAt: string 
+  }>("/admin/hero"),
+  updateHero: (payload: { 
+    imageUrl?: string; 
+    videoUrl?: string;
+    artistName?: string;
+    navLinks?: any[];
+    primaryCta?: any;
+    secondaryCta?: any;
+    streamingPlatforms?: any[];
+    socialLinks?: any[];
+  }) =>
+    request<{ 
+      artistName?: string;
+      imageUrl: string; 
+      videoUrl?: string; 
+      navLinks?: any[];
+      primaryCta?: any;
+      secondaryCta?: any;
+      streamingPlatforms?: any[];
+      socialLinks?: any[];
+      updatedAt: string 
+    }>("/admin/hero", {
       method: "POST",
       json: payload,
     }),

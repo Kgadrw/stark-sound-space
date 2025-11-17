@@ -5,6 +5,7 @@ export const initialContent: ContentState = {
   hero: {
     artistName: "NEL NGABO",
     backgroundImage: "/hero.jpeg",
+    backgroundVideoUrl: "https://youtu.be/lBnokNKI38I",
     navLinks: [
       { id: createId("nav"), label: "MUSIC", targetType: "scroll", targetValue: "music" },
       { id: createId("nav"), label: "VIDEOS", targetType: "scroll", targetValue: "videos" },

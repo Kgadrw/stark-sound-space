@@ -54,8 +54,8 @@ const VideosSection = () => {
               data-search-item="video"
               data-search-label={`Video · ${video.title}`}
               data-search-category="Video"
-              data-search-description={`${video.views} views`}
-              data-search-keywords={[video.title, video.views].join("|")}
+              data-search-description={video.description || ""}
+              data-search-keywords={video.title}
               data-search-target="videos"
               data-search-target-element={`video-card-${video.id}`}
               className={`group relative bg-card border-2 border-border hover:border-foreground transition-all duration-500 overflow-hidden ${viewMode === "list" ? "md:flex md:items-stretch" : "aspect-video"}`}
@@ -72,7 +72,6 @@ const VideosSection = () => {
               </div>
               {viewMode === "list" && (
                 <div className="flex-1 border-t border-white/5 bg-black/40 px-6 py-5 text-left">
-                  <p className="text-xs uppercase tracking-[0.4em] text-white/50">{video.views} views</p>
                   <h3 className="mt-2 text-2xl font-bold text-white">{video.title}</h3>
                   <p className="mt-1 text-sm text-white/60">{video.description}</p>
                 </div>

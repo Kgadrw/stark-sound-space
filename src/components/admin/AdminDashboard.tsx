@@ -10,6 +10,7 @@ import { createId } from "@/lib/id";
 import { readFileAsDataUrl } from "@/lib/file";
 import { adminApi } from "@/lib/api";
 import { Trash2, Plus } from "lucide-react";
+import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 
 type ContentSetter = React.Dispatch<React.SetStateAction<ContentState>>;
 
@@ -117,7 +118,7 @@ export const HeroEditor = ({
   const addSocialLink = () => {
     updateHeroCollection("socialLinks", [
       ...hero.socialLinks,
-      { id: createId("social"), label: "New Link", url: "https://", preset: "instagram" },
+      { id: createId("social"), url: "https://" },
     ]);
   };
 
@@ -128,179 +129,130 @@ export const HeroEditor = ({
     );
   };
 
-  const persistHeroImage = async (imageUrl: string) => {
-    if (!imageUrl) return;
-    updateHero({ backgroundImage: imageUrl });
+  const persistHeroVideo = async (videoUrl: string) => {
+    updateHero({ backgroundVideoUrl: videoUrl });
     try {
-      await adminApi.updateHero({ imageUrl });
+      await adminApi.updateHero({ videoUrl });
       await refreshContent();
     } catch (error) {
-      console.error("Failed to update hero image", error);
+      console.error("Failed to update hero video", error);
     }
   };
 
-  const handleHeroImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const dataUrl = await readFileAsDataUrl(file);
-    await persistHeroImage(dataUrl);
+  const persistHeroData = async () => {
+    try {
+      await adminApi.updateHero({ 
+        artistName: hero.artistName,
+        videoUrl: hero.backgroundVideoUrl || "",
+        imageUrl: hero.backgroundImage,
+        navLinks: hero.navLinks,
+        streamingPlatforms: hero.streamingPlatforms,
+        socialLinks: hero.socialLinks,
+      });
+      await refreshContent();
+    } catch (error) {
+      console.error("Failed to save hero data", error);
+    }
   };
+
+  const persistArtistName = async (name: string) => {
+    updateHero({ artistName: name });
+    try {
+      await adminApi.updateHero({ artistName: name });
+      await refreshContent();
+    } catch (error) {
+      console.error("Failed to update artist name", error);
+    }
+  };
+
+  const videoPreviewUrl = getYouTubeEmbedUrl(hero.backgroundVideoUrl || "");
 
   return (
     <div className="space-y-8">
-      <Card>
+      <Card className="border-white/10 bg-black/40 text-white">
         <CardHeader>
-          <CardTitle>Hero Basics</CardTitle>
-          <CardDescription>Update the hero image, artist name, and call-to-action buttons.</CardDescription>
+          <CardTitle className="text-white">Hero Basics</CardTitle>
+          <CardDescription className="text-white/60">Update the artist name and background YouTube video.</CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-6 md:grid-cols-2">
+        <CardContent className="grid gap-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Artist Name</label>
-            <Input value={hero.artistName} onChange={(event) => updateHero({ artistName: event.target.value })} />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Hero Image URL</label>
-            <Input
-              value={hero.backgroundImage}
-              onChange={(event) => updateHero({ backgroundImage: event.target.value })}
-              onBlur={(event) => persistHeroImage(event.target.value)}
+            <label className="text-sm font-medium text-white">Artist Name</label>
+            <Input 
+              value={hero.artistName} 
+              onChange={(event) => updateHero({ artistName: event.target.value })} 
+              onBlur={(event) => persistArtistName(event.target.value)}
+              className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
             />
-            <div className="flex flex-wrap items-center gap-3">
-              <label className="text-xs uppercase tracking-[0.3em] text-white/60">Or upload</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleHeroImageUpload}
-                className="max-w-xs text-xs text-white/70 file:mr-3 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-1 file:text-xs file:uppercase file:tracking-[0.2em] file:text-white hover:file:bg-white/20"
-              />
-            </div>
           </div>
-        </CardContent>
-        <Separator />
-        <CardContent className="grid gap-6 md:grid-cols-2">
-          <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-white">YouTube Video URL (Background)</label>
+            <Input
+              value={hero.backgroundVideoUrl || ""}
+              onChange={(event) => updateHero({ backgroundVideoUrl: event.target.value })}
+              onBlur={(event) => persistHeroVideo(event.target.value)}
+              placeholder="https://youtu.be/lBnokNKI38I or https://www.youtube.com/watch?v=lBnokNKI38I"
+              className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+            />
+            <p className="text-xs text-white/50">
+              Enter a YouTube video URL or video ID. This video will play as the background on the hero section.
+            </p>
+          </div>
+          {videoPreviewUrl && (
             <div className="space-y-2">
-              <label className="text-sm font-semibold uppercase tracking-[0.2em] text-xs">Primary Button</label>
-              <Input
-                value={hero.primaryCta.label}
-                onChange={(event) => updateHero({ primaryCta: { ...hero.primaryCta, label: event.target.value } })}
-                placeholder="CTA Label"
-              />
-            </div>
-            <div className="grid gap-2 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-xs uppercase tracking-[0.2em] text-white/70">Action</label>
-                <Select
-                  value={hero.primaryCta.targetType}
-                  onValueChange={(value) => updateHero({ primaryCta: { ...hero.primaryCta, targetType: value as typeof hero.primaryCta.targetType } })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose action" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ctaTargetOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs uppercase tracking-[0.2em] text-white/70">Target</label>
-                <Input
-                  value={hero.primaryCta.targetValue}
-                  onChange={(event) => updateHero({ primaryCta: { ...hero.primaryCta, targetValue: event.target.value } })}
-                  placeholder="e.g. music"
+              <label className="text-sm font-medium text-white">Video Preview</label>
+              <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-white/20 bg-black">
+                <iframe
+                  src={videoPreviewUrl}
+                  className="absolute inset-0 w-full h-full"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  title="Video Preview"
                 />
               </div>
             </div>
-          </div>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold uppercase tracking-[0.2em] text-xs">Secondary Button</label>
-              <Input
-                value={hero.secondaryCta.label}
-                onChange={(event) => updateHero({ secondaryCta: { ...hero.secondaryCta, label: event.target.value } })}
-                placeholder="CTA Label"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-[0.2em] text-white/70">External Link</label>
-              <Input
-                value={hero.secondaryCta.url}
-                onChange={(event) => updateHero({ secondaryCta: { ...hero.secondaryCta, url: event.target.value } })}
-                placeholder="https://"
-              />
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <div>
-            <CardTitle>Navigation</CardTitle>
-            <CardDescription>Control the hero navigation buttons.</CardDescription>
-          </div>
-          <Button size="sm" variant="outline" onClick={addNavLink}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Link
-          </Button>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {hero.navLinks.map((link) => (
-            <div key={link.id} className="grid gap-3 rounded-xl border border-border/60 p-4 md:grid-cols-[2fr,1fr,auto] md:items-center">
-              <Input value={link.label} onChange={(event) => updateNavLink(link.id, { label: event.target.value })} placeholder="Label" />
-              <Select value={link.targetType} onValueChange={(value) => updateNavLink(link.id, { targetType: value as HeroNavLink["targetType"] })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Behavior" />
-                </SelectTrigger>
-                <SelectContent>
-                  {navTargetOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <div className="flex gap-3">
-                <Input
-                  value={link.targetValue}
-                  onChange={(event) => updateNavLink(link.id, { targetValue: event.target.value })}
-                  placeholder="music"
-                />
-                <Button variant="ghost" size="icon" onClick={() => removeNavLink(link.id)}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
-          {!hero.navLinks.length && <p className="text-sm text-white/60">No navigation links configured.</p>}
-        </CardContent>
-      </Card>
-
-      <Card>
+      <Card className="border-white/10 bg-black/40 text-white">
         <CardHeader className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <CardTitle>Streaming Platforms</CardTitle>
-              <CardDescription>Displayed on the hero sidebar.</CardDescription>
+              <CardTitle className="text-white">Streaming Platforms</CardTitle>
+              <CardDescription className="text-white/60">Add streaming platform links displayed in the hero sidebar.</CardDescription>
             </div>
-            <Button size="sm" variant="outline" onClick={addStreamingPlatform}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Platform
-            </Button>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={addStreamingPlatform}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Platform
+              </Button>
+              <Button size="sm" onClick={persistHeroData}>
+                Save Changes
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {hero.streamingPlatforms.map((platform) => (
-            <div key={platform.id} className="grid gap-3 rounded-xl border border-border/60 p-4 md:grid-cols-[1.5fr,1.5fr,auto]">
-              <Input value={platform.label} onChange={(event) => updateStreaming(platform.id, { label: event.target.value })} placeholder="Platform name" />
-              <Input value={platform.url} onChange={(event) => updateStreaming(platform.id, { url: event.target.value })} placeholder="https://" />
+            <div key={platform.id} className="grid gap-3 rounded-xl border border-white/20 bg-black/30 p-4 md:grid-cols-[1.5fr,1.5fr,auto]">
+              <Input 
+                value={platform.label} 
+                onChange={(event) => updateStreaming(platform.id, { label: event.target.value })} 
+                placeholder="Platform name (e.g., Spotify)"
+                className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+              />
+              <Input 
+                value={platform.url} 
+                onChange={(event) => updateStreaming(platform.id, { url: event.target.value })} 
+                placeholder="https://"
+                className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+              />
               <div className="flex gap-3">
-                <Select value={platform.preset} onValueChange={(value) => updateStreaming(platform.id, { preset: value as IconPreset })}>
-                  <SelectTrigger>
+                <Select 
+                  value={platform.preset} 
+                  onValueChange={(value) => updateStreaming(platform.id, { preset: value as IconPreset })}
+                >
+                  <SelectTrigger className="bg-black/40 text-white border-white/20">
                     <SelectValue placeholder="Icon" />
                   </SelectTrigger>
                   <SelectContent>
@@ -317,48 +269,7 @@ export const HeroEditor = ({
               </div>
             </div>
           ))}
-          {!hero.streamingPlatforms.length && <p className="text-sm text-white/60">No streaming services yet.</p>}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <CardTitle>Social & Contact Links</CardTitle>
-              <CardDescription>Shown in the hero quick-access grid.</CardDescription>
-            </div>
-            <Button size="sm" variant="outline" onClick={addSocialLink}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Link
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {hero.socialLinks.map((link) => (
-            <div key={link.id} className="grid gap-3 rounded-xl border border-border/60 p-4 md:grid-cols-[1.5fr,1.5fr,auto]">
-              <Input value={link.label} onChange={(event) => updateSocialLink(link.id, { label: event.target.value })} placeholder="Label" />
-              <Input value={link.url} onChange={(event) => updateSocialLink(link.id, { url: event.target.value })} placeholder="https:// | mailto: | tel:" />
-              <div className="flex gap-3">
-                <Select value={link.preset} onValueChange={(value) => updateSocialLink(link.id, { preset: value as IconPreset })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Icon" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {iconPresetOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button variant="ghost" size="icon" onClick={() => removeSocialLink(link.id)}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
-          {!hero.socialLinks.length && <p className="text-sm text-white/60">No social/contact links configured.</p>}
+          {!hero.streamingPlatforms.length && <p className="text-sm text-white/50">No streaming platforms configured. Click "Add Platform" to add one.</p>}
         </CardContent>
       </Card>
     </div>
@@ -396,6 +307,7 @@ export const AlbumsEditor = ({
       year: new Date().getFullYear().toString(),
       coverUrl: "/Album.jpeg",
       summary: "",
+      description: "",
       tracks: [],
       links: [],
     };
@@ -417,6 +329,7 @@ export const AlbumsEditor = ({
         year: album.year,
         coverUrl: album.image,
         summary: album.summary,
+        description: album.description,
         tracks: album.tracks,
         links: album.links,
       });
@@ -479,8 +392,8 @@ export const AlbumsEditor = ({
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Albums</h2>
-          <p className="text-sm text-muted-foreground">Manage artwork, summaries, and tracklists.</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-white">Albums</h2>
+          <p className="text-sm text-white/50">Manage artwork, summaries, and tracklists.</p>
         </div>
         <Button onClick={addAlbum}>
           <Plus className="mr-2 h-4 w-4" />
@@ -489,11 +402,25 @@ export const AlbumsEditor = ({
       </div>
       <div className="space-y-5">
         {albums.map((album) => (
-          <Card key={album.id}>
+          <Card key={album.id} className="border-white/10 bg-black/40 text-white">
             <CardHeader className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <CardTitle>{album.title}</CardTitle>
-                <CardDescription>{album.year}</CardDescription>
+              <div className="flex items-center gap-4">
+                {album.image && (
+                  <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border border-white/20 bg-black/40">
+                    <img 
+                      src={album.image} 
+                      alt={album.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/Album.jpeg";
+                      }}
+                    />
+                  </div>
+                )}
+                <div>
+                  <CardTitle className="text-white">{album.title}</CardTitle>
+                  <CardDescription className="text-white/60">{album.year}</CardDescription>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -517,17 +444,17 @@ export const AlbumsEditor = ({
             </CardHeader>
             <CardContent className="grid gap-4 lg:grid-cols-3">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Title</label>
-                <Input value={album.title} onChange={(event) => updateAlbum(album.id, { title: event.target.value })} />
+                <label className="text-sm font-medium text-white">Title</label>
+                <Input value={album.title} onChange={(event) => updateAlbum(album.id, { title: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Year</label>
-                <Input value={album.year} onChange={(event) => updateAlbum(album.id, { year: event.target.value })} />
+                <label className="text-sm font-medium text-white">Year</label>
+                <Input value={album.year} onChange={(event) => updateAlbum(album.id, { year: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Cover Image</label>
-                <Input value={album.image} onChange={(event) => updateAlbum(album.id, { image: event.target.value })} />
-                <label className="text-xs uppercase tracking-[0.3em] text-white/50">Upload cover</label>
+                <label className="text-sm font-medium text-white">Cover Image URL</label>
+                <Input value={album.image} onChange={(event) => updateAlbum(album.id, { image: event.target.value })} placeholder="Image URL" className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
+                <label className="text-sm text-white/50">Or upload from computer</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -537,23 +464,34 @@ export const AlbumsEditor = ({
                     const dataUrl = await readFileAsDataUrl(file);
                     updateAlbum(album.id, { image: dataUrl });
                   }}
-                  className="w-full text-xs text-white/70 file:mr-3 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-1 file:text-xs file:uppercase file:tracking-[0.2em] file:text-white hover:file:bg-white/20"
+                  className="w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
                 />
               </div>
               <div className="lg:col-span-3 space-y-2">
-                <label className="text-sm font-medium">Summary</label>
-                <Textarea value={album.summary} rows={3} onChange={(event) => updateAlbum(album.id, { summary: event.target.value })} />
+                <label className="text-sm font-medium text-white">Summary</label>
+                <Textarea value={album.summary} rows={3} onChange={(event) => updateAlbum(album.id, { summary: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
+              </div>
+              <div className="lg:col-span-3 space-y-2">
+                <label className="text-sm font-medium text-white">Full Description</label>
+                <Textarea 
+                  value={album.description || ""} 
+                  rows={6} 
+                  onChange={(event) => updateAlbum(album.id, { description: event.target.value })} 
+                  placeholder="Enter a detailed description about the album, its inspiration, themes, and story..."
+                  className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+                />
               </div>
               <div className="lg:col-span-3 grid gap-6 lg:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Tracklist (one per line)</label>
+                  <label className="text-sm font-medium text-white">Tracklist (one per line)</label>
                   <Textarea
                     rows={6}
                     value={album.tracks.join("\n")}
                     onChange={(event) => updateTracklist(album.id, event.target.value)}
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
                   />
-                  <div className="space-y-2 rounded-2xl border border-white/10 bg-black/30 p-3">
-                    <label className="text-xs uppercase tracking-[0.3em] text-white/60">Add single track</label>
+                  <div className="space-y-2 rounded-lg border border-white/20 bg-black/30 p-3">
+                    <label className="text-sm font-medium text-white">Add Single Track</label>
                     <div className="flex gap-2">
                       <Input
                         value={newTracks[album.id] ?? ""}
@@ -563,8 +501,8 @@ export const AlbumsEditor = ({
                             [album.id]: event.target.value,
                           }))
                         }
-                        placeholder="Track title"
-                        className="bg-black/40 text-white placeholder:text-white/30"
+                        placeholder="Enter track title"
+                        className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
                       />
                       <Button
                         type="button"
@@ -577,14 +515,14 @@ export const AlbumsEditor = ({
                           setNewTracks((prev) => ({ ...prev, [album.id]: "" }));
                         }}
                       >
-                        Add
+                        Add Track
                       </Button>
                     </div>
                   </div>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium">Listening Links</label>
+                    <label className="text-sm font-medium text-white">Listening Links</label>
                     <Button size="sm" variant="outline" onClick={() => addAlbumLink(album.id)}>
                       <Plus className="mr-2 h-4 w-4" />
                       Add Link
@@ -592,13 +530,14 @@ export const AlbumsEditor = ({
                   </div>
                   <div className="space-y-3">
                     {album.links.map((link) => (
-                      <div key={link.id} className="space-y-2 rounded-xl border border-border/60 p-3">
-                        <Input value={link.label} onChange={(event) => updateAlbumLink(album.id, link.id, "label", event.target.value)} placeholder="Label" />
-                        <Input value={link.url} onChange={(event) => updateAlbumLink(album.id, link.id, "url", event.target.value)} placeholder="https://" />
+                      <div key={link.id} className="space-y-2 rounded-xl border border-white/20 bg-black/30 p-3">
+                        <Input value={link.label} onChange={(event) => updateAlbumLink(album.id, link.id, "label", event.target.value)} placeholder="Label" className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
+                        <Input value={link.url} onChange={(event) => updateAlbumLink(album.id, link.id, "url", event.target.value)} placeholder="https://" className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
                         <Input
                           value={link.description}
                           onChange={(event) => updateAlbumLink(album.id, link.id, "description", event.target.value)}
                           placeholder="Description"
+                          className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
                         />
                         <Button variant="ghost" size="sm" onClick={() => removeAlbumLink(album.id, link.id)}>
                           <Trash2 className="mr-2 h-4 w-4" />
@@ -606,14 +545,14 @@ export const AlbumsEditor = ({
                         </Button>
                       </div>
                     ))}
-                    {!album.links.length && <p className="text-sm text-muted-foreground">No links yet.</p>}
+                    {!album.links.length && <p className="text-sm text-white/50">No links yet.</p>}
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
         ))}
-        {!albums.length && <p className="text-sm text-muted-foreground">No albums configured yet.</p>}
+        {!albums.length && <p className="text-sm text-white/50">No albums configured yet.</p>}
       </div>
     </div>
   );
@@ -643,7 +582,6 @@ export const VideosEditor = ({
     const placeholder = {
       title: "New Video",
       youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      views: "0",
       description: "Add description",
     };
     try {
@@ -661,7 +599,6 @@ export const VideosEditor = ({
     try {
       await adminApi.updateVideo(videoId, {
         title: video.title,
-        views: video.views,
         description: video.description,
         youtubeUrl: `https://www.youtube.com/watch?v=${video.videoId}`,
       });
@@ -689,8 +626,8 @@ export const VideosEditor = ({
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Videos</h2>
-          <p className="text-sm text-muted-foreground">Embed YouTube videos with descriptions.</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-white">Videos</h2>
+          <p className="text-sm text-white/50">Embed YouTube videos with descriptions.</p>
         </div>
         <Button onClick={addVideo}>
           <Plus className="mr-2 h-4 w-4" />
@@ -698,14 +635,26 @@ export const VideosEditor = ({
         </Button>
       </div>
       <div className="space-y-4">
-        {videos.map((video) => (
-          <Card key={video.id}>
-            <CardHeader className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <CardTitle>{video.title}</CardTitle>
-                <CardDescription>{video.views} views</CardDescription>
-              </div>
-              <div className="flex items-center gap-2">
+        {videos.map((video) => {
+          const thumbnailUrl = getYouTubeThumbnailUrl(video.videoId);
+          return (
+            <Card key={video.id} className="border-white/10 bg-black/40 text-white">
+              <CardHeader className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex items-center gap-4">
+                  {thumbnailUrl && (
+                    <div className="relative w-32 h-20 flex-shrink-0 rounded-lg overflow-hidden border border-white/20 bg-black/40">
+                      <img 
+                        src={thumbnailUrl} 
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <CardTitle className="text-white">{video.title}</CardTitle>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -727,25 +676,22 @@ export const VideosEditor = ({
             </CardHeader>
             <CardContent className="grid gap-4 lg:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Title</label>
-                <Input value={video.title} onChange={(event) => updateVideo(video.id, { title: event.target.value })} />
+                <label className="text-sm font-medium text-white">Title</label>
+                <Input value={video.title} onChange={(event) => updateVideo(video.id, { title: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">View Count</label>
-                <Input value={video.views} onChange={(event) => updateVideo(video.id, { views: event.target.value })} />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">YouTube Video ID</label>
-                <Input value={video.videoId} onChange={(event) => updateVideo(video.id, { videoId: event.target.value })} placeholder="lBnokNKI38I" />
+                <label className="text-sm font-medium text-white">YouTube Video ID</label>
+                <Input value={video.videoId} onChange={(event) => updateVideo(video.id, { videoId: event.target.value })} placeholder="lBnokNKI38I" className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
               <div className="space-y-2 lg:col-span-2">
-                <label className="text-sm font-medium">Description</label>
-                <Textarea value={video.description} rows={3} onChange={(event) => updateVideo(video.id, { description: event.target.value })} />
+                <label className="text-sm font-medium text-white">Description</label>
+                <Textarea value={video.description} rows={3} onChange={(event) => updateVideo(video.id, { description: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
             </CardContent>
-          </Card>
-        ))}
-        {!videos.length && <p className="text-sm text-muted-foreground">No videos configured yet.</p>}
+            </Card>
+          );
+        })}
+        {!videos.length && <p className="text-sm text-white/50">No videos configured yet.</p>}
       </div>
     </div>
   );
@@ -821,8 +767,8 @@ export const ToursEditor = ({
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Tours</h2>
-          <p className="text-sm text-muted-foreground">Add tour stops with ticket links.</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-white">Tours</h2>
+          <p className="text-sm text-white/50">Add tour stops with ticket links.</p>
         </div>
         <Button onClick={addTour}>
           <Plus className="mr-2 h-4 w-4" />
@@ -831,23 +777,23 @@ export const ToursEditor = ({
       </div>
       <div className="space-y-4">
         {tours.map((tour) => (
-          <Card key={tour.id}>
+          <Card key={tour.id} className="border-white/10 bg-black/40 text-white">
             <CardContent className="grid gap-4 py-6 lg:grid-cols-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Date</label>
-                <Input type="date" value={tour.date} onChange={(event) => updateTour(tour.id, { date: event.target.value })} />
+                <label className="text-sm font-medium text-white">Date</label>
+                <Input type="date" value={tour.date} onChange={(event) => updateTour(tour.id, { date: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">City</label>
-                <Input value={tour.city} onChange={(event) => updateTour(tour.id, { city: event.target.value })} />
+                <label className="text-sm font-medium text-white">City</label>
+                <Input value={tour.city} onChange={(event) => updateTour(tour.id, { city: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Venue</label>
-                <Input value={tour.venue} onChange={(event) => updateTour(tour.id, { venue: event.target.value })} />
+                <label className="text-sm font-medium text-white">Venue</label>
+                <Input value={tour.venue} onChange={(event) => updateTour(tour.id, { venue: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Ticket URL</label>
-                <Input value={tour.ticketUrl} onChange={(event) => updateTour(tour.id, { ticketUrl: event.target.value })} />
+                <label className="text-sm font-medium text-white">Ticket URL</label>
+                <Input value={tour.ticketUrl} onChange={(event) => updateTour(tour.id, { ticketUrl: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
               <div className="lg:col-span-4 flex justify-end gap-2">
                 <Button
@@ -871,7 +817,7 @@ export const ToursEditor = ({
             </CardContent>
           </Card>
         ))}
-        {!tours.length && <p className="text-sm text-muted-foreground">No tour dates configured yet.</p>}
+        {!tours.length && <p className="text-sm text-white/50">No tour dates configured yet.</p>}
       </div>
     </div>
   );

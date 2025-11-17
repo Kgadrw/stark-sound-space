@@ -166,6 +166,13 @@ const MusicSection = () => {
                   <p className="text-gray-400">{selectedAlbum.year}</p>
                 </div>
 
+                {selectedAlbum.description && (
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.4em] text-gray-400 mb-3">About This Album</p>
+                    <p className="text-sm text-white/80 leading-relaxed whitespace-pre-line">{selectedAlbum.description}</p>
+                  </div>
+                )}
+
                 <div>
                   <p className="text-xs uppercase tracking-[0.4em] text-gray-400">Tracklist</p>
                   <ul className="mt-4 space-y-3">

@@ -6,6 +6,7 @@ const albumSchema = new mongoose.Schema(
     year: { type: String, default: "" },
     coverUrl: { type: String, required: true },
     summary: { type: String, default: "" },
+    description: { type: String, default: "" },
     tracks: [{ type: String }],
     links: [
       {

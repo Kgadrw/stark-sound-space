@@ -1,14 +1,15 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
-import { useSidebar } from "@/context/SidebarContext";
+import Navbar from "@/components/Navbar";
 
 const Admin = () => {
-  const { isHidden } = useSidebar();
   return (
     <>
-      <Sidebar variant="admin" />
-      <div className={`min-h-screen bg-background pt-16 md:pt-0 transition-all duration-300 ${isHidden ? "md:pl-0" : "md:pl-72"}`}>
-        <div className="px-6 py-10 space-y-8">
+      <Navbar variant="admin" />
+      <div 
+        className="min-h-screen bg-black pt-16"
+        style={{ fontFamily: "'Montserrat', sans-serif" }}
+      >
+        <div className="px-6 py-10 space-y-8 max-w-7xl mx-auto">
           <Outlet />
         </div>
       </div>

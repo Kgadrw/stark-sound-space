@@ -38,9 +38,7 @@ export type StreamingPlatform = {
 
 export type SocialLink = {
   id: string;
-  label: string;
   url: string;
-  preset: IconPreset;
 };
 
 export type ContactMethod = {
@@ -53,7 +51,8 @@ export type ContactMethod = {
 
 export type HeroContent = {
   artistName: string;
-  backgroundImage: string;
+  backgroundImage: string; // Fallback image
+  backgroundVideoUrl: string; // YouTube video URL for background
   navLinks: HeroNavLink[];
   primaryCta: HeroCta;
   secondaryCta: HeroSecondaryCta;
@@ -74,6 +73,7 @@ export type Album = {
   year: string;
   image: string;
   summary: string;
+  description: string;
   tracks: string[];
   links: AlbumLink[];
 };

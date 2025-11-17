@@ -10,6 +10,24 @@ const authRouter = require("./routes/auth");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
+// Function to setup Swagger with dynamic server URL
+const swaggerSetup = (req, res, next) => {
+  // Get protocol and host from request (works with proxy)
+  const protocol = req.protocol || (req.secure ? "https" : "http");
+  const host = req.get("host") || "localhost:4000";
+  const baseUrl = `${protocol}://${host}`;
+  
+  const swaggerConfig = {
+    ...swaggerDocument,
+    servers: [
+      { url: `${baseUrl}/api`, description: "Current server" },
+      { url: "http://localhost:4000/api", description: "Local development" },
+    ],
+  };
+  
+  return swaggerUi.setup(swaggerConfig)(req, res, next);
+};
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 const MONGO_URI = process.env.MONGO_URI;
@@ -19,11 +37,27 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
+// Trust proxy for correct protocol detection (needed for Render, Heroku, etc.)
+app.set("trust proxy", true);
+
 app.use("/admin", express.static(path.join(__dirname, "..", "public", "admin")));
 
 app.use("/api/admin", adminRouter);
 app.use("/api/auth", authRouter);
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api/docs", swaggerUi.serve, swaggerSetup);
+
+app.get("/", (_req, res) => {
+  res.json({
+    message: "Nel Ngabo Backend API",
+    version: "1.0.0",
+    endpoints: {
+      docs: "/api/docs",
+      health: "/health",
+      admin: "/api/admin",
+      auth: "/api/auth",
+    },
+  });
+});
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
@@ -58,6 +92,7 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`Backend server listening on http://localhost:${PORT}`);
       console.log(`Admin dashboard available at http://localhost:${PORT}/admin`);
+      console.log(`API Documentation (Swagger) available at http://localhost:${PORT}/api/docs`);
     });
   } catch (error) {
     console.error("Failed to start server:", error.message);

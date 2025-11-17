@@ -6,7 +6,8 @@
     "version": "1.0.0"
   },
   "servers": [
-    { "url": "http://localhost:4000/api", "description": "Local development" }
+    { "url": "http://localhost:4000/api", "description": "Local development" },
+    { "url": "/api", "description": "Production server" }
   ],
   "tags": [
     { "name": "Auth" },

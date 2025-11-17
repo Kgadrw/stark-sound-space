@@ -1,0 +1,234 @@
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { NavLink } from "react-router-dom";
+import { Home, Music4, Clapperboard, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, type LucideIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+type NavbarNavLink = {
+  label: string;
+  icon: LucideIcon;
+  to: string;
+};
+
+type NavbarProps = {
+  variant?: "frontend" | "admin";
+};
+
+const frontendNavLinks: NavbarNavLink[] = [
+  { label: "Home", to: "/", icon: Home },
+  { label: "Albums", to: "/music", icon: Music4 },
+  { label: "Videos", to: "/videos", icon: Clapperboard },
+  { label: "Tours", to: "/tours", icon: MapPin },
+];
+
+const adminNavLinks: NavbarNavLink[] = [
+  { label: "Hero", icon: Sparkles, to: "/admin" },
+  { label: "Albums", icon: Music4, to: "/admin/albums" },
+  { label: "Videos", icon: Clapperboard, to: "/admin/videos" },
+  { label: "Tours", icon: MapPin, to: "/admin/tours" },
+  { label: "Account", icon: Home, to: "/admin/account" },
+];
+
+const waveHeights = [8, 14, 24, 35, 24, 14, 8];
+
+const waveAnimation = `
+  @keyframes wavePulse {
+    0%, 100% { transform: scaleY(0.7); opacity: 0.6; }
+    50% { transform: scaleY(1.2); opacity: 1; }
+  }
+`;
+
+const Navbar = ({ variant = "frontend" }: NavbarProps) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const navLinks = variant === "admin" ? adminNavLinks : frontendNavLinks;
+
+  useEffect(() => {
+    const animated = sessionStorage.getItem("navbarAnimated");
+    if (animated === "true") {
+      setHasAnimated(true);
+    } else {
+      sessionStorage.setItem("navbarAnimated", "true");
+    }
+  }, []);
+
+  return (
+    <>
+      <style>{waveAnimation}</style>
+      <motion.nav
+        initial={hasAnimated ? false : { y: -100, opacity: 0 }}
+        animate={hasAnimated ? false : { y: 0, opacity: 1 }}
+        transition={hasAnimated ? {} : { duration: 0.5 }}
+        className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b border-white/10 bg-black/80 px-6 py-4 text-white backdrop-blur-xl"
+      >
+        {/* Logo/Brand */}
+        <div className="flex items-center space-x-2">
+          <div className="relative">
+            <div className="text-lg md:text-xl font-bold tracking-[0.3em] relative z-10">
+              NEL NGABO
+            </div>
+            {/* Glitch effect text shadow */}
+            <div
+              className="text-lg md:text-xl font-bold tracking-[0.3em] absolute top-0 left-0 opacity-50 text-gray-medium"
+              style={{
+                transform: "translate(2px, 2px)",
+              }}
+              aria-hidden="true"
+            >
+              NEL NGABO
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-2">
+          {navLinks.map(({ to, label, icon: Icon }) => (
+            <NavLink
+              key={label}
+              to={to}
+              end={variant === "admin" && to === "/admin"}
+              className={({ isActive }) =>
+                [
+                  "flex items-center gap-2 px-4 py-2 text-sm uppercase tracking-[0.2em] transition rounded-lg",
+                  isActive ? "bg-white text-black" : "text-white/60 hover:bg-white/10",
+                ].join(" ")
+              }
+            >
+              <Icon className="h-4 w-4" />
+              <span>{label}</span>
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Mobile Menu Button */}
+        <button
+          type="button"
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="flex items-center gap-2 text-white md:hidden"
+          aria-label="Open menu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
+        {/* Latest Release (Desktop only, frontend variant) */}
+        {variant === "frontend" && (
+          <div className="hidden lg:flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="flex items-end gap-[2px]">
+                {waveHeights.map((height, index) => (
+                  <span
+                    key={index}
+                    className="w-[3px] rounded-full bg-gradient-to-t from-pink-500 via-purple-500 to-sky-500"
+                    style={{
+                      height: `${height * 0.6}px`,
+                      animation: "wavePulse 1.4s ease-in-out infinite",
+                      animationDelay: `${index * 60}ms`,
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="text-[0.65rem] font-semibold tracking-[0.3em] text-white">
+                VIBRANIUM
+              </div>
+            </div>
+            <Button variant="secondary" asChild className="uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-transform text-xs px-3 py-1.5">
+              <a href="/music">Listen</a>
+            </Button>
+          </div>
+        )}
+      </motion.nav>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 bg-black/95 text-white flex flex-col p-6 space-y-8 md:hidden"
+          >
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              className="flex items-center justify-between text-xs uppercase tracking-[0.4em]"
+            >
+              <span>NEL NGABO</span>
+              <motion.button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(false)}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="flex items-center gap-2 text-white"
+                aria-label="Close menu"
+              >
+                Close
+                <X className="h-4 w-4" />
+              </motion.button>
+            </motion.div>
+            <nav className="flex flex-col gap-6 text-3xl font-bold tracking-[0.2em]">
+              {navLinks.map(({ to, label }, index) => (
+                <motion.div
+                  key={label}
+                  initial={{ x: -50, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 + index * 0.1 }}
+                >
+                  <NavLink
+                    to={to}
+                    end={variant === "admin" && to === "/admin"}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={({ isActive }) =>
+                      [
+                        "uppercase transition",
+                        isActive ? "text-white" : "text-white/60 hover:text-white",
+                      ].join(" ")
+                    }
+                  >
+                    {label}
+                  </NavLink>
+                </motion.div>
+              ))}
+            </nav>
+            {variant === "frontend" && (
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="mt-auto space-y-4"
+              >
+                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Follow</p>
+                <div className="flex items-center gap-4">
+                  {[
+                    { href: "https://www.instagram.com/nelngabo/", icon: Instagram, label: "Instagram" },
+                    { href: "https://twitter.com/nelngabo", icon: Twitter, label: "Twitter" },
+                    { href: "https://www.youtube.com/@nelngabo9740", icon: Youtube, label: "YouTube" },
+                  ].map(({ href, icon: Icon, label }, index) => (
+                    <motion.a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.7 + index * 0.1, type: "spring" }}
+                      whileHover={{ scale: 1.2, rotate: 5 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Icon className="h-6 w-6" />
+                    </motion.a>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+
+export default Navbar;
+

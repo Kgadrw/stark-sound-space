@@ -40,6 +40,7 @@ const formatAlbum = (album) => ({
   year: album.year,
   coverUrl: album.coverUrl,
   summary: album.summary,
+  description: album.description,
   tracks: album.tracks,
   links: album.links,
   createdAt: album.createdAt,
@@ -75,10 +76,22 @@ const ensureLinks = (links = []) =>
     description: link.description ?? "",
   }));
 
+const formatHero = (hero) => ({
+  artistName: hero.artistName || "NEL NGABO",
+  imageUrl: hero.backgroundImage,
+  videoUrl: hero.backgroundVideoUrl || "",
+  navLinks: hero.navLinks || [],
+  primaryCta: hero.primaryCta || { label: "", targetType: "scroll", targetValue: "" },
+  secondaryCta: hero.secondaryCta || { label: "", url: "" },
+  streamingPlatforms: hero.streamingPlatforms || [],
+  socialLinks: hero.socialLinks || [],
+  updatedAt: hero.updatedAt,
+});
+
 const getHeroImage = async (_req, res, next) => {
   try {
     const hero = await ensureHeroSetting();
-    res.json({ imageUrl: hero.backgroundImage, updatedAt: hero.updatedAt });
+    res.json(formatHero(hero));
   } catch (error) {
     next(error);
   }
@@ -86,14 +99,45 @@ const getHeroImage = async (_req, res, next) => {
 
 const saveHeroImage = async (req, res, next) => {
   try {
-    const { imageUrl } = req.body;
-    if (!imageUrl) {
-      return res.status(400).json({ message: "imageUrl is required" });
-    }
+    const { 
+      imageUrl, 
+      videoUrl, 
+      artistName, 
+      navLinks, 
+      primaryCta, 
+      secondaryCta, 
+      streamingPlatforms, 
+      socialLinks 
+    } = req.body;
     const hero = await ensureHeroSetting();
-    hero.backgroundImage = imageUrl;
+    
+    if (imageUrl !== undefined) {
+      hero.backgroundImage = imageUrl;
+    }
+    if (videoUrl !== undefined) {
+      hero.backgroundVideoUrl = videoUrl || "";
+    }
+    if (artistName !== undefined) {
+      hero.artistName = artistName;
+    }
+    if (navLinks !== undefined) {
+      hero.navLinks = navLinks;
+    }
+    if (primaryCta !== undefined) {
+      hero.primaryCta = primaryCta;
+    }
+    if (secondaryCta !== undefined) {
+      hero.secondaryCta = secondaryCta;
+    }
+    if (streamingPlatforms !== undefined) {
+      hero.streamingPlatforms = streamingPlatforms;
+    }
+    if (socialLinks !== undefined) {
+      hero.socialLinks = socialLinks;
+    }
+    
     await hero.save();
-    res.json({ imageUrl: hero.backgroundImage, updatedAt: hero.updatedAt });
+    res.json(formatHero(hero));
   } catch (error) {
     next(error);
   }

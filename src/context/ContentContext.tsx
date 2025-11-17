@@ -29,6 +29,7 @@ const mapAlbum = (album: any) => ({
   year: album.year ?? "",
   image: album.coverUrl ?? album.image ?? "/Album.jpeg",
   summary: album.summary ?? "New release coming soon.",
+  description: album.description ?? "",
   tracks: Array.isArray(album.tracks) ? album.tracks : [],
   links: Array.isArray(album.links) ? album.links : [],
 });
@@ -66,8 +67,14 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
       setContent((prev) => ({
         ...prev,
         hero: {
-          ...prev.hero,
+          artistName: heroResponse.artistName ?? prev.hero.artistName,
           backgroundImage: heroResponse.imageUrl ?? prev.hero.backgroundImage,
+          backgroundVideoUrl: heroResponse.videoUrl ?? prev.hero.backgroundVideoUrl ?? "",
+          navLinks: heroResponse.navLinks ?? prev.hero.navLinks,
+          primaryCta: heroResponse.primaryCta ?? prev.hero.primaryCta,
+          secondaryCta: heroResponse.secondaryCta ?? prev.hero.secondaryCta,
+          streamingPlatforms: heroResponse.streamingPlatforms ?? prev.hero.streamingPlatforms,
+          socialLinks: heroResponse.socialLinks ?? prev.hero.socialLinks,
         },
         albums: (albumsResponse.albums ?? []).map(mapAlbum),
         videos: (videosResponse.videos ?? []).map(mapVideo),
