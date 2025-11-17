@@ -996,13 +996,26 @@ export const VideosEditor = ({
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight text-white">Videos</h2>
-          <p className="text-sm text-white/50">Embed YouTube videos with descriptions.</p>
+          <p className="text-sm text-white/50">Embed YouTube videos with descriptions and lyrics.</p>
         </div>
-        <Button onClick={addVideo}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Video
+        <Button onClick={addVideo} size="lg" className="bg-white text-black hover:bg-white/90">
+          <Plus className="mr-2 h-5 w-5" />
+          Add New Video
         </Button>
       </div>
+      
+      {videos.length === 0 && (
+        <Card className="border-white/10 bg-black/40 text-white">
+          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+            <p className="text-lg font-medium text-white mb-2">No videos yet</p>
+            <p className="text-sm text-white/60 mb-6">Get started by adding your first video</p>
+            <Button onClick={addVideo} variant="outline" className="border-white/20 text-white hover:bg-white/10">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Your First Video
+            </Button>
+          </CardContent>
+        </Card>
+      )}
       <div className="space-y-4">
         {videos.map((video) => {
           const thumbnailUrl = getYouTubeThumbnailUrl(video.videoId);
