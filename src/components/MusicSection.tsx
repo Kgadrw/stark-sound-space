@@ -125,16 +125,16 @@ const MusicSection = () => {
                             <Button
                               asChild
                               variant="outline"
-                              className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-black/60 hover:border-white/40 transition group"
+                              className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-red-600/20 hover:border-red-500 hover:text-red-400 transition group"
                             >
                               <a
                                 href={link.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-2 group-hover:text-red-400 transition"
                               >
-                                <span className="elms-sans">{link.label || "Stream Now"}</span>
-                                <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-white transition" />
+                                <span className="elms-sans group-hover:text-red-400 transition">{link.label || "Stream Now"}</span>
+                                <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-red-400 transition" />
                               </a>
                             </Button>
                           </motion.div>
