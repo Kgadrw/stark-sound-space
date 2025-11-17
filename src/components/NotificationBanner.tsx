@@ -43,10 +43,7 @@ const NotificationBanner = ({
         damping: 30,
         duration: 0.6
       }}
-      className="fixed top-16 left-0 z-[30] py-3 pl-4 sm:pl-6 overflow-hidden bg-black/40 backdrop-blur-sm"
-      style={{ 
-        right: '96px', // Stops before search button area (right-4/right-6 + w-10 + gap + buffer)
-      }}
+      className="fixed top-16 left-0 right-0 z-[30] py-3 pl-4 sm:pl-6 pr-16 sm:pr-20 overflow-hidden bg-black/40 backdrop-blur-sm"
     >
       <div className="relative w-full h-full flex items-center">
         {link ? (
