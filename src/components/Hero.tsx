@@ -96,6 +96,7 @@ const Hero = () => {
   const [isLoadingYouTube, setIsLoadingYouTube] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const videoIframeRef = useRef<HTMLIFrameElement>(null);
   const { content } = useContent();
   const navigate = useNavigate();
 
@@ -239,8 +240,8 @@ const Hero = () => {
       // Fallback to YouTube search page
       const youtubeSearchQuery = `nel ngabo ${trimmedQuery}`;
       window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeSearchQuery)}`, "_blank", "noopener,noreferrer");
-      setSearchQuery("");
-      setIsSearchOpen(false);
+    setSearchQuery("");
+    setIsSearchOpen(false);
     }
   };
 
@@ -251,6 +252,24 @@ const Hero = () => {
       searchInputRef.current?.blur();
     }
   }, [isSearchOpen]);
+
+  // Attempt to ensure video autoplay on mobile after iframe loads
+  const handleVideoIframeLoad = () => {
+    if (videoIframeRef.current?.contentWindow && heroVideoUrl) {
+      // Small delay to ensure iframe API is ready
+      setTimeout(() => {
+        try {
+          // Try to trigger play via YouTube iframe API
+          videoIframeRef.current?.contentWindow?.postMessage(
+            JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
+            '*'
+          );
+        } catch (e) {
+          // Silent fail - autoplay params in URL should handle it
+        }
+      }, 1000);
+    }
+  };
 
   const glowStyle = `
     @keyframes glow {
@@ -409,12 +428,12 @@ const Hero = () => {
                   <p>Searching YouTube...</p>
                 </motion.div>
               ) : (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute z-30 top-full mt-2 w-full border border-white/10 bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
-                >
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute z-30 top-full mt-2 w-full border border-white/10 bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
+                    >
                   <p>No matching content found.</p>
                   <button
                     type="button"
@@ -432,7 +451,7 @@ const Hero = () => {
                   >
                     Search YouTube for Nel Ngabo music
                   </button>
-                </motion.div>
+                    </motion.div>
               )
             )}
               </AnimatePresence>
@@ -449,66 +468,70 @@ const Hero = () => {
         {/* YouTube background video */}
         {heroVideoUrl && getYouTubeEmbedUrl(heroVideoUrl) && (
           <iframe
+            ref={videoIframeRef}
             className="absolute top-1/2 left-1/2 w-[177.77777778vh] h-[56.25vw] min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 object-cover z-0"
             src={getYouTubeEmbedUrl(heroVideoUrl) || ""}
-            allow="autoplay; encrypted-media"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowFullScreen
+            playsInline
+            loading="eager"
+            onLoad={handleVideoIframeLoad}
             style={{ pointerEvents: "none" }}
             title="Background Video"
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10 pointer-events-none" />
       </div>
-      <div className="relative z-20 h-full flex flex-col justify-end pb-24 sm:pb-16 md:pb-12 lg:pb-16 px-4 sm:px-6 gap-4 sm:gap-5 md:gap-6">
+      <div className="relative z-20 h-full flex flex-col justify-end pb-28 sm:pb-20 md:pb-12 lg:pb-16 px-4 sm:px-6 gap-4 sm:gap-5 md:gap-6">
         <div className="flex flex-col lg:flex-row items-center lg:items-end justify-center lg:justify-between gap-4 sm:gap-5 md:gap-6 lg:gap-8 w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
             className="space-y-3 sm:space-y-4 md:space-y-5 max-w-2xl text-center lg:text-left w-full lg:w-auto"
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
               className="flex flex-col sm:flex-row gap-3 sm:gap-3 md:gap-4 items-center justify-center lg:items-start lg:justify-start"
-            >
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  type="button"
-                  size="lg"
+          >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                type="button"
+                size="lg"
                   className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto"
-                  onClick={() => handleHeroCta(primaryCta)}
-                >
-                  <span className="relative z-10">{primaryCta.label}</span>
-                  <div className="absolute inset-0 bg-foreground/10 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
-                </Button>
-              </motion.div>
+                onClick={() => handleHeroCta(primaryCta)}
+              >
+                <span className="relative z-10">{primaryCta.label}</span>
+                <div className="absolute inset-0 bg-foreground/10 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+            </Button>
+            </motion.div>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button asChild size="lg" variant="outline" className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto">
-                <a
-                    href={secondaryCta.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative flex items-center justify-center"
-                >
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 opacity-0 group-hover:opacity-20 group-hover:scale-110 transition-all duration-300 transform origin-center" />
+              <a
+                  href={secondaryCta.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative flex items-center justify-center"
+              >
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 opacity-0 group-hover:opacity-20 group-hover:scale-110 transition-all duration-300 transform origin-center" />
                   <Play className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1.5 sm:mr-2 fill-pink-500 text-pink-500 play-icon-glow" />
-                  <span className="relative z-10 group-hover:tracking-wider transition-all duration-300">
-                      {secondaryCta.label}
-                  </span>
-                </a>
-              </Button>
-              </motion.div>
+                <span className="relative z-10 group-hover:tracking-wider transition-all duration-300">
+                    {secondaryCta.label}
+                </span>
+              </a>
+            </Button>
             </motion.div>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
             className="hidden lg:flex flex-col items-end gap-2 md:gap-3 flex-shrink-0"
-          >
+        >
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
