@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const adminRouter = require("./routes/admin");
 const authRouter = require("./routes/auth");
+const youtubeRouter = require("./routes/youtube");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
@@ -44,6 +45,7 @@ app.use("/admin", express.static(path.join(__dirname, "..", "public", "admin")))
 
 app.use("/api/admin", adminRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/youtube", youtubeRouter);
 app.use("/api/docs", swaggerUi.serve, swaggerSetup);
 
 app.get("/", (_req, res) => {

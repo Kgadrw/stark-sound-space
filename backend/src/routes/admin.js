@@ -14,6 +14,8 @@ const {
   createTourHandler,
   updateTourHandler,
   deleteTourHandler,
+  getAbout,
+  updateAbout,
   getCloudinarySignature,
 } = require("../controllers/adminController");
 
@@ -36,6 +38,9 @@ router.get("/tours", listTours);
 router.post("/tours", createTourHandler);
 router.put("/tours/:id", updateTourHandler);
 router.delete("/tours/:id", deleteTourHandler);
+
+router.get("/about", getAbout);
+router.put("/about", updateAbout);
 
 router.get("/uploads/signature", getCloudinarySignature);
 

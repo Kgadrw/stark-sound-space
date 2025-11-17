@@ -75,6 +75,7 @@ export const adminApi = {
     year?: string;
     coverUrl: string;
     summary?: string;
+    description?: string;
     tracks?: string[];
     links?: any[];
   }) =>
@@ -87,6 +88,7 @@ export const adminApi = {
     year?: string;
     coverUrl: string;
     summary?: string;
+    description?: string;
     tracks?: string[];
     links?: any[];
   }) =>
@@ -128,6 +130,31 @@ export const adminApi = {
     request(`/admin/tours/${id}`, {
       method: "DELETE",
     }),
+  getAbout: () => request<{ about: any }>("/admin/about"),
+  updateAbout: (payload: {
+    biography?: string;
+    careerHighlights?: Array<{ title: string; description: string }>;
+    achievements?: Array<{ year: string; title: string; organization: string }>;
+    awards?: Array<{ title: string; description: string }>;
+    musicLabel?: string;
+    location?: string;
+    email?: string;
+    phone?: string;
+    artistImage?: string;
+  }) =>
+    request("/admin/about", {
+      method: "PUT",
+      json: payload,
+    }),
+  searchYouTube: (query: string) =>
+    request<{ videos: Array<{
+      id: string;
+      title: string;
+      description: string;
+      thumbnail: string;
+      channelTitle: string;
+      publishedAt: string;
+    }> }>(`/youtube/search?q=${encodeURIComponent(query)}`),
 };
 
 

@@ -40,6 +40,7 @@ const mapVideo = (video: any) => ({
   views: video.views ?? "0",
   videoId: video.videoId ?? "",
   description: video.description ?? "",
+  createdAt: video.createdAt ?? video.updatedAt ?? new Date().toISOString(),
 });
 
 const mapTour = (tour: any) => ({
@@ -55,14 +56,28 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const mapAbout = (about: any) => ({
+    id: about.id ?? about._id ?? createFallbackId(),
+    biography: about.biography ?? "",
+    careerHighlights: Array.isArray(about.careerHighlights) ? about.careerHighlights : [],
+    achievements: Array.isArray(about.achievements) ? about.achievements : [],
+    awards: Array.isArray(about.awards) ? about.awards : [],
+    musicLabel: about.musicLabel ?? "",
+    location: about.location ?? "",
+    email: about.email ?? "",
+    phone: about.phone ?? "",
+    artistImage: about.artistImage ?? "",
+  });
+
   const refreshContent = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [heroResponse, albumsResponse, videosResponse, toursResponse] = await Promise.all([
+      const [heroResponse, albumsResponse, videosResponse, toursResponse, aboutResponse] = await Promise.all([
         adminApi.getHero(),
         adminApi.getAlbums(),
         adminApi.getVideos(),
         adminApi.getTours(),
+        adminApi.getAbout(),
       ]);
       setContent((prev) => ({
         ...prev,
@@ -79,6 +94,7 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
         albums: (albumsResponse.albums ?? []).map(mapAlbum),
         videos: (videosResponse.videos ?? []).map(mapVideo),
         tours: (toursResponse.tours ?? []).map(mapTour),
+        about: aboutResponse.about ? mapAbout(aboutResponse.about) : prev.about,
       }));
       setError(null);
     } catch (fetchError) {

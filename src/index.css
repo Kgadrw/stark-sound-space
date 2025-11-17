@@ -96,10 +96,18 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Orbitron", "Arial", sans-serif;
+    font-family: "Elms Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
   }
 
   .font-default {
     font-family: "Mountains of Christmas", "Oi", cursive;
+  }
+
+  .elms-sans {
+    font-family: "Elms Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
   }
 }

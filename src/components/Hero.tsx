@@ -7,6 +7,8 @@ import { Play, Music3, Music4, Disc3, Youtube, Radio, Search, Phone, Mail, Insta
 import { useContent } from "@/context/ContentContext";
 import type { HeroCta, HeroNavLink, IconPreset } from "@/types/content";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
+import { adminApi } from "@/lib/api";
+import YouTubePlayer from "@/components/YouTubePlayer";
 
 type PlatformSearchItem = {
   id: string;
@@ -29,12 +31,12 @@ const BASE_SEARCH_ITEMS: PlatformSearchItem[] = [
     keywords: ["music", "albums", "tracks", "discography"],
   },
   {
-    id: "section-videos",
-    label: "Video Library",
+    id: "section-about",
+    label: "About",
     category: "Section",
-    targetId: "videos",
-    description: "Watch latest releases, live sessions, and behind the scenes.",
-    keywords: ["videos", "youtube", "live", "behind the scenes"],
+    targetId: "about",
+    description: "Learn more about the artist and their journey.",
+    keywords: ["about", "artist", "biography", "info"],
   },
   {
     id: "section-tours",
@@ -77,10 +79,22 @@ const detectIconFromUrl = (url: string): IconPreset => {
   return "website";
 };
 
+type YouTubeVideo = {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  channelTitle: string;
+  publishedAt: string;
+};
+
 const Hero = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [dynamicSearchItems, setDynamicSearchItems] = useState<PlatformSearchItem[]>([]);
+  const [youtubeVideos, setYoutubeVideos] = useState<YouTubeVideo[]>([]);
+  const [isLoadingYouTube, setIsLoadingYouTube] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { content } = useContent();
   const navigate = useNavigate();
@@ -88,7 +102,6 @@ const Hero = () => {
   const heroContent = content.hero;
   const heroNavLinks = heroContent.navLinks ?? [];
   const streamingPlatforms = heroContent.streamingPlatforms ?? [];
-  const socialLinks = heroContent.socialLinks ?? [];
   const heroImage = heroContent.backgroundImage || "/hero.jpeg";
   const heroVideoUrl = heroContent.backgroundVideoUrl || "";
   const heroName = heroContent.artistName || "NEL NGABO";
@@ -104,8 +117,9 @@ const Hero = () => {
     url: "https://www.youtube.com/",
   };
 
-  const hiddenStreamingPresets: IconPreset[] = ["tiktok", "instagram", "x", "facebook", "mail", "phone"];
-  const visibleStreamingPlatforms = streamingPlatforms.filter((platform) => !hiddenStreamingPresets.includes(platform.preset));
+  // Only show these streaming platforms: Spotify, Apple Music, YouTube, SoundCloud
+  const allowedStreamingPresets: IconPreset[] = ["spotify", "appleMusic", "youtube", "soundcloud"];
+  const visibleStreamingPlatforms = streamingPlatforms.filter((platform) => allowedStreamingPresets.includes(platform.preset));
 
   const handleTargetAction = (targetType: HeroNavLink["targetType"] | HeroCta["targetType"], targetValue: string) => {
     if (!targetValue) return;
@@ -164,6 +178,35 @@ const Hero = () => {
     return searchIndex.filter((item) => item.searchText.includes(query)).slice(0, 8);
   }, [searchQuery, searchIndex]);
 
+  // Fetch YouTube results when query changes
+  useEffect(() => {
+    const trimmedQuery = searchQuery.trim();
+    if (!trimmedQuery || filteredSuggestions.length > 0) {
+      setYoutubeVideos([]);
+      return;
+    }
+
+    const searchYouTube = async () => {
+      setIsLoadingYouTube(true);
+      try {
+        const response = await adminApi.searchYouTube(trimmedQuery);
+        setYoutubeVideos(response.videos || []);
+      } catch (error) {
+        console.error("YouTube search error:", error);
+        setYoutubeVideos([]);
+      } finally {
+        setIsLoadingYouTube(false);
+      }
+    };
+
+    // Debounce YouTube search
+    const timeoutId = setTimeout(() => {
+      searchYouTube();
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, filteredSuggestions.length]);
+
   const handleNavigate = (item: typeof searchIndex[number]) => {
     if (item.externalUrl) {
       window.open(item.externalUrl, "_blank", "noopener,noreferrer");
@@ -185,11 +228,20 @@ const Hero = () => {
     const topMatch = filteredSuggestions[0];
     if (topMatch) {
       handleNavigate(topMatch);
+      setSearchQuery("");
+      setIsSearchOpen(false);
+    } else if (youtubeVideos.length > 0) {
+      // Play first YouTube result
+      setSelectedVideo({ id: youtubeVideos[0].id, title: youtubeVideos[0].title });
+      setSearchQuery("");
+      setIsSearchOpen(false);
     } else {
-      window.open(`https://www.google.com/search?q=${encodeURIComponent(trimmedQuery)}`, "_blank", "noopener,noreferrer");
+      // Fallback to YouTube search page
+      const youtubeSearchQuery = `nel ngabo ${trimmedQuery}`;
+      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeSearchQuery)}`, "_blank", "noopener,noreferrer");
+      setSearchQuery("");
+      setIsSearchOpen(false);
     }
-    setSearchQuery("");
-    setIsSearchOpen(false);
   };
 
   useEffect(() => {
@@ -303,21 +355,74 @@ const Hero = () => {
                       </motion.li>
                 ))}
                   </motion.ul>
-            ) : (
-              searchQuery.trim() && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute z-30 top-full mt-2 w-full border border-white/10 bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
+            ) : searchQuery.trim() && (
+              youtubeVideos.length > 0 ? (
+                <motion.ul
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute z-30 top-full mt-2 w-full max-h-96 overflow-y-auto divide-y divide-white/10 border border-white/10 bg-black/95 text-white shadow-2xl"
+                >
+                  <li className="px-4 py-2 text-[0.55rem] uppercase tracking-[0.35em] text-white/50 border-b border-white/10">
+                    YouTube Results
+                  </li>
+                  {youtubeVideos.map((video, index) => (
+                    <motion.li
+                      key={video.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
                     >
-                  <p>No matching content on the platform.</p>
+                      <button
+                        type="button"
+                        className="search-suggestion relative z-30 block w-full px-4 py-3 text-left transition hover:bg-white/10"
+                        onClick={() => {
+                          setSelectedVideo({ id: video.id, title: video.title });
+                          setSearchQuery("");
+                          setIsSearchOpen(false);
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={video.thumbnail}
+                            alt={video.title}
+                            className="w-16 h-12 object-cover rounded flex-shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold tracking-wide text-white truncate">{video.title}</p>
+                            <p className="text-[0.65rem] text-white/60 truncate">{video.channelTitle}</p>
+                          </div>
+                          <Youtube className="h-4 w-4 text-white/40 flex-shrink-0" />
+                        </div>
+                      </button>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              ) : isLoadingYouTube ? (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute z-30 top-full mt-2 w-full border border-white/10 bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
+                >
+                  <p>Searching YouTube...</p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute z-30 top-full mt-2 w-full border border-white/10 bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
+                >
+                  <p>No matching content found.</p>
                   <button
                     type="button"
                     className="mt-2 underline"
                     onClick={() => {
+                      const youtubeSearchQuery = `nel ngabo ${searchQuery}`;
                       window.open(
-                        `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`,
+                        `https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeSearchQuery)}`,
                         "_blank",
                         "noopener,noreferrer"
                       );
@@ -325,9 +430,9 @@ const Hero = () => {
                       setSearchQuery("");
                     }}
                   >
-                    Search on Google
+                    Search YouTube for Nel Ngabo music
                   </button>
-                    </motion.div>
+                </motion.div>
               )
             )}
               </AnimatePresence>
@@ -354,18 +459,18 @@ const Hero = () => {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10 pointer-events-none" />
       </div>
-      <div className="relative z-20 h-full flex items-end justify-between pb-20 px-4 sm:px-8 lg:px-12 gap-8">
+      <div className="relative z-20 h-full flex items-end justify-between pb-20 px-6 gap-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="space-y-6 max-w-2xl text-center sm:text-left mx-auto sm:mx-0"
+          className="space-y-6 max-w-2xl text-left"
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className="flex flex-col sm:flex-row gap-4 pt-4 items-center"
+            className="flex flex-col sm:flex-row gap-4 pt-4 items-start sm:items-center"
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
@@ -440,35 +545,16 @@ const Hero = () => {
               })}
             </motion.div>
           )}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isSearchOpen ? 0 : 1 }}
-            transition={{ duration: 0.3 }}
-            className={`grid grid-cols-3 gap-3 ${isSearchOpen ? "pointer-events-none" : ""}`}
-          >
-            {streamingPlatforms.map((platform, index) => {
-              const Icon = resolveIcon(platform.preset);
-              return (
-                <motion.a
-                  key={platform.id}
-                  href={platform.url}
-              target="_blank"
-              rel="noopener noreferrer"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.1 + index * 0.1 }}
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
-                className="flex h-10 w-10 items-center justify-center border border-white/30 bg-transparent text-white shadow-lg transition hover:border-white hover:text-foreground"
-                  aria-label={platform.label}
-              >
-                <Icon className="h-4 w-4" />
-                </motion.a>
-              );
-            })}
-          </motion.div>
         </motion.div>
       </div>
+      {selectedVideo && (
+        <YouTubePlayer
+          videoId={selectedVideo.id}
+          title={selectedVideo.title}
+          isOpen={!!selectedVideo}
+          onClose={() => setSelectedVideo(null)}
+        />
+      )}
     </section>
     </>
   );

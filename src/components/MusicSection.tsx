@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Play, Music2, Music4, LayoutGrid, List } from "lucide-react";
+import { motion } from "framer-motion";
+import { Music2, Music4, Disc3, Youtube, Radio, type LucideIcon } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
+import type { IconPreset } from "@/types/content";
 
 const fallbackListeningDestinations = [
   { label: "Spotify", url: "https://open.spotify.com/artist/nelngabo", description: "Stream in high quality" },
@@ -10,6 +11,34 @@ const fallbackListeningDestinations = [
   { label: "YouTube", url: "https://www.youtube.com/@nelngabo9740", description: "Watch the full visual album" },
   { label: "SoundCloud", url: "https://soundcloud.com/", description: "Discover fan remixes" },
 ];
+
+const iconMap: Record<IconPreset, LucideIcon> = {
+  spotify: Music4,
+  appleMusic: Disc3,
+  youtube: Youtube,
+  soundcloud: Radio,
+  tiktok: Music2,
+  instagram: Music2,
+  x: Music2,
+  facebook: Music2,
+  mail: Music2,
+  phone: Music2,
+  website: Music2,
+};
+
+const detectIconFromUrl = (url: string): IconPreset => {
+  const lowerUrl = url.toLowerCase();
+  if (lowerUrl.includes("spotify")) return "spotify";
+  if (lowerUrl.includes("apple") || lowerUrl.includes("music.apple")) return "appleMusic";
+  if (lowerUrl.includes("youtube")) return "youtube";
+  if (lowerUrl.includes("soundcloud")) return "soundcloud";
+  return "website";
+};
+
+const resolveIcon = (url: string) => {
+  const preset = detectIconFromUrl(url);
+  return iconMap[preset] ?? Music4;
+};
 
 const MusicSection = () => {
   const orbitronStyle = `
@@ -23,34 +52,20 @@ const MusicSection = () => {
 
   const { content } = useContent();
   const albums = content.albums;
-  const [selectedAlbumId, setSelectedAlbumId] = useState(albums[0]?.id);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
-  useEffect(() => {
-    if (!albums.length) {
-      setSelectedAlbumId(undefined);
-      return;
-    }
-    if (!selectedAlbumId || !albums.some((album) => album.id === selectedAlbumId)) {
-      setSelectedAlbumId(albums[0]?.id);
-    }
-  }, [albums, selectedAlbumId]);
-
-  const selectedAlbum = albums.find((album) => album.id === selectedAlbumId) ?? albums[0];
-
-  const handleSelectAlbum = (albumId: string) => {
-    setSelectedAlbumId(albumId);
-    document.getElementById(`album-card-${albumId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
-
-  if (!albums.length || !selectedAlbum) {
+  if (!albums.length) {
     return (
-      <section id="music" className="py-24 bg-background relative overflow-hidden p-4">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12 text-center space-y-6">
-          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter animate-fade-in">ALBUMS</h2>
-          <p className="text-gray-400 text-lg">
+      <section id="music" className="min-h-screen bg-black relative overflow-hidden py-24 px-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-white/60 text-lg uppercase tracking-[0.2em]"
+          >
             No albums published yet. Visit the admin dashboard to add albums, artwork, and tracklists for your fans.
-          </p>
+          </motion.p>
         </div>
       </section>
     );
@@ -59,162 +74,128 @@ const MusicSection = () => {
   return (
     <>
       <style>{orbitronStyle}</style>
-      <section id="music" className="py-24 bg-background relative overflow-hidden p-4">
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
-          <div className="mb-16 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter animate-fade-in">ALBUMS</h2>
-            <div className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-white/60">
-              <span>View</span>
-              <div className="flex rounded-full border border-white/10 bg-white/5">
-                <button
-                  type="button"
-                  onClick={() => setViewMode("grid")}
-                  className={`flex items-center gap-1 px-4 py-2 transition ${
-                    viewMode === "grid" ? "bg-white text-black" : "text-white/70"
+      <section id="music" className="min-h-screen bg-black relative overflow-hidden py-24 px-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+        
+        <div className="relative z-10 max-w-7xl mx-auto space-y-24">
+          {albums.map((album, index) => {
+            const isEven = index % 2 === 1; // Second album (index 1), fourth (index 3), etc.
+            
+            return (
+              <motion.div
+                key={album.id}
+                id={`album-card-${album.id}`}
+                data-search-item="music"
+                data-search-label={`Album · ${album.title}`}
+                data-search-category="Album"
+                data-search-description={`${album.year} · ${(album.tracks ?? []).length} tracks`}
+                data-search-keywords={[album.title, album.year, ...(album.tracks ?? [])].join("|")}
+                data-search-target="music"
+                data-search-target-element={`album-card-${album.id}`}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className={`grid lg:grid-cols-2 gap-8 lg:gap-12 items-center ${
+                  isEven ? "lg:grid-flow-dense" : ""
+                }`}
+              >
+                {/* Album Image */}
+                <motion.div
+                  className={`relative overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl aspect-square group ${
+                    isEven ? "lg:col-start-2" : ""
                   }`}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <LayoutGrid className="h-4 w-4" />
-                  Grid
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("list")}
-                  className={`flex items-center gap-1 px-4 py-2 transition ${
-                    viewMode === "list" ? "bg-white text-black" : "text-white/70"
-                  }`}
+                  <img
+                    src={album.image}
+                    alt={album.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground to-transparent opacity-0 group-hover:opacity-10 transform translate-x-full group-hover:translate-x-[-100%] transition-all duration-1000" />
+                </motion.div>
+
+                {/* Album Info */}
+                <motion.div
+                  className={`space-y-6 ${isEven ? "lg:col-start-1 lg:row-start-1" : ""}`}
+                  initial={{ opacity: 0, x: isEven ? -20 : 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
                 >
-                  <List className="h-4 w-4" />
-                  List
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="grid gap-12 lg:grid-cols-[1.7fr,1fr]">
-            <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 gap-8" : "space-y-6"}>
-              {albums.map((album, index) => {
-                const isSelected = selectedAlbum?.id === album.id;
-                return (
-                  <div
-                    key={album.id}
-                    id={`album-card-${album.id}`}
-                    data-search-item="music"
-                    data-search-label={`Album · ${album.title}`}
-                    data-search-category="Album"
-                    data-search-description={`${album.year} · ${(album.tracks ?? []).length} tracks`}
-                    data-search-keywords={[album.title, album.year, ...(album.tracks ?? [])].join("|")}
-                    data-search-target="music"
-                    data-search-target-element={`album-card-${album.id}`}
-                    tabIndex={0}
-                    role="button"
-                    aria-pressed={isSelected}
-                    onClick={() => handleSelectAlbum(album.id)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        handleSelectAlbum(album.id);
-                      }
-                    }}
-                    className={`group relative overflow-hidden border transition-all duration-500 focus:outline-none ${
-                      isSelected
-                        ? "border-foreground bg-card/80 shadow-[0_0_30px_rgba(236,72,153,0.2)]"
-                        : "border-border bg-card hover:border-foreground"
-                    } ${viewMode === "list" ? "md:flex md:items-stretch" : ""}`}
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    {/* IMAGE LAYER */}
-                    <div
-                      className={`overflow-hidden relative z-0 ${
-                        viewMode === "list" ? "md:w-48 aspect-square" : "aspect-square"
-                      }`}
-                    >
-                      <img
-                        src={album.image}
-                        alt={album.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground to-transparent opacity-0 group-hover:opacity-10 transform translate-x-full group-hover:translate-x-[-100%] transition-all duration-1000" />
+                  {/* Album Title */}
+                  <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-[0.1em] orbitron">
+                    {album.title}
+                  </h2>
+
+                  {/* Year */}
+                  {album.year && (
+                    <p className="text-xs tracking-[0.4em] text-white/50 uppercase">{album.year}</p>
+                  )}
+
+                  {/* Description */}
+                  {album.description && (
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-3">About This Album</p>
+                      <p className="text-base text-white/70 leading-relaxed whitespace-pre-line elms-sans">{album.description}</p>
                     </div>
+                  )}
 
-                    {/* PLAY OVERLAY */}
-                    <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none group-hover:pointer-events-auto">
-                      <button className="w-16 h-16 rounded-full bg-foreground text-background flex items-center justify-center hover:scale-110 transition-transform duration-300">
-                        <Play className="w-8 h-8 ml-1" fill="currentColor" />
-                      </button>
+                  {/* Summary */}
+                  {album.summary && !album.description && (
+                    <p className="text-base text-white/70 leading-relaxed elms-sans">{album.summary}</p>
+                  )}
+
+                  {/* Tracklist */}
+                  {album.tracks && album.tracks.length > 0 && (
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-3">Tracklist</p>
+                      <ul className="space-y-3">
+                        {album.tracks.map((track, trackIndex) => (
+                          <motion.li
+                            key={`${track}-${trackIndex}`}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: trackIndex * 0.05 }}
+                            className="flex items-center justify-between rounded-xl border border-white/10 bg-black/40 backdrop-blur-sm px-3 py-2 hover:border-white/20 transition"
+                          >
+                            <span className="flex items-center gap-3 text-sm text-white/90">
+                              <span className="text-xs text-white/50 w-6">{String(trackIndex + 1).padStart(2, "0")}</span>
+                              {track}
+                            </span>
+                            <Music2 className="h-4 w-4 text-pink-400" />
+                          </motion.li>
+                        ))}
+                      </ul>
                     </div>
+                  )}
 
-                    {/* INFO */}
-                    <div
-                      className={`relative z-20 border-t border-border bg-background p-6 ${
-                        viewMode === "list" ? "flex-1" : ""
-                      }`}
-                    >
-                      <p className="text-xs tracking-[0.4em] text-gray-medium orbitron">{album.year}</p>
-                      <h3 className="text-2xl font-bold mt-2 mb-3 orbitron">{album.title}</h3>
-                      <p className="text-sm text-gray-400 leading-relaxed">{album.summary}</p>
-                    </div>
+                  {/* Platform Icons */}
+                  <div className="flex items-center gap-4">
+                    {(album.links && album.links.length > 0 ? album.links : fallbackListeningDestinations).map((link, linkIndex) => {
+                      const Icon = resolveIcon(link.url);
+                      return (
+                        <motion.a
+                          key={link.id || link.label}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: linkIndex * 0.05 }}
+                          whileHover={{ scale: 1.2, rotate: 5 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="flex h-12 w-12 items-center justify-center border border-white/20 bg-black/40 backdrop-blur-sm text-white transition hover:border-white/40 hover:bg-black/60 rounded-lg"
+                          aria-label={link.label}
+                        >
+                          <Icon className="h-6 w-6" />
+                        </motion.a>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
-
-            <aside className="rounded-3xl border border-border/60 bg-card/60 p-6 lg:p-8 backdrop-blur-xl self-start lg:sticky lg:top-24">
-              <div className="space-y-6">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.4em] text-gray-400">Now Viewing</p>
-                  <h3 className="mt-3 text-3xl font-bold tracking-tight">{selectedAlbum.title}</h3>
-                  <p className="text-gray-400">{selectedAlbum.year}</p>
-                </div>
-
-                {selectedAlbum.description && (
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.4em] text-gray-400 mb-3">About This Album</p>
-                    <p className="text-sm text-white/80 leading-relaxed whitespace-pre-line">{selectedAlbum.description}</p>
-                  </div>
-                )}
-
-                <div>
-                  <p className="text-xs uppercase tracking-[0.4em] text-gray-400">Tracklist</p>
-                  <ul className="mt-4 space-y-3">
-                    {(selectedAlbum.tracks?.length ? selectedAlbum.tracks : ["No tracks yet"]).map((track, index) => (
-                      <li
-                        key={`${track}-${index}`}
-                        className="flex items-center justify-between rounded-xl border border-white/5 bg-black/20 px-3 py-2"
-                      >
-                        <span className="flex items-center gap-3 text-sm text-white/90">
-                          <span className="text-xs text-gray-500 w-6">{String(index + 1).padStart(2, "0")}</span>
-                          {track}
-                        </span>
-                        <Music2 className="h-4 w-4 text-pink-400" />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div>
-                  <p className="text-xs uppercase tracking-[0.4em] text-gray-400">Where to listen</p>
-                  <div className="mt-4 space-y-3">
-                    {(selectedAlbum.links?.length ? selectedAlbum.links : fallbackListeningDestinations).map((link) => (
-                      <a
-                        key={link.label}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80 transition hover:border-white/40 hover:bg-white/10"
-                      >
-                        <span className="flex items-center gap-2">
-                          <span className="text-white">{link.label}</span>
-                          <span className="text-white/40">•</span>
-                          <span className="text-white/60 text-xs">{link.description}</span>
-                        </span>
-                        <Music4 className="h-4 w-4 text-white/50 transition group-hover:text-white" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </aside>
-          </div>
+                </motion.div>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
     </>

@@ -3,7 +3,7 @@ import StaggeredMenu from "./StaggeredMenu";
 const menuItems = [
   { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
   { label: 'Music', ariaLabel: 'View music page', link: '/music' },
-  { label: 'Videos', ariaLabel: 'Watch videos page', link: '/videos' },
+  { label: 'About', ariaLabel: 'Learn about the artist', link: '/about' },
   { label: 'Tours', ariaLabel: 'See tour dates', link: '/tours' }
 ];
 

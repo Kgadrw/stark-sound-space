@@ -823,5 +823,396 @@ export const ToursEditor = ({
   );
 };
 
+export const AboutEditor = ({
+  content,
+  setContent,
+  refreshContent,
+}: {
+  content: ContentState;
+  setContent: ContentSetter;
+  refreshContent: () => Promise<void>;
+}) => {
+  const { about } = content;
+  const [saving, setSaving] = useState(false);
+
+  const updateAbout = (patch: Partial<ContentState["about"]>) => {
+    setContent((prev) => ({
+      ...prev,
+      about: { ...prev.about, ...patch },
+    }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await adminApi.updateAbout({
+        biography: about.biography,
+        careerHighlights: about.careerHighlights,
+        achievements: about.achievements,
+        awards: about.awards,
+        musicLabel: about.musicLabel,
+        location: about.location,
+        email: about.email,
+        phone: about.phone,
+        artistImage: about.artistImage,
+      });
+      await refreshContent();
+    } catch (error) {
+      console.error("Failed to save about", error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const addCareerHighlight = () => {
+    updateAbout({
+      careerHighlights: [...about.careerHighlights, { title: "", description: "" }],
+    });
+  };
+
+  const updateCareerHighlight = (index: number, patch: Partial<ContentState["about"]["careerHighlights"][number]>) => {
+    updateAbout({
+      careerHighlights: about.careerHighlights.map((item, i) => (i === index ? { ...item, ...patch } : item)),
+    });
+  };
+
+  const removeCareerHighlight = (index: number) => {
+    updateAbout({
+      careerHighlights: about.careerHighlights.filter((_, i) => i !== index),
+    });
+  };
+
+  const addAchievement = () => {
+    updateAbout({
+      achievements: [...about.achievements, { year: "", title: "", organization: "" }],
+    });
+  };
+
+  const updateAchievement = (index: number, patch: Partial<ContentState["about"]["achievements"][number]>) => {
+    updateAbout({
+      achievements: about.achievements.map((item, i) => (i === index ? { ...item, ...patch } : item)),
+    });
+  };
+
+  const removeAchievement = (index: number) => {
+    updateAbout({
+      achievements: about.achievements.filter((_, i) => i !== index),
+    });
+  };
+
+  const addAward = () => {
+    updateAbout({
+      awards: [...about.awards, { title: "", description: "" }],
+    });
+  };
+
+  const updateAward = (index: number, patch: Partial<ContentState["about"]["awards"][number]>) => {
+    updateAbout({
+      awards: about.awards.map((item, i) => (i === index ? { ...item, ...patch } : item)),
+    });
+  };
+
+  const removeAward = (index: number) => {
+    updateAbout({
+      awards: about.awards.filter((_, i) => i !== index),
+    });
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-white/50 mb-1">About Page Content</p>
+          <h2 className="text-2xl font-semibold text-white">Customize About Page</h2>
+        </div>
+        <Button onClick={handleSave} disabled={saving} className="bg-white text-black hover:bg-white/90">
+          {saving ? "Saving..." : "Save Changes"}
+        </Button>
+      </div>
+
+      <Card className="bg-black/40 border-white/20">
+        <CardHeader>
+          <CardTitle className="text-white">Biography</CardTitle>
+          <CardDescription className="text-white/60">Main biography text displayed on the About page</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Textarea
+            value={about.biography}
+            rows={8}
+            onChange={(e) => updateAbout({ biography: e.target.value })}
+            className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+            placeholder="Enter the artist's biography..."
+          />
+        </CardContent>
+      </Card>
+
+      <Card className="bg-black/40 border-white/20">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-white">Career Highlights</CardTitle>
+              <CardDescription className="text-white/60">Key moments and achievements in the career</CardDescription>
+            </div>
+            <Button onClick={addCareerHighlight} variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Highlight
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {about.careerHighlights.map((highlight, index) => (
+            <Card key={index} className="bg-black/60 border-white/10">
+              <CardContent className="pt-6 space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm text-white/50">Highlight {index + 1}</span>
+                  <Button
+                    onClick={() => removeCareerHighlight(index)}
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">Title</label>
+                  <Input
+                    value={highlight.title}
+                    onChange={(e) => updateCareerHighlight(index, { title: e.target.value })}
+                    className="bg-black/40 text-white border-white/20"
+                    placeholder="e.g., Musical Journey"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">Description</label>
+                  <Textarea
+                    value={highlight.description}
+                    rows={3}
+                    onChange={(e) => updateCareerHighlight(index, { description: e.target.value })}
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+                    placeholder="Describe this career highlight..."
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+          {about.careerHighlights.length === 0 && (
+            <p className="text-sm text-white/50 text-center py-4">No career highlights added yet.</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="bg-black/40 border-white/20">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-white">Achievements</CardTitle>
+              <CardDescription className="text-white/60">Notable achievements and recognitions</CardDescription>
+            </div>
+            <Button onClick={addAchievement} variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Achievement
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {about.achievements.map((achievement, index) => (
+            <Card key={index} className="bg-black/60 border-white/10">
+              <CardContent className="pt-6 space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm text-white/50">Achievement {index + 1}</span>
+                  <Button
+                    onClick={() => removeAchievement(index)}
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="grid gap-4 lg:grid-cols-3">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-white">Year</label>
+                    <Input
+                      value={achievement.year}
+                      onChange={(e) => updateAchievement(index, { year: e.target.value })}
+                      className="bg-black/40 text-white border-white/20"
+                      placeholder="2024"
+                    />
+                  </div>
+                  <div className="space-y-2 lg:col-span-2">
+                    <label className="text-sm font-medium text-white">Title</label>
+                    <Input
+                      value={achievement.title}
+                      onChange={(e) => updateAchievement(index, { title: e.target.value })}
+                      className="bg-black/40 text-white border-white/20"
+                      placeholder="Best New Artist"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">Organization</label>
+                  <Input
+                    value={achievement.organization}
+                    onChange={(e) => updateAchievement(index, { organization: e.target.value })}
+                    className="bg-black/40 text-white border-white/20"
+                    placeholder="Music Awards"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+          {about.achievements.length === 0 && (
+            <p className="text-sm text-white/50 text-center py-4">No achievements added yet.</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="bg-black/40 border-white/20">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-white">Awards</CardTitle>
+              <CardDescription className="text-white/60">Awards and recognitions received</CardDescription>
+            </div>
+            <Button onClick={addAward} variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Award
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {about.awards.map((award, index) => (
+            <Card key={index} className="bg-black/60 border-white/10">
+              <CardContent className="pt-6 space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm text-white/50">Award {index + 1}</span>
+                  <Button
+                    onClick={() => removeAward(index)}
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">Title</label>
+                  <Input
+                    value={award.title}
+                    onChange={(e) => updateAward(index, { title: e.target.value })}
+                    className="bg-black/40 text-white border-white/20"
+                    placeholder="Platinum Certification"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">Description</label>
+                  <Textarea
+                    value={award.description}
+                    rows={2}
+                    onChange={(e) => updateAward(index, { description: e.target.value })}
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+                    placeholder="Latest Album - 1M+ Streams"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+          {about.awards.length === 0 && (
+            <p className="text-sm text-white/50 text-center py-4">No awards added yet.</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card className="bg-black/40 border-white/20">
+          <CardHeader>
+            <CardTitle className="text-white">Contact Information</CardTitle>
+            <CardDescription className="text-white/60">Contact details displayed on the About page</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-white">Location</label>
+              <Input
+                value={about.location}
+                onChange={(e) => updateAbout({ location: e.target.value })}
+                className="bg-black/40 text-white border-white/20"
+                placeholder="Kigali, Rwanda"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-white">Email</label>
+              <Input
+                type="email"
+                value={about.email}
+                onChange={(e) => updateAbout({ email: e.target.value })}
+                className="bg-black/40 text-white border-white/20"
+                placeholder="contact@nelngabo.com"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-white">Phone</label>
+              <Input
+                value={about.phone}
+                onChange={(e) => updateAbout({ phone: e.target.value })}
+                className="bg-black/40 text-white border-white/20"
+                placeholder="+250 788 123 456"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-black/40 border-white/20">
+          <CardHeader>
+            <CardTitle className="text-white">Additional Information</CardTitle>
+            <CardDescription className="text-white/60">Music label and artist image</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-white">Music Label</label>
+              <Input
+                value={about.musicLabel}
+                onChange={(e) => updateAbout({ musicLabel: e.target.value })}
+                className="bg-black/40 text-white border-white/20"
+                placeholder="Independent Label"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-white">Artist Image URL</label>
+              <Input
+                value={about.artistImage}
+                onChange={(e) => updateAbout({ artistImage: e.target.value })}
+                className="bg-black/40 text-white border-white/20"
+                placeholder="/hero.jpeg or full URL"
+              />
+              <label className="text-sm text-white/50">Or upload from computer</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={async (event) => {
+                  const file = event.target.files?.[0];
+                  if (!file) return;
+                  const dataUrl = await readFileAsDataUrl(file);
+                  updateAbout({ artistImage: dataUrl });
+                }}
+                className="w-full text-sm text-white file:mr-3 file:rounded-md file:border-0 file:bg-white file:px-4 file:py-2 file:text-sm file:text-black file:font-medium hover:file:bg-white/90 cursor-pointer"
+              />
+            </div>
+            {about.artistImage && (
+              <div className="mt-4">
+                <img
+                  src={about.artistImage}
+                  alt="Artist preview"
+                  className="w-full h-48 object-cover rounded-lg border border-white/10"
+                />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
 
 

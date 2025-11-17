@@ -94,11 +94,41 @@ export type Tour = {
   ticketUrl: string;
 };
 
+export type CareerHighlight = {
+  title: string;
+  description: string;
+};
+
+export type Achievement = {
+  year: string;
+  title: string;
+  organization: string;
+};
+
+export type Award = {
+  title: string;
+  description: string;
+};
+
+export type AboutContent = {
+  id: string;
+  biography: string;
+  careerHighlights: CareerHighlight[];
+  achievements: Achievement[];
+  awards: Award[];
+  musicLabel: string;
+  location: string;
+  email: string;
+  phone: string;
+  artistImage: string;
+};
+
 export type ContentState = {
   hero: HeroContent;
   albums: Album[];
   videos: Video[];
   tours: Tour[];
+  about: AboutContent;
 };
 
 

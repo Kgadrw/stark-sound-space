@@ -8,7 +8,7 @@ export const initialContent: ContentState = {
     backgroundVideoUrl: "https://youtu.be/lBnokNKI38I",
     navLinks: [
       { id: createId("nav"), label: "MUSIC", targetType: "scroll", targetValue: "music" },
-      { id: createId("nav"), label: "VIDEOS", targetType: "scroll", targetValue: "videos" },
+      { id: createId("nav"), label: "ABOUT", targetType: "route", targetValue: "/about" },
       { id: createId("nav"), label: "TOURS", targetType: "scroll", targetValue: "tours" },
     ],
     primaryCta: {
@@ -68,6 +68,18 @@ export const initialContent: ContentState = {
     { id: createId("tour"), date: "2025-02-15", city: "KIGALI", venue: "BK Arena", ticketUrl: "https://tickets.nelngabo.com/kigali" },
     { id: createId("tour"), date: "2025-03-12", city: "NAIROBI", venue: "KICC", ticketUrl: "https://tickets.nelngabo.com/nairobi" },
   ],
+  about: {
+    id: createId("about"),
+    biography: "",
+    careerHighlights: [],
+    achievements: [],
+    awards: [],
+    musicLabel: "",
+    location: "",
+    email: "",
+    phone: "",
+    artistImage: "",
+  },
 };
 
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router-dom";
-import { Home, Music4, Clapperboard, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
+import { Home, Music4, Clapperboard, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, ChevronLeft, ChevronRight, User, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/context/SidebarContext";
 
@@ -25,7 +25,7 @@ const frontendNavLinks: SidebarNavLink[] = [
 const adminNavLinks: SidebarNavLink[] = [
   { label: "Hero", icon: Sparkles, to: "/admin" },
   { label: "Albums", icon: Music4, to: "/admin/albums" },
-  { label: "Videos", icon: Clapperboard, to: "/admin/videos" },
+  { label: "About", icon: User, to: "/admin/about" },
   { label: "Tours", icon: MapPin, to: "/admin/tours" },
   { label: "Account", icon: Home, to: "/admin/account" },
 ];
@@ -123,12 +123,16 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
               className={({ isActive }) =>
                 [
                   "flex items-center gap-3 px-4 py-3 text-sm uppercase tracking-[0.3em] transition",
-                  isActive ? "bg-white text-black" : "text-white/60 hover:bg-white/10 rounded-2xl",
+                  isActive ? "text-white" : "text-white/60 hover:text-white",
                 ].join(" ")
               }
             >
-              <Icon className="h-4 w-4" />
-              <span>{label}</span>
+              {({ isActive }) => (
+                <span className={isActive ? "underline decoration-white decoration-2 underline-offset-8 flex items-center gap-3" : "flex items-center gap-3"}>
+                  <Icon className="h-4 w-4" />
+                  <span>{label}</span>
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -215,8 +219,8 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={({ isActive }) =>
                       [
-                        "uppercase transition",
-                        isActive ? "text-white" : "text-white/60 hover:text-white",
+                        "uppercase transition relative",
+                        isActive ? "text-white underline decoration-white decoration-2 underline-offset-8" : "text-white/60 hover:text-white",
                       ].join(" ")
                     }
                   >

@@ -2,6 +2,7 @@ const HeroSetting = require("../models/HeroSetting");
 const Album = require("../models/Album");
 const Video = require("../models/Video");
 const Tour = require("../models/Tour");
+const About = require("../models/About");
 const { getUploadSignature } = require("../services/cloudinary");
 
 const normalizeTracks = (tracks) => {
@@ -154,7 +155,7 @@ const listAlbums = async (_req, res, next) => {
 
 const createAlbum = async (req, res, next) => {
   try {
-    const { title, year, coverUrl, tracks, summary, links } = req.body;
+    const { title, year, coverUrl, tracks, summary, description, links } = req.body;
     if (!title || !coverUrl) {
       return res.status(400).json({ message: "title and coverUrl are required" });
     }
@@ -163,6 +164,7 @@ const createAlbum = async (req, res, next) => {
       year: year || "",
       coverUrl,
       summary: summary ?? "",
+      description: description ?? "",
       tracks: normalizeTracks(tracks),
       links: ensureLinks(Array.isArray(links) ? links : []),
     });
@@ -175,7 +177,7 @@ const createAlbum = async (req, res, next) => {
 const updateAlbumHandler = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, year, coverUrl, tracks, summary, links } = req.body;
+    const { title, year, coverUrl, tracks, summary, description, links } = req.body;
     const album = await Album.findById(id);
     if (!album) {
       return res.status(404).json({ message: "Album not found" });
@@ -184,6 +186,7 @@ const updateAlbumHandler = async (req, res, next) => {
     album.year = year ?? album.year;
     album.coverUrl = coverUrl ?? album.coverUrl;
     album.summary = summary ?? album.summary;
+    album.description = description ?? album.description;
     if (tracks !== undefined) {
       album.tracks = normalizeTracks(tracks);
     }
@@ -344,6 +347,80 @@ const getCloudinarySignature = (_req, res, next) => {
   }
 };
 
+const ensureAbout = async () => {
+  let about = await About.findOne();
+  if (!about) {
+    about = await About.create({
+      biography: "",
+      careerHighlights: [],
+      achievements: [],
+      awards: [],
+      musicLabel: "",
+      location: "",
+      email: "",
+      phone: "",
+      artistImage: "",
+    });
+  }
+  return about;
+};
+
+const formatAbout = (about) => ({
+  id: about.id ?? about._id,
+  biography: about.biography,
+  careerHighlights: about.careerHighlights,
+  achievements: about.achievements,
+  awards: about.awards,
+  musicLabel: about.musicLabel,
+  location: about.location,
+  email: about.email,
+  phone: about.phone,
+  artistImage: about.artistImage,
+  createdAt: about.createdAt,
+  updatedAt: about.updatedAt,
+});
+
+const getAbout = async (_req, res, next) => {
+  try {
+    const about = await ensureAbout();
+    res.json({ about: formatAbout(about) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateAbout = async (req, res, next) => {
+  try {
+    const {
+      biography,
+      careerHighlights,
+      achievements,
+      awards,
+      musicLabel,
+      location,
+      email,
+      phone,
+      artistImage,
+    } = req.body;
+    const about = await ensureAbout();
+    
+    if (biography !== undefined) about.biography = biography;
+    if (careerHighlights !== undefined) about.careerHighlights = careerHighlights;
+    if (achievements !== undefined) about.achievements = achievements;
+    if (awards !== undefined) about.awards = awards;
+    if (musicLabel !== undefined) about.musicLabel = musicLabel;
+    if (location !== undefined) about.location = location;
+    if (email !== undefined) about.email = email;
+    if (phone !== undefined) about.phone = phone;
+    if (artistImage !== undefined) about.artistImage = artistImage;
+    
+    await about.save();
+    res.json(formatAbout(about));
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getHeroImage,
   saveHeroImage,
@@ -359,6 +436,8 @@ module.exports = {
   createTourHandler,
   updateTourHandler,
   deleteTourHandler,
+  getAbout,
+  updateAbout,
   getCloudinarySignature,
 };
 
