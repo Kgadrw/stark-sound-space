@@ -547,6 +547,12 @@
               }
             }
           },
+          "latestAlbumName": { "type": "string", "example": "VIBRANIUM" },
+          "latestAlbumLink": { "type": "string", "example": "/music" },
+          "notificationText": { "type": "string", "example": "" },
+          "notificationLink": { "type": "string", "example": "" },
+          "notificationLinkText": { "type": "string", "example": "Learn More" },
+          "isNotificationVisible": { "type": "boolean", "example": false },
           "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
@@ -607,7 +613,13 @@
                 "url": { "type": "string" }
               }
             }
-          }
+          },
+          "latestAlbumName": { "type": "string" },
+          "latestAlbumLink": { "type": "string" },
+          "notificationText": { "type": "string" },
+          "notificationLink": { "type": "string" },
+          "notificationLinkText": { "type": "string" },
+          "isNotificationVisible": { "type": "boolean" }
         }
       },
       "About": {

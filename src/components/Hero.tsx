@@ -306,14 +306,14 @@ const Hero = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="absolute right-4 sm:right-6 top-20 z-[60] flex items-center gap-2 sm:gap-3"
+        className="absolute right-4 sm:right-6 top-20 z-[100] flex items-center gap-2 sm:gap-3"
       >
         <motion.button
           type="button"
           onClick={() => setIsSearchOpen((prev) => !prev)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className={`relative z-[60] flex h-10 w-10 items-center justify-center border border-white/40 bg-black/80 backdrop-blur-sm text-white shadow-lg transition hover:border-white hover:bg-black ${
+          className={`relative z-[100] flex h-10 w-10 items-center justify-center border border-white/40 bg-black/80 backdrop-blur-sm text-white shadow-lg transition hover:border-white hover:bg-black ${
             isSearchOpen ? "border-white bg-black" : ""
           }`}
           aria-label="Toggle search"
@@ -327,11 +327,11 @@ const Hero = () => {
               animate={{ opacity: 1, width: "auto" }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.3 }}
-              className="relative z-30"
+              className="relative z-[100]"
             >
             <form
               onSubmit={handleSearch}
-                className="relative z-30 flex items-center border border-white/20 bg-black/80 px-4 py-2 text-white backdrop-blur-xl shadow-lg"
+                className="relative z-[100] flex items-center border border-white/20 bg-black/80 px-4 py-2 text-white backdrop-blur-xl shadow-lg"
             >
               <input
                 ref={searchInputRef}
@@ -339,7 +339,7 @@ const Hero = () => {
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="Search anything..."
-                  className="relative z-30 w-36 sm:w-52 bg-transparent text-xs uppercase tracking-[0.3em] text-white placeholder:text-white/30 focus:outline-none"
+                  className="relative z-[100] w-36 sm:w-52 bg-transparent text-xs uppercase tracking-[0.3em] text-white placeholder:text-white/30 focus:outline-none"
                 onBlur={(event) => {
                   // delay closing to allow suggestion click
                   setTimeout(() => {
@@ -358,7 +358,7 @@ const Hero = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute z-30 top-full mt-2 w-full divide-y divide-white/10 border border-white/10 bg-black/95 text-white shadow-2xl"
+                    className="absolute z-[100] top-full mt-2 w-full divide-y divide-white/10 border border-white/10 bg-black/95 text-white shadow-2xl"
                   >
                     {filteredSuggestions.map((item, index) => (
                       <motion.li
@@ -369,7 +369,7 @@ const Hero = () => {
                       >
                     <button
                       type="button"
-                          className="search-suggestion relative z-30 block w-full px-4 py-3 text-left transition hover:bg-white/10"
+                          className="search-suggestion relative z-[100] block w-full px-4 py-3 text-left transition hover:bg-white/10"
                       onClick={() => {
                         handleNavigate(item);
                         setSearchQuery("");
@@ -392,7 +392,7 @@ const Hero = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute z-30 top-full mt-2 w-full max-h-96 overflow-y-auto divide-y divide-white/10 border border-white/10 bg-black/95 text-white shadow-2xl"
+                  className="absolute z-[100] top-full mt-2 w-full max-h-96 overflow-y-auto divide-y divide-white/10 border border-white/10 bg-black/95 text-white shadow-2xl"
                 >
                   <li className="px-4 py-2 text-[0.55rem] uppercase tracking-[0.35em] text-white/50 border-b border-white/10">
                     YouTube Results
@@ -406,7 +406,7 @@ const Hero = () => {
                     >
                       <button
                         type="button"
-                        className="search-suggestion relative z-30 block w-full px-4 py-3 text-left transition hover:bg-white/10"
+                        className="search-suggestion relative z-[100] block w-full px-4 py-3 text-left transition hover:bg-white/10"
                         onClick={() => {
                           setSelectedVideo({ id: video.id, title: video.title });
                           setSearchQuery("");
@@ -434,7 +434,7 @@ const Hero = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute z-30 top-full mt-2 w-full border border-white/10 bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
+                  className="absolute z-[100] top-full mt-2 w-full border border-white/10 bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
                 >
                   <p>Searching YouTube...</p>
                 </motion.div>
@@ -443,7 +443,7 @@ const Hero = () => {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute z-30 top-full mt-2 w-full border border-white/10 bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
+                      className="absolute z-[100] top-full mt-2 w-full border border-white/10 bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
                     >
                   <p>No matching content found.</p>
                   <button
