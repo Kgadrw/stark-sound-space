@@ -19,7 +19,7 @@ const AdminLogin = () => {
     setError(null);
     try {
       await login(formState);
-      const redirectTo = (location.state as { from?: Location })?.from?.pathname ?? "/admin";
+      const redirectTo = (location.state as { from?: Location })?.from?.pathname ?? "/administrationneln";
       navigate(redirectTo, { replace: true });
     } catch (loginError) {
       const message = loginError instanceof Error ? loginError.message : "Login failed";

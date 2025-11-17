@@ -24,12 +24,12 @@ const frontendNavLinks: NavbarNavLink[] = [
 ];
 
 const adminNavLinks: NavbarNavLink[] = [
-  { label: "Hero", icon: Sparkles, to: "/admin" },
-  { label: "Albums", icon: Music4, to: "/admin/albums" },
-  { label: "Videos", icon: Clapperboard, to: "/admin/videos" },
-  { label: "About", icon: User, to: "/admin/about" },
-  { label: "Tours", icon: MapPin, to: "/admin/tours" },
-  { label: "Account", icon: Home, to: "/admin/account" },
+  { label: "Hero", icon: Sparkles, to: "/administrationneln" },
+  { label: "Albums", icon: Music4, to: "/administrationneln/albums" },
+  { label: "Videos", icon: Clapperboard, to: "/administrationneln/videos" },
+  { label: "About", icon: User, to: "/administrationneln/about" },
+  { label: "Tours", icon: MapPin, to: "/administrationneln/tours" },
+  { label: "Account", icon: Home, to: "/administrationneln/account" },
 ];
 
 const waveHeights = [8, 14, 24, 35, 24, 14, 8];
@@ -97,7 +97,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
             <NavLink
               key={label}
               to={to}
-              end={variant === "admin" && to === "/admin"}
+              end={variant === "admin" && to === "/administrationneln"}
               className={({ isActive }) =>
                 [
                   "px-4 py-2 text-sm uppercase tracking-[0.2em] transition",
@@ -206,7 +206,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                 >
                   <NavLink
                     to={to}
-                    end={variant === "admin" && to === "/admin"}
+                    end={variant === "admin" && to === "/administrationneln"}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={({ isActive }) =>
                       [

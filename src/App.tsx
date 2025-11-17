@@ -40,9 +40,9 @@ const App = () => (
           <Route path="/album/:id" element={<AlbumDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/tours" element={<Tours />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/administrationneln/login" element={<AdminLogin />} />
           <Route
-            path="/admin"
+            path="/administrationneln"
             element={
               <RequireAdmin>
                 <Admin />

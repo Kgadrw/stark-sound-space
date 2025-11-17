@@ -7,7 +7,7 @@ const RequireAdmin = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
 
   if (!isAuthenticated) {
-    return <Navigate to="/admin/login" replace state={{ from: location }} />;
+    return <Navigate to="/administrationneln/login" replace state={{ from: location }} />;
   }
 
   return <>{children}</>;
