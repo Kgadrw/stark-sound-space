@@ -1,44 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Music2, Music4, Disc3, Youtube, Radio, type LucideIcon } from "lucide-react";
+import { Music2, ExternalLink } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
-import type { IconPreset } from "@/types/content";
+import { Button } from "@/components/ui/button";
 
-const fallbackListeningDestinations = [
-  { label: "Spotify", url: "https://open.spotify.com/artist/nelngabo", description: "Stream in high quality" },
-  { label: "Apple Music", url: "https://music.apple.com/", description: "Listen on all Apple devices" },
-  { label: "YouTube", url: "https://www.youtube.com/@nelngabo9740", description: "Watch the full visual album" },
-  { label: "SoundCloud", url: "https://soundcloud.com/", description: "Discover fan remixes" },
-];
-
-const iconMap: Record<IconPreset, LucideIcon> = {
-  spotify: Music4,
-  appleMusic: Disc3,
-  youtube: Youtube,
-  soundcloud: Radio,
-  tiktok: Music2,
-  instagram: Music2,
-  x: Music2,
-  facebook: Music2,
-  mail: Music2,
-  phone: Music2,
-  website: Music2,
-};
-
-const detectIconFromUrl = (url: string): IconPreset => {
-  const lowerUrl = url.toLowerCase();
-  if (lowerUrl.includes("spotify")) return "spotify";
-  if (lowerUrl.includes("apple") || lowerUrl.includes("music.apple")) return "appleMusic";
-  if (lowerUrl.includes("youtube")) return "youtube";
-  if (lowerUrl.includes("soundcloud")) return "soundcloud";
-  return "website";
-};
-
-const resolveIcon = (url: string) => {
-  const preset = detectIconFromUrl(url);
-  return iconMap[preset] ?? Music4;
-};
 
 const MusicSection = () => {
   const orbitronStyle = `
@@ -174,29 +140,38 @@ const MusicSection = () => {
                     </div>
                   )}
 
-                  {/* Platform Icons */}
-                  <div className="flex items-center gap-4">
-                    {(album.links && album.links.length > 0 ? album.links : fallbackListeningDestinations).map((link, linkIndex) => {
-                      const Icon = resolveIcon(link.url);
-                      return (
-                        <motion.a
-                          key={link.id || link.label}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: linkIndex * 0.05 }}
-                          whileHover={{ scale: 1.2, rotate: 5 }}
-                          whileTap={{ scale: 0.9 }}
-                          className="flex h-12 w-12 items-center justify-center border border-white/20 bg-black/40 backdrop-blur-sm text-white transition hover:border-white/40 hover:bg-black/60 rounded-lg"
-                          aria-label={link.label}
-                        >
-                          <Icon className="h-6 w-6" />
-                        </motion.a>
-                      );
-                    })}
-                  </div>
+                  {/* Streaming Platform Links */}
+                  {album.links && album.links.length > 0 && (
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-3">Streaming Platforms</p>
+                      <div className="flex flex-wrap items-center gap-3">
+                        {album.links.map((link, linkIndex) => (
+                          <motion.div
+                            key={link.id || linkIndex}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: linkIndex * 0.05 }}
+                          >
+                            <Button
+                              asChild
+                              variant="outline"
+                              className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-black/60 hover:border-white/40 transition group"
+                            >
+                              <a
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2"
+                              >
+                                <span className="elms-sans">{link.label || "Stream Now"}</span>
+                                <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-white transition" />
+                              </a>
+                            </Button>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               </motion.div>
             );
