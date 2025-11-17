@@ -24,7 +24,7 @@ const About = () => {
     <>
       <style>{elmsSansStyle}</style>
       <Navbar />
-      <section id="about" className="min-h-screen bg-black relative overflow-hidden py-24 px-6">
+      <section id="about" className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24">
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
         
         <div className="relative z-10 max-w-7xl mx-auto">
@@ -32,28 +32,28 @@ const About = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-16"
+            className="mb-8 md:mb-16"
           >
-            <h1 className="text-5xl md:text-7xl font-bold tracking-[0.3em] text-white uppercase">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold tracking-[0.2em] md:tracking-[0.3em] text-white uppercase">
               ABOUT
             </h1>
           </motion.div>
 
-          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+          <div className="grid lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12">
             {/* Left Column - Main Content */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="lg:col-span-2 space-y-8"
+              className="lg:col-span-2 space-y-6 md:space-y-8"
             >
               {/* Biography */}
               {about.biography && (
-                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-8">
-                  <h2 className="text-3xl font-bold tracking-[0.1em] text-white uppercase mb-6">
+                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6 md:p-8">
+                  <h2 className="text-2xl sm:text-3xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6">
                     Biography
                   </h2>
-                  <div className="space-y-4 text-white/70 leading-relaxed elms-sans whitespace-pre-line">
+                  <div className="space-y-3 md:space-y-4 text-sm sm:text-base text-white/70 leading-relaxed elms-sans whitespace-pre-line">
                     {about.biography}
                   </div>
                 </div>
@@ -61,15 +61,15 @@ const About = () => {
 
               {/* Career Highlights */}
               {about.careerHighlights && about.careerHighlights.length > 0 && (
-                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-8">
-                  <h2 className="text-2xl font-bold tracking-[0.1em] text-white uppercase mb-6">
+                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6 md:p-8">
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6">
                     Career Highlights
                   </h2>
-                  <div className="space-y-6">
+                  <div className="space-y-4 md:space-y-6">
                     {about.careerHighlights.map((highlight, index) => (
                       <div key={index}>
-                        <h3 className="text-lg font-semibold text-white mb-2">{highlight.title}</h3>
-                        <p className="text-white/70 leading-relaxed elms-sans">{highlight.description}</p>
+                        <h3 className="text-base sm:text-lg font-semibold text-white mb-2">{highlight.title}</h3>
+                        <p className="text-sm sm:text-base text-white/70 leading-relaxed elms-sans">{highlight.description}</p>
                       </div>
                     ))}
                   </div>
@@ -77,17 +77,17 @@ const About = () => {
               )}
 
               {/* Discography Summary */}
-              <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-8">
-                <h2 className="text-2xl font-bold tracking-[0.1em] text-white uppercase mb-6">
+              <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6 md:p-8">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6">
                   Discography
                 </h2>
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                   {albums.map((album, index) => (
-                    <div key={album.id} className="flex items-start gap-4 pb-4 border-b border-white/10 last:border-0">
-                      <div className="text-white/50 text-sm font-mono w-12">{album.year}</div>
-                      <div className="flex-1">
-                        <h3 className="text-white font-semibold mb-1">{album.title}</h3>
-                        <p className="text-white/60 text-sm elms-sans">{album.summary}</p>
+                    <div key={album.id} className="flex items-start gap-3 sm:gap-4 pb-3 md:pb-4 border-b border-white/10 last:border-0">
+                      <div className="text-white/50 text-xs sm:text-sm font-mono w-10 sm:w-12 flex-shrink-0">{album.year}</div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-white font-semibold mb-1 text-sm sm:text-base">{album.title}</h3>
+                        <p className="text-white/60 text-xs sm:text-sm elms-sans line-clamp-2">{album.summary}</p>
                       </div>
                     </div>
                   ))}
@@ -100,7 +100,7 @@ const About = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="space-y-6"
+              className="space-y-4 md:space-y-6"
             >
               {/* Artist Image */}
               <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg overflow-hidden">
@@ -113,12 +113,12 @@ const About = () => {
 
               {/* Achievements */}
               {about.achievements && about.achievements.length > 0 && (
-                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-6">
-                  <h3 className="text-lg font-bold tracking-[0.1em] text-white uppercase mb-4 flex items-center gap-2">
-                    <Trophy className="h-5 w-5 text-pink-400" />
+                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6">
+                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-white uppercase mb-3 md:mb-4 flex items-center gap-2">
+                    <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 flex-shrink-0" />
                     Achievements
                   </h3>
-                  <div className="space-y-4">
+                  <div className="space-y-3 md:space-y-4">
                     {about.achievements.map((achievement, index) => (
                     <motion.div
                       key={index}
@@ -130,7 +130,7 @@ const About = () => {
                       <div className="text-xs text-white/50 uppercase tracking-[0.2em] mb-1">
                         {achievement.year}
                       </div>
-                      <div className="text-white font-semibold text-sm mb-1 elms-sans">
+                      <div className="text-white font-semibold text-xs sm:text-sm mb-1 elms-sans">
                         {achievement.title}
                       </div>
                       <div className="text-white/60 text-xs elms-sans">
@@ -144,12 +144,12 @@ const About = () => {
 
               {/* Awards */}
               {about.awards && about.awards.length > 0 && (
-                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-6">
-                  <h3 className="text-lg font-bold tracking-[0.1em] text-white uppercase mb-4 flex items-center gap-2">
-                    <Award className="h-5 w-5 text-pink-400" />
+                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6">
+                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-white uppercase mb-3 md:mb-4 flex items-center gap-2">
+                    <Award className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 flex-shrink-0" />
                     Awards
                   </h3>
-                  <div className="space-y-3">
+                  <div className="space-y-2 md:space-y-3">
                     {about.awards.map((award, index) => (
                     <motion.div
                       key={index}
@@ -158,7 +158,7 @@ const About = () => {
                       transition={{ delay: 0.6 + index * 0.1 }}
                       className="pb-3 border-b border-white/10 last:border-0"
                     >
-                      <div className="text-white font-semibold text-sm mb-1 elms-sans">
+                      <div className="text-white font-semibold text-xs sm:text-sm mb-1 elms-sans">
                         {award.title}
                       </div>
                       <div className="text-white/60 text-xs elms-sans">
@@ -172,37 +172,37 @@ const About = () => {
 
               {/* Music Label */}
               {about.musicLabel && (
-                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-6">
-                  <h3 className="text-lg font-bold tracking-[0.1em] text-white uppercase mb-4 flex items-center gap-2">
-                    <Building2 className="h-5 w-5 text-pink-400" />
+                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6">
+                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-white uppercase mb-3 md:mb-4 flex items-center gap-2">
+                    <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 flex-shrink-0" />
                     Label
                   </h3>
-                  <p className="text-white/70 text-sm elms-sans">{about.musicLabel}</p>
+                  <p className="text-white/70 text-xs sm:text-sm elms-sans">{about.musicLabel}</p>
                 </div>
               )}
 
               {/* Contact Info */}
               {(about.location || about.email || about.phone) && (
-                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-6">
-                  <h3 className="text-lg font-bold tracking-[0.1em] text-white uppercase mb-4">
+                <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6">
+                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-white uppercase mb-3 md:mb-4">
                     Contact
                   </h3>
-                  <div className="space-y-3 text-sm elms-sans">
+                  <div className="space-y-2 md:space-y-3 text-xs sm:text-sm elms-sans">
                     {about.location && (
-                      <div className="flex items-center gap-3 text-white/70">
-                        <MapPin className="h-4 w-4 text-white/50" />
-                        <span>{about.location}</span>
+                      <div className="flex items-start gap-3 text-white/70">
+                        <MapPin className="h-4 w-4 text-white/50 flex-shrink-0 mt-0.5" />
+                        <span className="break-words">{about.location}</span>
                       </div>
                     )}
                     {about.email && (
-                      <a href={`mailto:${about.email}`} className="flex items-center gap-3 text-white/70 hover:text-white transition">
-                        <Mail className="h-4 w-4 text-white/50" />
-                        <span>{about.email}</span>
+                      <a href={`mailto:${about.email}`} className="flex items-start gap-3 text-white/70 hover:text-white transition break-all">
+                        <Mail className="h-4 w-4 text-white/50 flex-shrink-0 mt-0.5" />
+                        <span className="break-all">{about.email}</span>
                       </a>
                     )}
                     {about.phone && (
                       <a href={`tel:${about.phone}`} className="flex items-center gap-3 text-white/70 hover:text-white transition">
-                        <Phone className="h-4 w-4 text-white/50" />
+                        <Phone className="h-4 w-4 text-white/50 flex-shrink-0" />
                         <span>{about.phone}</span>
                       </a>
                     )}

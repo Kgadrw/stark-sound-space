@@ -59,7 +59,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
         initial={hasAnimated ? false : { y: -100, opacity: 0 }}
         animate={hasAnimated ? false : { y: 0, opacity: 1 }}
         transition={hasAnimated ? {} : { duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b border-white/10 bg-black/80 px-6 py-4 text-white backdrop-blur-xl"
+        className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b border-white/10 bg-black px-6 py-4 text-white"
       >
         {/* Logo/Brand */}
         <div className="flex items-center space-x-2">
@@ -149,7 +149,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-black/95 text-white flex flex-col p-6 space-y-8 md:hidden"
+            className="fixed inset-0 z-50 bg-black text-white flex flex-col p-6 space-y-8 md:hidden"
           >
             <motion.div
               initial={{ y: -20, opacity: 0 }}

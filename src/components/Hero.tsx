@@ -271,19 +271,19 @@ const Hero = () => {
   return (
     <>
       <style>{glowStyle}</style>
-    <section className="relative h-screen w-full overflow-hidden border-0 p-4 bg-black">
+    <section className="fixed inset-0 h-screen w-full overflow-hidden border-0 bg-black z-[1]">
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="absolute right-6 top-6 z-30 flex items-center gap-3"
+        className="absolute right-4 sm:right-6 top-20 z-[60] flex items-center gap-2 sm:gap-3"
       >
         <motion.button
           type="button"
           onClick={() => setIsSearchOpen((prev) => !prev)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className={`relative z-30 flex h-10 w-10 items-center justify-center border border-white/40 bg-black/80 text-white shadow-lg transition hover:border-white hover:bg-black ${
+          className={`relative z-[60] flex h-10 w-10 items-center justify-center border border-white/40 bg-black/80 backdrop-blur-sm text-white shadow-lg transition hover:border-white hover:bg-black ${
             isSearchOpen ? "border-white bg-black" : ""
           }`}
           aria-label="Toggle search"
@@ -459,55 +459,56 @@ const Hero = () => {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10 pointer-events-none" />
       </div>
-      <div className="relative z-20 h-full flex items-end justify-between pb-20 px-6 gap-8">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="space-y-6 max-w-2xl text-left"
-        >
+      <div className="relative z-20 h-full flex flex-col justify-end pb-6 sm:pb-8 md:pb-12 lg:pb-16 px-4 sm:px-6 gap-4 sm:gap-5 md:gap-6">
+        <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4 sm:gap-5 md:gap-6 lg:gap-8 w-full">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="flex flex-col sm:flex-row gap-4 pt-4 items-start sm:items-center"
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="space-y-3 sm:space-y-4 md:space-y-5 max-w-2xl text-left"
           >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                type="button"
-                size="lg"
-                className="text-lg px-8 group relative overflow-hidden"
-                onClick={() => handleHeroCta(primaryCta)}
-              >
-                <span className="relative z-10">{primaryCta.label}</span>
-                <div className="absolute inset-0 bg-foreground/10 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
-            </Button>
-            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 items-start sm:items-center"
+            >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  type="button"
+                  size="lg"
+                  className="text-xs sm:text-sm md:text-base lg:text-lg px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2.5 md:py-3 group relative overflow-hidden"
+                  onClick={() => handleHeroCta(primaryCta)}
+                >
+                  <span className="relative z-10">{primaryCta.label}</span>
+                  <div className="absolute inset-0 bg-foreground/10 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+              </Button>
+              </motion.div>
 
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button asChild size="lg" variant="outline" className="text-lg px-8 group relative overflow-hidden">
-              <a
-                  href={secondaryCta.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative flex items-center justify-center"
-              >
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 opacity-0 group-hover:opacity-20 group-hover:scale-110 transition-all duration-300 transform origin-center" />
-                <Play className="w-5 h-5 mr-2 fill-pink-500 text-pink-500 play-icon-glow" />
-                <span className="relative z-10 group-hover:tracking-wider transition-all duration-300">
-                    {secondaryCta.label}
-                </span>
-              </a>
-            </Button>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button asChild size="lg" variant="outline" className="text-xs sm:text-sm md:text-base lg:text-lg px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2.5 md:py-3 group relative overflow-hidden">
+                <a
+                    href={secondaryCta.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative flex items-center justify-center"
+                >
+                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 opacity-0 group-hover:opacity-20 group-hover:scale-110 transition-all duration-300 transform origin-center" />
+                  <Play className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1.5 sm:mr-2 fill-pink-500 text-pink-500 play-icon-glow" />
+                  <span className="relative z-10 group-hover:tracking-wider transition-all duration-300">
+                      {secondaryCta.label}
+                  </span>
+                </a>
+              </Button>
+              </motion.div>
             </motion.div>
           </motion.div>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="hidden lg:flex flex-col items-end gap-4"
-        >
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="hidden lg:flex flex-col items-end gap-2 md:gap-3 flex-shrink-0"
+          >
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -522,7 +523,7 @@ const Hero = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
-              className="flex flex-col gap-3 text-sm tracking-[0.25em] text-white/70"
+              className="flex flex-col gap-1.5 md:gap-2 text-xs tracking-[0.25em] text-white/70"
             >
               {visibleStreamingPlatforms.map((platform, index) => {
                 const Icon = resolveIcon(platform.preset);
@@ -536,16 +537,17 @@ const Hero = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.9 + index * 0.1 }}
                     whileHover={{ x: -5 }}
-              className="flex items-center gap-3 hover:text-white transition"
+              className="flex items-center gap-2 hover:text-white transition"
             >
-                    <Icon className="h-4 w-4" />
-                    <span>{platform.label}</span>
+                    <Icon className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                    <span className="whitespace-nowrap">{platform.label}</span>
                   </motion.a>
                 );
               })}
             </motion.div>
           )}
         </motion.div>
+        </div>
       </div>
       {selectedVideo && (
         <YouTubePlayer

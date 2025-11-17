@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { NavLink } from "react-router-dom";
-import { Home, Music4, Clapperboard, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, ChevronLeft, ChevronRight, User, type LucideIcon } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Home, Music4, Clapperboard, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, User, LogOut, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/context/SidebarContext";
+import { useAuth } from "@/context/AuthContext";
 
 type SidebarNavLink = {
   label: string;
@@ -43,7 +44,14 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const { isHidden, setIsHidden } = useSidebar();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const navLinks = variant === "admin" ? adminNavLinks : frontendNavLinks;
+
+  const handleLogout = () => {
+    logout();
+    navigate("/admin/login");
+  };
 
   useEffect(() => {
     const animated = sessionStorage.getItem("sidebarAnimated");
@@ -63,23 +71,6 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
   return (
     <>
       <style>{waveAnimation}</style>
-      {/* Hover zone on left side when sidebar is hidden */}
-      {isHidden && (
-        <div
-          className="fixed left-0 top-0 h-full w-12 z-40 md:block hidden"
-          onMouseEnter={handleMouseEnterLeft}
-        />
-      )}
-      {/* Show arrow button when sidebar is hidden */}
-      {isHidden && (
-        <button
-          onClick={() => setIsHidden(false)}
-          className="fixed left-2 top-1/2 -translate-y-1/2 z-40 hidden md:flex items-center justify-center w-10 h-10 bg-black/80 border border-white/30 text-white hover:bg-black hover:border-white transition-all duration-300"
-          aria-label="Show sidebar"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
-      )}
       <motion.aside
         initial={hasAnimated ? false : { x: -100, opacity: 0 }}
         animate={hasAnimated ? false : { x: 0, opacity: 1 }}
@@ -88,14 +79,6 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
           isHidden ? "-translate-x-full opacity-0" : "translate-x-0 opacity-100"
         }`}
       >
-        {/* Hide arrow button */}
-        <button
-          onClick={() => setIsHidden(true)}
-          className="absolute right-2 top-4 flex items-center justify-center w-8 h-8 bg-black/50 border border-white/20 text-white hover:bg-black hover:border-white hover:scale-110 active:scale-95 transition-all rounded"
-          aria-label="Hide sidebar"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-[0.5em] text-white/50">Artist</p>
           <div className="relative">
@@ -164,17 +147,29 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
             </Button>
           </div>
         )}
+        {variant === "admin" && (
+          <div className="mt-auto pt-4 border-t border-white/10">
+            <Button
+              onClick={handleLogout}
+              variant="ghost"
+              className="w-full flex items-center gap-3 text-white/70 hover:text-white hover:bg-white/10 transition"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="text-sm uppercase tracking-[0.2em]">Logout</span>
+            </Button>
+          </div>
+        )}
       </motion.aside>
-      <div className="fixed inset-x-0 top-0 z-30 flex items-center justify-between border-b border-white/10 bg-black/80 px-6 py-4 text-xs uppercase tracking-[0.4em] text-white/70 md:hidden">
-        <span>NEL NGABO</span>
+      <div className="fixed inset-x-0 top-0 z-30 flex items-center justify-between border-b border-white/10 bg-black/80 px-6 py-4 text-xs uppercase tracking-[0.4em] text-white/70 backdrop-blur-xl md:hidden">
+        <span>{variant === "admin" ? "ADMIN" : "NEL NGABO"}</span>
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(true)}
-          className="flex items-center gap-2 text-white"
+          className="flex items-center gap-2 text-white hover:text-white/80 transition"
           aria-label="Open menu"
         >
-          <Menu className="h-4 w-4" />
-          Menu
+          <Menu className="h-5 w-5" />
+          <span className="text-sm">Menu</span>
         </button>
       </div>
       <AnimatePresence>
@@ -192,21 +187,21 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
               transition={{ delay: 0.1 }}
               className="flex items-center justify-between text-xs uppercase tracking-[0.4em]"
             >
-              <span>NEL NGABO</span>
+              <span>{variant === "admin" ? "ADMIN" : "NEL NGABO"}</span>
               <motion.button
                 type="button"
                 onClick={() => setIsMobileMenuOpen(false)}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="flex items-center gap-2 text-white"
+                className="flex items-center gap-2 text-white hover:text-white/80 transition"
                 aria-label="Close menu"
               >
                 Close
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </motion.button>
             </motion.div>
-            <nav className="flex flex-col gap-6 text-3xl font-bold tracking-[0.2em]">
-              {navLinks.map(({ to, label }, index) => (
+            <nav className="flex flex-col gap-4 text-2xl font-bold tracking-[0.2em]">
+              {navLinks.map(({ to, label, icon: Icon }, index) => (
                 <motion.div
                   key={label}
                   initial={{ x: -50, opacity: 0 }}
@@ -219,46 +214,70 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={({ isActive }) =>
                       [
-                        "uppercase transition relative",
+                        "flex items-center gap-3 uppercase transition relative py-2",
                         isActive ? "text-white underline decoration-white decoration-2 underline-offset-8" : "text-white/60 hover:text-white",
                       ].join(" ")
                     }
                   >
-                    {label}
+                    <Icon className="h-5 w-5" />
+                    <span>{label}</span>
                   </NavLink>
                 </motion.div>
               ))}
             </nav>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="mt-auto space-y-4"
-            >
-              <p className="text-xs uppercase tracking-[0.4em] text-white/50">Follow</p>
-              <div className="flex items-center gap-4">
-                {[
-                  { href: "https://www.instagram.com/nelngabo/", icon: Instagram, label: "Instagram" },
-                  { href: "https://twitter.com/nelngabo", icon: Twitter, label: "Twitter" },
-                  { href: "https://www.youtube.com/@nelngabo9740", icon: Youtube, label: "YouTube" },
-                ].map(({ href, icon: Icon, label }, index) => (
-                  <motion.a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.7 + index * 0.1, type: "spring" }}
-                    whileHover={{ scale: 1.2, rotate: 5 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Icon className="h-6 w-6" />
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
+            {variant === "frontend" && (
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="mt-auto space-y-4"
+              >
+                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Follow</p>
+                <div className="flex items-center gap-4">
+                  {[
+                    { href: "https://www.instagram.com/nelngabo/", icon: Instagram, label: "Instagram" },
+                    { href: "https://twitter.com/nelngabo", icon: Twitter, label: "Twitter" },
+                    { href: "https://www.youtube.com/@nelngabo9740", icon: Youtube, label: "YouTube" },
+                  ].map(({ href, icon: Icon, label }, index) => (
+                    <motion.a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.7 + index * 0.1, type: "spring" }}
+                      whileHover={{ scale: 1.2, rotate: 5 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Icon className="h-6 w-6" />
+                    </motion.a>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+            {variant === "admin" && (
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="mt-auto pt-4 border-t border-white/10"
+              >
+                <motion.button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-full flex items-center gap-3 text-white/70 hover:text-white hover:bg-white/10 transition px-4 py-3 rounded-lg"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span className="text-lg font-semibold uppercase tracking-[0.2em]">Logout</span>
+                </motion.button>
+              </motion.div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

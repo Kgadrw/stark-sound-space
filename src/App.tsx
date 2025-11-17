@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/context/SidebarContext";
+import CookieConsent from "@/components/CookieConsent";
 import Index from "./pages/Index";
 import Music from "./pages/Music";
 import About from "./pages/About";
@@ -52,6 +53,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <CookieConsent />
       </SidebarProvider>
     </TooltipProvider>
   </QueryClientProvider>
