@@ -160,6 +160,10 @@ export const HeroEditor = ({
         socialLinks: hero.socialLinks,
         latestAlbumName: hero.latestAlbumName,
         latestAlbumLink: hero.latestAlbumLink,
+        notificationText: hero.notificationText,
+        notificationLink: hero.notificationLink,
+        notificationLinkText: hero.notificationLinkText,
+        isNotificationVisible: hero.isNotificationVisible,
       });
       console.log("Hero saved successfully:", response);
       toast.success("Hero saved successfully!", {
@@ -324,6 +328,68 @@ export const HeroEditor = ({
                 <p className="text-xs text-white/50">
                   The URL for the "Listen Now" button. Can be a route (e.g., /music) or external link.
                 </p>
+              </div>
+            </div>
+          </div>
+          <Separator className="bg-white/10" />
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-sm font-medium text-white mb-4">Notification Banner</h3>
+              <p className="text-xs text-white/50 mb-4">
+                Display a sliding notification banner at the top of the hero section. The banner will slide from right to left.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="notificationVisible"
+                  checked={hero.isNotificationVisible ?? false}
+                  onChange={(event) => updateHero({ isNotificationVisible: event.target.checked })}
+                  className="w-4 h-4 rounded border-white/20 bg-black/40 text-pink-600 focus:ring-pink-500 focus:ring-2"
+                />
+                <label htmlFor="notificationVisible" className="text-sm font-medium text-white">
+                  Show Notification Banner
+                </label>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Notification Text</label>
+                <Textarea
+                  value={hero.notificationText || ""}
+                  onChange={(event) => updateHero({ notificationText: event.target.value })}
+                  placeholder="New album out now! Check it out..."
+                  className="bg-black/40 text-white placeholder:text-white/40 border-white/20 min-h-[80px]"
+                  rows={3}
+                />
+                <p className="text-xs text-white/50">
+                  The text to display in the notification banner. Leave empty to hide the banner.
+                </p>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">Link URL (Optional)</label>
+                  <Input
+                    value={hero.notificationLink || ""}
+                    onChange={(event) => updateHero({ notificationLink: event.target.value })}
+                    placeholder="/music or https://..."
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+                  />
+                  <p className="text-xs text-white/50">
+                    Optional link when users click on the notification. Can be a route or external URL.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">Link Text</label>
+                  <Input
+                    value={hero.notificationLinkText || "Learn More"}
+                    onChange={(event) => updateHero({ notificationLinkText: event.target.value })}
+                    placeholder="Learn More"
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+                  />
+                  <p className="text-xs text-white/50">
+                    The text for the link button. Only shown if a link URL is provided.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

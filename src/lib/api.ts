@@ -46,6 +46,10 @@ export const adminApi = {
     socialLinks?: any[];
     latestAlbumName?: string;
     latestAlbumLink?: string;
+    notificationText?: string;
+    notificationLink?: string;
+    notificationLinkText?: string;
+    isNotificationVisible?: boolean;
   }) =>
     request<{ 
       artistName?: string;

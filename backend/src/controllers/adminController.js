@@ -136,6 +136,10 @@ const formatHero = (hero) => ({
   socialLinks: hero.socialLinks || [],
   latestAlbumName: hero.latestAlbumName || "VIBRANIUM",
   latestAlbumLink: hero.latestAlbumLink || "/music",
+  notificationText: hero.notificationText || "",
+  notificationLink: hero.notificationLink || "",
+  notificationLinkText: hero.notificationLinkText || "Learn More",
+  isNotificationVisible: hero.isNotificationVisible ?? false,
   updatedAt: hero.updatedAt,
 });
 
@@ -160,7 +164,11 @@ const saveHeroImage = async (req, res, next) => {
       streamingPlatforms, 
       socialLinks,
       latestAlbumName,
-      latestAlbumLink
+      latestAlbumLink,
+      notificationText,
+      notificationLink,
+      notificationLinkText,
+      isNotificationVisible
     } = req.body;
     const hero = await ensureHeroSetting();
     
@@ -193,6 +201,18 @@ const saveHeroImage = async (req, res, next) => {
     }
     if (latestAlbumLink !== undefined) {
       hero.latestAlbumLink = latestAlbumLink || "/music";
+    }
+    if (notificationText !== undefined) {
+      hero.notificationText = notificationText || "";
+    }
+    if (notificationLink !== undefined) {
+      hero.notificationLink = notificationLink || "";
+    }
+    if (notificationLinkText !== undefined) {
+      hero.notificationLinkText = notificationLinkText || "Learn More";
+    }
+    if (isNotificationVisible !== undefined) {
+      hero.isNotificationVisible = isNotificationVisible ?? false;
     }
     
     await hero.save();

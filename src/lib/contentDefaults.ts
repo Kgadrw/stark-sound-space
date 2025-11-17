@@ -35,6 +35,10 @@ export const initialContent: ContentState = {
     socialLinks: [],
     latestAlbumName: "VIBRANIUM",
     latestAlbumLink: "/music",
+    notificationText: "",
+    notificationLink: "",
+    notificationLinkText: "Learn More",
+    isNotificationVisible: false,
   },
   albums: [
     {

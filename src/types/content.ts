@@ -60,6 +60,10 @@ export type HeroContent = {
   socialLinks: SocialLink[];
   latestAlbumName: string; // Album name displayed in navbar
   latestAlbumLink: string; // Link for "Listen Now" button in navbar
+  notificationText: string; // Notification banner text
+  notificationLink: string; // Optional link for notification
+  notificationLinkText: string; // Text for the notification link
+  isNotificationVisible: boolean; // Whether to show the notification
 };
 
 export type AlbumLink = {

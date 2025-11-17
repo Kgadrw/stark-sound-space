@@ -58,6 +58,22 @@ const heroSettingSchema = new mongoose.Schema(
       type: String,
       default: "/music",
     },
+    notificationText: {
+      type: String,
+      default: "",
+    },
+    notificationLink: {
+      type: String,
+      default: "",
+    },
+    notificationLinkText: {
+      type: String,
+      default: "Learn More",
+    },
+    isNotificationVisible: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );

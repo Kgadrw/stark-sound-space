@@ -9,6 +9,7 @@ import type { HeroCta, HeroNavLink, IconPreset } from "@/types/content";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
 import { adminApi } from "@/lib/api";
 import YouTubePlayer from "@/components/YouTubePlayer";
+import NotificationBanner from "@/components/NotificationBanner";
 
 type PlatformSearchItem = {
   id: string;
@@ -106,6 +107,10 @@ const Hero = () => {
   const heroImage = heroContent.backgroundImage || "/hero.jpeg";
   const heroVideoUrl = heroContent.backgroundVideoUrl || "";
   const heroName = heroContent.artistName || "NEL NGABO";
+  const notificationText = heroContent.notificationText || "";
+  const notificationLink = heroContent.notificationLink || "";
+  const notificationLinkText = heroContent.notificationLinkText || "Learn More";
+  const isNotificationVisible = heroContent.isNotificationVisible ?? false;
   
   // Constant CTA buttons - not editable by admin
   const primaryCta: HeroCta = {
@@ -290,6 +295,12 @@ const Hero = () => {
   return (
     <>
       <style>{glowStyle}</style>
+      <NotificationBanner
+        text={notificationText}
+        link={notificationLink || undefined}
+        linkText={notificationLinkText}
+        isVisible={isNotificationVisible && !!notificationText.trim()}
+      />
     <section className="fixed inset-0 h-screen w-full overflow-hidden border-0 bg-black z-[1]">
       <motion.div
         initial={{ opacity: 0, x: 20 }}
