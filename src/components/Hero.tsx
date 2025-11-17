@@ -126,12 +126,12 @@ const Hero = () => {
   // Constant CTA buttons - not editable by admin
   const primaryCta: HeroCta = {
     label: "Latest Album",
-    targetType: "scroll",
-    targetValue: "music",
+    targetType: "route",
+    targetValue: "/music",
   };
   const secondaryCta = {
     label: "Watch Now",
-    url: "https://www.youtube.com/",
+    url: "https://www.youtube.com/@nelngabo9740",
   };
 
   // Only show these streaming platforms: Spotify, Apple Music, YouTube, SoundCloud
@@ -640,9 +640,8 @@ const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="flex items-center gap-2 text-xs uppercase tracking-[0.5em] text-white/50"
+            className="text-xs uppercase tracking-[0.5em] text-white/50"
           >
-            <Music3 className="h-4 w-4" />
             Streaming
           </motion.p>
           {visibleStreamingPlatforms.length > 0 && (
