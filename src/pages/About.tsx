@@ -7,7 +7,12 @@ const About = () => {
   const { content } = useContent();
   const artistName = content.hero.artistName || "NEL NGABO";
   const about = content.about;
-  const albums = content.albums;
+  // Sort albums by createdAt (newest first)
+  const albums = [...content.albums].sort((a, b) => {
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return dateB - dateA; // Descending order (newest first)
+  });
 
   // Use artist image from about, fallback to hero image
   const artistImage = about.artistImage || content.hero.backgroundImage || "/hero.jpeg";

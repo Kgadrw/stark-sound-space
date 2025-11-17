@@ -58,6 +58,8 @@ export type HeroContent = {
   secondaryCta: HeroSecondaryCta;
   streamingPlatforms: StreamingPlatform[];
   socialLinks: SocialLink[];
+  latestAlbumName: string; // Album name displayed in navbar
+  latestAlbumLink: string; // Link for "Listen Now" button in navbar
 };
 
 export type AlbumLink = {
@@ -76,6 +78,8 @@ export type Album = {
   description: string;
   tracks: string[];
   links: AlbumLink[];
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Video = {

@@ -50,6 +50,14 @@ const heroSettingSchema = new mongoose.Schema(
         url: { type: String, default: "" },
       },
     ],
+    latestAlbumName: {
+      type: String,
+      default: "VIBRANIUM",
+    },
+    latestAlbumLink: {
+      type: String,
+      default: "/music",
+    },
   },
   { timestamps: true },
 );

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router-dom";
 import { Home, Music4, User, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, Clapperboard, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useContent } from "@/context/ContentContext";
 
 type NavbarNavLink = {
   label: string;
@@ -41,7 +42,10 @@ const waveAnimation = `
 const Navbar = ({ variant = "frontend" }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const { content } = useContent();
   const navLinks = variant === "admin" ? adminNavLinks : frontendNavLinks;
+  const latestAlbumName = content.hero.latestAlbumName || "VIBRANIUM";
+  const latestAlbumLink = content.hero.latestAlbumLink || "/music";
 
   useEffect(() => {
     const animated = sessionStorage.getItem("navbarAnimated");
@@ -131,11 +135,11 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                 ))}
               </div>
               <div className="text-[0.65rem] font-semibold tracking-[0.3em] text-white">
-                VIBRANIUM
+                {latestAlbumName}
               </div>
             </div>
             <Button variant="secondary" asChild className="uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-transform text-xs px-3 py-1.5">
-              <a href="/music">Listen</a>
+              <a href={latestAlbumLink}>Listen</a>
             </Button>
           </div>
         )}

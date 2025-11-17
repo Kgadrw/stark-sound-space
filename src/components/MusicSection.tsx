@@ -51,7 +51,12 @@ const MusicSection = () => {
   `;
 
   const { content } = useContent();
-  const albums = content.albums;
+  // Sort albums by createdAt (newest first)
+  const albums = [...content.albums].sort((a, b) => {
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return dateB - dateA; // Descending order (newest first)
+  });
 
   if (!albums.length) {
     return (

@@ -44,6 +44,8 @@ export const adminApi = {
     secondaryCta?: any;
     streamingPlatforms?: any[];
     socialLinks?: any[];
+    latestAlbumName?: string;
+    latestAlbumLink?: string;
   }) =>
     request<{ 
       artistName?: string;

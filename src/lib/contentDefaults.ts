@@ -33,6 +33,8 @@ export const initialContent: ContentState = {
       { id: createId("stream"), label: "Phone", url: "tel:+250788123456", preset: "phone" },
     ],
     socialLinks: [],
+    latestAlbumName: "VIBRANIUM",
+    latestAlbumLink: "/music",
   },
   albums: [
     {

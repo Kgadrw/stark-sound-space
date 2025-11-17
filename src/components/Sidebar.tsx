@@ -5,6 +5,7 @@ import { Home, Music4, Clapperboard, MapPin, Menu, X, Instagram, Twitter, Youtub
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/context/SidebarContext";
 import { useAuth } from "@/context/AuthContext";
+import { useContent } from "@/context/ContentContext";
 
 type SidebarNavLink = {
   label: string;
@@ -46,7 +47,10 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
   const { isHidden, setIsHidden } = useSidebar();
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const { content } = useContent();
   const navLinks = variant === "admin" ? adminNavLinks : frontendNavLinks;
+  const latestAlbumName = content.hero.latestAlbumName || "VIBRANIUM";
+  const latestAlbumLink = content.hero.latestAlbumLink || "/music";
 
   const handleLogout = () => {
     logout();
@@ -139,11 +143,11 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
                 </div>
               </div>
               <div className="text-[0.6rem] font-semibold tracking-[0.4em] text-white">
-                VIBRANIUM
+                {latestAlbumName}
               </div>
             </div>
             <Button variant="secondary" asChild className="w-full uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-transform">
-              <a href="/music">Listen</a>
+              <a href={latestAlbumLink}>Listen</a>
             </Button>
           </div>
         )}

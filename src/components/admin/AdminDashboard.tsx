@@ -158,6 +158,8 @@ export const HeroEditor = ({
         navLinks: hero.navLinks,
         streamingPlatforms: hero.streamingPlatforms,
         socialLinks: hero.socialLinks,
+        latestAlbumName: hero.latestAlbumName,
+        latestAlbumLink: hero.latestAlbumLink,
       });
       console.log("Hero saved successfully:", response);
       toast.success("Hero saved successfully!", {
@@ -233,15 +235,36 @@ export const HeroEditor = ({
                 const file = event.target.files?.[0];
                 if (!file) return;
                 try {
+                  // Check file size (limit to 2MB to avoid MongoDB document size issues)
+                  const maxSizeBytes = 2 * 1024 * 1024; // 2MB
+                  if (file.size > maxSizeBytes) {
+                    toast.error("Image too large", {
+                      description: `Image size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds the maximum of 2MB. Please compress the image or use an image hosting service and paste the URL instead.`,
+                    });
+                    event.target.value = '';
+                    return;
+                  }
                   const dataUrl = await readFileAsDataUrl(file);
+                  // Check the base64 size as well
+                  if (dataUrl.length > 3 * 1024 * 1024) { // ~3MB base64 limit
+                    toast.error("Image too large", {
+                      description: "The image is too large after encoding. Please use a smaller image or upload to an image hosting service.",
+                    });
+                    event.target.value = '';
+                    return;
+                  }
                   updateHero({ backgroundImage: dataUrl });
                   // Reset input to allow uploading same file again
                   event.target.value = '';
+                  toast.success("Image loaded", {
+                    description: "Click 'Save Changes' to update the background image.",
+                  });
                 } catch (error) {
                   console.error("Error reading file:", error);
                   toast.error("Failed to load image", {
-                    description: "Could not read the selected file.",
+                    description: error instanceof Error ? error.message : "Could not read the selected file.",
                   });
+                  event.target.value = '';
                 }
               }}
               className="w-full text-sm text-white file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
@@ -268,6 +291,41 @@ export const HeroEditor = ({
             <p className="text-xs text-white/50">
               Enter a YouTube video URL or video ID. This video will play as the background on the hero section.
             </p>
+          </div>
+          <Separator className="bg-white/10" />
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-sm font-medium text-white mb-4">Navbar Latest Album</h3>
+              <p className="text-xs text-white/50 mb-4">
+                Customize the album name and link displayed in the navbar "Listen Now" section.
+              </p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Latest Album Name</label>
+                <Input
+                  value={hero.latestAlbumName || "VIBRANIUM"}
+                  onChange={(event) => updateHero({ latestAlbumName: event.target.value })}
+                  placeholder="VIBRANIUM"
+                  className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+                />
+                <p className="text-xs text-white/50">
+                  The album name displayed next to the wave animation in the navbar.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Listen Now Link</label>
+                <Input
+                  value={hero.latestAlbumLink || "/music"}
+                  onChange={(event) => updateHero({ latestAlbumLink: event.target.value })}
+                  placeholder="/music or https://..."
+                  className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+                />
+                <p className="text-xs text-white/50">
+                  The URL for the "Listen Now" button. Can be a route (e.g., /music) or external link.
+                </p>
+              </div>
+            </div>
           </div>
           {videoPreviewUrl && (
             <div className="space-y-2">
@@ -591,16 +649,26 @@ export const AlbumsEditor = ({
                     const file = event.target.files?.[0];
                     if (!file) return;
                     try {
-                      // Check file size (limit to 5MB to avoid MongoDB issues)
-                      if (file.size > 5 * 1024 * 1024) {
+                      // Check file size (limit to 2MB to avoid MongoDB document size issues)
+                      // Base64 encoding increases size by ~33%, so 2MB file = ~2.7MB base64
+                      const maxSizeBytes = 2 * 1024 * 1024; // 2MB
+                      if (file.size > maxSizeBytes) {
                         toast.error("Image too large", {
-                          description: "Please select an image smaller than 5MB.",
+                          description: `Image size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds the maximum of 2MB. Please compress the image or use an image hosting service and paste the URL instead.`,
                         });
                         event.target.value = '';
                         return;
                       }
-                      const dataUrl = await readFileAsDataUrl(file);
-                      updateAlbum(album.id, { image: dataUrl });
+                    const dataUrl = await readFileAsDataUrl(file);
+                      // Check the base64 size as well
+                      if (dataUrl.length > 3 * 1024 * 1024) { // ~3MB base64 limit
+                        toast.error("Image too large", {
+                          description: "The image is too large after encoding. Please use a smaller image or upload to an image hosting service.",
+                        });
+                        event.target.value = '';
+                        return;
+                      }
+                    updateAlbum(album.id, { image: dataUrl });
                       // Reset input to allow uploading same file again
                       event.target.value = '';
                       toast.success("Image loaded", {
@@ -609,7 +677,7 @@ export const AlbumsEditor = ({
                     } catch (error) {
                       console.error("Error reading file:", error);
                       toast.error("Failed to load image", {
-                        description: "Could not read the selected file.",
+                        description: error instanceof Error ? error.message : "Could not read the selected file.",
                       });
                       event.target.value = '';
                     }
@@ -1406,15 +1474,24 @@ export const AboutEditor = ({
                   const file = event.target.files?.[0];
                   if (!file) return;
                   try {
-                    // Check file size (limit to 5MB to avoid MongoDB issues)
-                    if (file.size > 5 * 1024 * 1024) {
+                    // Check file size (limit to 2MB to avoid MongoDB document size issues)
+                    const maxSizeBytes = 2 * 1024 * 1024; // 2MB
+                    if (file.size > maxSizeBytes) {
                       toast.error("Image too large", {
-                        description: "Please select an image smaller than 5MB.",
+                        description: `Image size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds the maximum of 2MB. Please compress the image or use an image hosting service and paste the URL instead.`,
                       });
                       event.target.value = '';
                       return;
                     }
                     const dataUrl = await readFileAsDataUrl(file);
+                    // Check the base64 size as well
+                    if (dataUrl.length > 3 * 1024 * 1024) { // ~3MB base64 limit
+                      toast.error("Image too large", {
+                        description: "The image is too large after encoding. Please use a smaller image or upload to an image hosting service.",
+                      });
+                      event.target.value = '';
+                      return;
+                    }
                     updateAbout({ artistImage: dataUrl });
                     // Reset input to allow uploading same file again
                     event.target.value = '';
@@ -1424,7 +1501,7 @@ export const AboutEditor = ({
                   } catch (error) {
                     console.error("Error reading file:", error);
                     toast.error("Failed to load image", {
-                      description: "Could not read the selected file.",
+                      description: error instanceof Error ? error.message : "Could not read the selected file.",
                     });
                     event.target.value = '';
                   }

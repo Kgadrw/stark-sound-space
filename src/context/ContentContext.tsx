@@ -32,6 +32,8 @@ const mapAlbum = (album: any) => ({
   description: album.description ?? "",
   tracks: Array.isArray(album.tracks) ? album.tracks : [],
   links: Array.isArray(album.links) ? album.links : [],
+  createdAt: album.createdAt ? (typeof album.createdAt === 'string' ? album.createdAt : album.createdAt.toISOString()) : new Date().toISOString(),
+  updatedAt: album.updatedAt ? (typeof album.updatedAt === 'string' ? album.updatedAt : album.updatedAt.toISOString()) : new Date().toISOString(),
 });
 
 const mapVideo = (video: any) => ({
@@ -97,6 +99,8 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
           secondaryCta: hero.secondaryCta ?? prev.hero.secondaryCta,
           streamingPlatforms: hero.streamingPlatforms ?? prev.hero.streamingPlatforms,
           socialLinks: hero.socialLinks ?? prev.hero.socialLinks,
+          latestAlbumName: hero.latestAlbumName ?? prev.hero.latestAlbumName ?? "VIBRANIUM",
+          latestAlbumLink: hero.latestAlbumLink ?? prev.hero.latestAlbumLink ?? "/music",
         } : prev.hero,
         albums: (albums.albums ?? []).map(mapAlbum),
         videos: (videos.videos ?? []).map(mapVideo),

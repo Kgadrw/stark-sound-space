@@ -35,7 +35,9 @@ const MONGO_URI = process.env.MONGO_URI;
 const MONGO_DB = process.env.MONGO_DB || "stark-sound-space";
 
 app.use(cors());
-app.use(express.json());
+// Increase body parser limit to handle large image data URLs (up to 10MB)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan("dev"));
 
 // Trust proxy for correct protocol detection (needed for Render, Heroku, etc.)
@@ -69,9 +71,29 @@ app.use((req, res) => {
   res.status(404).json({ message: "Route not found", path: req.originalUrl });
 });
 
-app.use((err, _req, res, _next) => {
-  console.error(err);
-  res.status(500).json({ message: "Internal server error" });
+app.use((err, req, res, _next) => {
+  console.error("Error:", err);
+  
+  // Handle payload too large errors
+  if (err.type === 'entity.too.large') {
+    return res.status(413).json({ 
+      message: "Request payload too large",
+      error: "The image you're trying to upload is too large. Please use a smaller image (under 4MB) or upload to an image hosting service and use the URL instead."
+    });
+  }
+  
+  // Handle JSON parse errors
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ 
+      message: "Invalid JSON in request body",
+      error: "The request body contains invalid JSON. This might be due to an image that's too large."
+    });
+  }
+  
+  res.status(500).json({ 
+    message: "Internal server error",
+    error: process.env.NODE_ENV === 'development' ? err.message : "An error occurred"
+  });
 });
 
 mongoose.connection.on("connected", () => {
