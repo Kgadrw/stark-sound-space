@@ -459,7 +459,7 @@ const Hero = () => {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10 pointer-events-none" />
       </div>
-      <div className="relative z-20 h-full flex flex-col justify-end pb-12 sm:pb-10 md:pb-12 lg:pb-16 px-4 sm:px-6 gap-4 sm:gap-5 md:gap-6">
+      <div className="relative z-20 h-full flex flex-col justify-end pb-24 sm:pb-16 md:pb-12 lg:pb-16 px-4 sm:px-6 gap-4 sm:gap-5 md:gap-6">
         <div className="flex flex-col lg:flex-row items-center lg:items-end justify-center lg:justify-between gap-4 sm:gap-5 md:gap-6 lg:gap-8 w-full">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
