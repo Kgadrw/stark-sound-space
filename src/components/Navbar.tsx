@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Home, Music4, User, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, Clapperboard, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useContent } from "@/context/ContentContext";
@@ -18,6 +18,7 @@ type NavbarProps = {
 const frontendNavLinks: NavbarNavLink[] = [
   { label: "Home", to: "/", icon: Home },
   { label: "Albums", to: "/music", icon: Music4 },
+  { label: "Videos", to: "/videos", icon: Clapperboard },
   { label: "About", to: "/about", icon: User },
   { label: "Tours", to: "/tours", icon: MapPin },
 ];
@@ -25,6 +26,7 @@ const frontendNavLinks: NavbarNavLink[] = [
 const adminNavLinks: NavbarNavLink[] = [
   { label: "Hero", icon: Sparkles, to: "/admin" },
   { label: "Albums", icon: Music4, to: "/admin/albums" },
+  { label: "Videos", icon: Clapperboard, to: "/admin/videos" },
   { label: "About", icon: User, to: "/admin/about" },
   { label: "Tours", icon: MapPin, to: "/admin/tours" },
   { label: "Account", icon: Home, to: "/admin/account" },
@@ -43,6 +45,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const { content } = useContent();
+  const navigate = useNavigate();
   const navLinks = variant === "admin" ? adminNavLinks : frontendNavLinks;
   const latestAlbumName = content.hero.latestAlbumName || "VIBRANIUM";
   const latestAlbumLink = content.hero.latestAlbumLink || "/music";
@@ -67,7 +70,11 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
       >
         {/* Logo/Brand */}
         <div className="flex items-center space-x-2">
-          <div className="relative">
+          <button
+            onClick={() => navigate("/")}
+            className="relative cursor-pointer hover:opacity-80 transition-opacity"
+            aria-label="Go to homepage"
+          >
             <div className="text-lg md:text-xl font-bold tracking-[0.3em] relative z-10">
               NEL NGABO
             </div>
@@ -81,7 +88,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
             >
               NEL NGABO
             </div>
-          </div>
+          </button>
         </div>
 
         {/* Desktop Navigation */}
@@ -139,7 +146,13 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
               </div>
             </div>
             <Button variant="secondary" asChild className="uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-transform text-xs px-3 py-1.5">
-              <a href={latestAlbumLink}>Listen</a>
+              <a 
+                href={latestAlbumLink.startsWith('http') ? latestAlbumLink : `https://${latestAlbumLink}`}
+                target={latestAlbumLink.startsWith('http') ? '_blank' : undefined}
+                rel={latestAlbumLink.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >
+                Listen
+              </a>
             </Button>
           </div>
         )}
@@ -161,7 +174,16 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
               transition={{ delay: 0.1 }}
               className="flex items-center justify-between text-xs uppercase tracking-[0.4em]"
             >
-              <span>NEL NGABO</span>
+              <button
+                onClick={() => {
+                  navigate("/");
+                  setIsMobileMenuOpen(false);
+                }}
+                className="hover:opacity-80 transition-opacity cursor-pointer"
+                aria-label="Go to homepage"
+              >
+                NEL NGABO
+              </button>
               <motion.button
                 type="button"
                 onClick={() => setIsMobileMenuOpen(false)}

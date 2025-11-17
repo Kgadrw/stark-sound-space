@@ -7,6 +7,7 @@ const videoSchema = new mongoose.Schema(
     videoId: { type: String, required: true },
     views: { type: String, default: "0" },
     description: { type: String, default: "" },
+    lyrics: { type: String, default: "" },
   },
   { timestamps: true },
 );

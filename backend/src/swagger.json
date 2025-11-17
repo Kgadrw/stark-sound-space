@@ -457,7 +457,10 @@
           "youtubeUrl": { "type": "string" },
           "videoId": { "type": "string" },
           "views": { "type": "string" },
-          "description": { "type": "string" }
+          "description": { "type": "string" },
+          "lyrics": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
       "VideoInput": {
@@ -467,7 +470,8 @@
           "title": { "type": "string" },
           "youtubeUrl": { "type": "string" },
           "views": { "type": "string" },
-          "description": { "type": "string" }
+          "description": { "type": "string" },
+          "lyrics": { "type": "string" }
         }
       },
       "Tour": {

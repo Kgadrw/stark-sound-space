@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Music2, ExternalLink } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 
 const MusicSection = () => {
@@ -17,6 +18,7 @@ const MusicSection = () => {
   `;
 
   const { content } = useContent();
+  const navigate = useNavigate();
   // Sort albums by createdAt (newest first)
   const albums = [...content.albums].sort((a, b) => {
     const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
@@ -72,11 +74,12 @@ const MusicSection = () => {
               >
                 {/* Album Image */}
                 <motion.div
-                  className={`relative overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl aspect-square group ${
+                  className={`relative overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl aspect-square group cursor-pointer ${
                     isEven ? "lg:col-start-2" : ""
                   }`}
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.3 }}
+                  onClick={() => navigate(`/album/${album.id}`)}
                 >
                   <img
                     src={album.image}

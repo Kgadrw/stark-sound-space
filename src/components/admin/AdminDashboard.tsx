@@ -10,7 +10,7 @@ import { createId } from "@/lib/id";
 import { readFileAsDataUrl } from "@/lib/file";
 import { adminApi } from "@/lib/api";
 import { Trash2, Plus } from "lucide-react";
-import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
+import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl, extractYouTubeVideoId } from "@/lib/youtube";
 import { toast } from "sonner";
 
 type ContentSetter = React.Dispatch<React.SetStateAction<ContentState>>;
@@ -310,6 +310,23 @@ export const HeroEditor = ({
                 <Input
                   value={hero.latestAlbumName || "VIBRANIUM"}
                   onChange={(event) => updateHero({ latestAlbumName: event.target.value })}
+                  onBlur={async () => {
+                    try {
+                      await adminApi.updateHero({ 
+                        latestAlbumName: hero.latestAlbumName,
+                        latestAlbumLink: hero.latestAlbumLink,
+                      });
+                      toast.success("Latest album name updated", {
+                        description: "The name has been saved successfully.",
+                      });
+                      await refreshContent();
+                    } catch (error) {
+                      console.error("Failed to update latest album name", error);
+                      toast.error("Failed to update name", {
+                        description: error instanceof Error ? error.message : "Unknown error",
+                      });
+                    }
+                  }}
                   placeholder="VIBRANIUM"
                   className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
                 />
@@ -320,13 +337,30 @@ export const HeroEditor = ({
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white">Listen Now Link</label>
                 <Input
-                  value={hero.latestAlbumLink || "/music"}
+                  value={hero.latestAlbumLink || ""}
                   onChange={(event) => updateHero({ latestAlbumLink: event.target.value })}
-                  placeholder="/music or https://..."
+                  onBlur={async () => {
+                    try {
+                      await adminApi.updateHero({ 
+                        latestAlbumName: hero.latestAlbumName,
+                        latestAlbumLink: hero.latestAlbumLink,
+                      });
+                      toast.success("Latest album link updated", {
+                        description: "The link has been saved successfully.",
+                      });
+                      await refreshContent();
+                    } catch (error) {
+                      console.error("Failed to update latest album link", error);
+                      toast.error("Failed to update link", {
+                        description: error instanceof Error ? error.message : "Unknown error",
+                      });
+                    }
+                  }}
+                  placeholder="https://open.spotify.com/album/..."
                   className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
                 />
                 <p className="text-xs text-white/50">
-                  The URL for the "Listen Now" button. Can be a route (e.g., /music) or external link.
+                  External URL only (e.g., https://open.spotify.com/album/...). Must start with http:// or https://
                 </p>
               </div>
             </div>
@@ -530,6 +564,16 @@ export const AlbumsEditor = ({
     
     setSavingAlbumId(albumId);
     try {
+      // Ensure links have all required fields (id, label, url, description)
+      const formattedLinks = Array.isArray(album.links) 
+        ? album.links.map((link) => ({
+            id: link.id || createId("link"),
+            label: link.label || "",
+            url: link.url || "",
+            description: link.description || "",
+          }))
+        : [];
+      
       const payload = {
         title: album.title || "Untitled",
         year: album.year || "",
@@ -537,13 +581,15 @@ export const AlbumsEditor = ({
         summary: album.summary || "",
         description: album.description || "",
         tracks: Array.isArray(album.tracks) ? album.tracks : [],
-        links: Array.isArray(album.links) ? album.links : [],
+        links: formattedLinks,
       };
       
       console.log("Saving album:", { albumId, payload });
+      console.log("Album links being sent:", formattedLinks);
       
       const response = await adminApi.updateAlbum(albumId, payload);
       console.log("Album saved successfully:", response);
+      console.log("Links in response:", response.links);
       toast.success("Album saved successfully!", {
         description: `"${album.title}" has been saved to the database.`,
       });
@@ -552,6 +598,7 @@ export const AlbumsEditor = ({
       console.error("Failed to save album", error);
       console.error("Album ID:", albumId);
       console.error("Album data:", album);
+      console.error("Album links:", album.links);
       
       const errorMessage = error instanceof Error 
         ? error.message 
@@ -867,6 +914,7 @@ export const VideosEditor = ({
       title: "New Video",
       youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       description: "Add description",
+      lyrics: "",
     };
     try {
       const response = await adminApi.createVideo(placeholder);
@@ -888,10 +936,19 @@ export const VideosEditor = ({
     if (!video) return;
     setSavingVideoId(videoId);
     try {
+      // Build YouTube URL from videoId if it exists, or use youtubeUrl if it's set
+      let youtubeUrl = video.videoId ? `https://www.youtube.com/watch?v=${video.videoId}` : "";
+      
+      // If there's a youtubeUrl property, use it
+      if ((video as any).youtubeUrl) {
+        youtubeUrl = (video as any).youtubeUrl;
+      }
+      
       const response = await adminApi.updateVideo(videoId, {
         title: video.title,
-        description: video.description,
-        youtubeUrl: `https://www.youtube.com/watch?v=${video.videoId}`,
+        description: video.description || "",
+        lyrics: video.lyrics || "",
+        youtubeUrl: youtubeUrl,
       });
       console.log("Video saved successfully:", response);
       toast.success("Video saved successfully!", {
@@ -992,12 +1049,41 @@ export const VideosEditor = ({
                 <Input value={video.title} onChange={(event) => updateVideo(video.id, { title: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">YouTube Video ID</label>
-                <Input value={video.videoId} onChange={(event) => updateVideo(video.id, { videoId: event.target.value })} placeholder="lBnokNKI38I" className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
+                <label className="text-sm font-medium text-white">YouTube URL</label>
+                <Input 
+                  value={(video as any).youtubeUrl || (video.videoId ? `https://www.youtube.com/watch?v=${video.videoId}` : "")} 
+                  onChange={(event) => {
+                    const url = event.target.value;
+                    const extractedId = extractYouTubeVideoId(url);
+                    if (extractedId) {
+                      updateVideo(video.id, { videoId: extractedId, youtubeUrl: url } as any);
+                    } else {
+                      updateVideo(video.id, { youtubeUrl: url } as any);
+                    }
+                  }} 
+                  placeholder="https://www.youtube.com/watch?v=..." 
+                  className="bg-black/40 text-white placeholder:text-white/40 border-white/20" 
+                />
+                <p className="text-xs text-white/50">
+                  Paste a YouTube URL or video ID. The video ID will be extracted automatically.
+                </p>
               </div>
               <div className="space-y-2 lg:col-span-2">
                 <label className="text-sm font-medium text-white">Description</label>
                 <Textarea value={video.description} rows={3} onChange={(event) => updateVideo(video.id, { description: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
+              </div>
+              <div className="space-y-2 lg:col-span-2">
+                <label className="text-sm font-medium text-white">Lyrics (Optional)</label>
+                <Textarea 
+                  value={video.lyrics || ""} 
+                  rows={8} 
+                  onChange={(event) => updateVideo(video.id, { lyrics: event.target.value })} 
+                  placeholder="Enter song lyrics here..."
+                  className="bg-black/40 text-white placeholder:text-white/40 border-white/20" 
+                />
+                <p className="text-xs text-white/50">
+                  Optional: Add song lyrics for this video.
+                </p>
               </div>
             </CardContent>
             </Card>

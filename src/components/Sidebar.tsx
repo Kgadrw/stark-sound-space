@@ -147,7 +147,13 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
               </div>
             </div>
             <Button variant="secondary" asChild className="w-full uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-transform">
-              <a href={latestAlbumLink}>Listen</a>
+              <a 
+                href={latestAlbumLink.startsWith('http') ? latestAlbumLink : latestAlbumLink ? `https://${latestAlbumLink}` : '/music'}
+                target={latestAlbumLink && latestAlbumLink.startsWith('http') ? '_blank' : undefined}
+                rel={latestAlbumLink && latestAlbumLink.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >
+                Listen
+              </a>
             </Button>
           </div>
         )}

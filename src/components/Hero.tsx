@@ -20,6 +20,7 @@ type PlatformSearchItem = {
   targetId?: string;
   elementId?: string;
   externalUrl?: string;
+  routeUrl?: string; // For routing to specific pages like /video/:id, /album/:id
 };
 
 const BASE_SEARCH_ITEMS: PlatformSearchItem[] = [
@@ -28,14 +29,23 @@ const BASE_SEARCH_ITEMS: PlatformSearchItem[] = [
     label: "Music Catalog",
     category: "Section",
     targetId: "music",
+    routeUrl: "/music",
     description: "Explore every album and track released so far.",
     keywords: ["music", "albums", "tracks", "discography"],
+  },
+  {
+    id: "section-videos",
+    label: "Videos",
+    category: "Section",
+    routeUrl: "/videos",
+    description: "Watch music videos and performances.",
+    keywords: ["videos", "music videos", "performances", "youtube"],
   },
   {
     id: "section-about",
     label: "About",
     category: "Section",
-    targetId: "about",
+    routeUrl: "/about",
     description: "Learn more about the artist and their journey.",
     keywords: ["about", "artist", "biography", "info"],
   },
@@ -43,7 +53,7 @@ const BASE_SEARCH_ITEMS: PlatformSearchItem[] = [
     id: "section-tours",
     label: "Upcoming Tours",
     category: "Section",
-    targetId: "tours",
+    routeUrl: "/tours",
     description: "See the full schedule and get tickets.",
     keywords: ["tour", "tickets", "schedule", "live"],
   },
@@ -148,6 +158,69 @@ const Hero = () => {
   const handleHeroNav = (nav: HeroNavLink) => handleTargetAction(nav.targetType, nav.targetValue);
   const handleHeroCta = (cta: HeroCta) => handleTargetAction(cta.targetType, cta.targetValue);
 
+  // Create content-based search items from context
+  const contentSearchItems = useMemo(() => {
+    const items: PlatformSearchItem[] = [];
+
+    // Add videos
+    content.videos.forEach((video) => {
+      items.push({
+        id: `video-${video.id}`,
+        label: video.title,
+        category: "Video",
+        description: video.description || "",
+        keywords: [video.title, ...(video.description ? video.description.split(" ") : [])],
+        routeUrl: `/video/${video.id}`,
+      });
+    });
+
+    // Add albums
+    content.albums.forEach((album) => {
+      const keywords = [
+        album.title,
+        album.year,
+        ...(album.tracks || []),
+        ...(album.summary ? album.summary.split(" ") : []),
+        ...(album.description ? album.description.split(" ") : []),
+      ].filter(Boolean);
+      
+      items.push({
+        id: `album-${album.id}`,
+        label: album.title,
+        category: "Album",
+        description: `${album.year} · ${(album.tracks || []).length} tracks${album.summary ? ` · ${album.summary}` : ""}`,
+        keywords,
+        routeUrl: `/album/${album.id}`,
+      });
+    });
+
+    // Add tours
+    content.tours.forEach((tour) => {
+      items.push({
+        id: `tour-${tour.id}`,
+        label: `${tour.city} - ${tour.venue}`,
+        category: "Tour",
+        description: `${tour.date} · ${tour.city}`,
+        keywords: [tour.city, tour.venue, tour.date],
+        routeUrl: "/tours",
+      });
+    });
+
+    // Add about page if there's content
+    if (content.about.biography || content.about.careerHighlights.length > 0) {
+      items.push({
+        id: "about-page",
+        label: "About",
+        category: "Page",
+        description: "Learn about the artist",
+        keywords: ["about", "artist", "biography", ...content.about.careerHighlights],
+        routeUrl: "/about",
+      });
+    }
+
+    return items;
+  }, [content]);
+
   useEffect(() => {
     const collectDynamicItems = () => {
       const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-search-item]"));
@@ -162,7 +235,7 @@ const Hero = () => {
           keywords,
           targetId: element.dataset.searchTarget,
           elementId: element.dataset.searchTargetElement ?? element.id,
-          externalUrl: element.dataset.searchExternalUrl,
+          externalUrl: element.dataset.externalUrl,
         };
       });
       setDynamicSearchItems(items);
@@ -176,8 +249,12 @@ const Hero = () => {
       ...item,
       searchText: `${item.label} ${item.category} ${item.description ?? ""} ${item.keywords.join(" ")}`.toLowerCase(),
     });
-    return [...BASE_SEARCH_ITEMS.map(project), ...dynamicSearchItems.map(project)];
-  }, [dynamicSearchItems]);
+    return [
+      ...BASE_SEARCH_ITEMS.map(project), 
+      ...contentSearchItems.map(project),
+      ...dynamicSearchItems.map(project)
+    ];
+  }, [dynamicSearchItems, contentSearchItems]);
 
   const filteredSuggestions = useMemo(() => {
     if (!searchQuery.trim()) return searchIndex.slice(0, 6);
@@ -219,12 +296,27 @@ const Hero = () => {
       window.open(item.externalUrl, "_blank", "noopener,noreferrer");
       return;
     }
+    if (item.routeUrl) {
+      navigate(item.routeUrl);
+      setSearchQuery("");
+      setIsSearchOpen(false);
+      return;
+    }
     if (item.targetId) {
+      // Check if targetId is a route (starts with /)
+      if (item.targetId.startsWith("/")) {
+        navigate(item.targetId);
+        setSearchQuery("");
+        setIsSearchOpen(false);
+        return;
+      }
       document.getElementById(item.targetId)?.scrollIntoView({ behavior: "smooth" });
     }
     if (item.elementId) {
       document.getElementById(item.elementId)?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
+    setSearchQuery("");
+    setIsSearchOpen(false);
   };
 
   const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {

@@ -97,6 +97,7 @@ const formatVideo = (video) => ({
   videoId: video.videoId,
   views: video.views,
   description: video.description,
+  lyrics: video.lyrics || "",
   createdAt: video.createdAt,
   updatedAt: video.updatedAt,
 });
@@ -332,9 +333,12 @@ const updateAlbumHandler = async (req, res, next) => {
     }
     if (links !== undefined) {
       try {
+        console.log("Updating album links:", JSON.stringify(links, null, 2));
         album.links = ensureLinks(Array.isArray(links) ? links : []);
+        console.log("Processed album links:", JSON.stringify(album.links, null, 2));
       } catch (linksError) {
         console.error("Error processing links:", linksError);
+        console.error("Links error stack:", linksError.stack);
         album.links = [];
       }
     }
@@ -462,7 +466,7 @@ const listVideos = async (_req, res, next) => {
 
 const createVideo = async (req, res, next) => {
   try {
-    const { title, youtubeUrl, views, description } = req.body;
+    const { title, youtubeUrl, views, description, lyrics } = req.body;
     if (!title || !youtubeUrl) {
       return res.status(400).json({ message: "title and youtubeUrl are required" });
     }
@@ -476,6 +480,7 @@ const createVideo = async (req, res, next) => {
       videoId,
       views: views ?? "0",
       description: description ?? "",
+      lyrics: lyrics ?? "",
     });
     res.status(201).json(formatVideo(video));
   } catch (error) {
@@ -486,7 +491,7 @@ const createVideo = async (req, res, next) => {
 const updateVideoHandler = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, youtubeUrl, views, description } = req.body;
+    const { title, youtubeUrl, views, description, lyrics } = req.body;
     const video = await Video.findById(id);
     if (!video) {
       return res.status(404).json({ message: "Video not found" });
@@ -500,6 +505,9 @@ const updateVideoHandler = async (req, res, next) => {
     }
     if (description !== undefined) {
       video.description = description;
+    }
+    if (lyrics !== undefined) {
+      video.lyrics = lyrics || "";
     }
     if (youtubeUrl !== undefined) {
       const videoId = extractVideoId(youtubeUrl);

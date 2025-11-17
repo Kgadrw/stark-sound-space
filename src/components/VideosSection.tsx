@@ -1,23 +1,36 @@
-import { motion } from "framer-motion";
-import { Play, Youtube } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play, Youtube, Search } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { getYouTubeThumbnailUrl } from "@/lib/youtube";
-import YouTubePlayer from "@/components/YouTubePlayer";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState, useMemo, useRef, useEffect } from "react";
 
 const VideosSection = () => {
   const { content } = useContent();
   const videos = content.videos;
-  const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const getYear = (video: typeof videos[0]) => {
-    if (video.createdAt) {
-      return new Date(video.createdAt).getFullYear().toString();
+  // Filter videos based on search query
+  const filteredVideos = useMemo(() => {
+    if (!searchQuery.trim()) return videos;
+    const query = searchQuery.toLowerCase();
+    return videos.filter((video) => 
+      video.title.toLowerCase().includes(query) ||
+      (video.description && video.description.toLowerCase().includes(query)) ||
+      (video.lyrics && video.lyrics.toLowerCase().includes(query))
+    );
+  }, [videos, searchQuery]);
+
+  useEffect(() => {
+    if (isSearchOpen) {
+      searchInputRef.current?.focus();
+    } else {
+      searchInputRef.current?.blur();
     }
-    // Try to extract year from title or description
-    const yearMatch = (video.title + " " + video.description).match(/\b(19|20)\d{2}\b/);
-    return yearMatch ? yearMatch[0] : "";
-  };
+  }, [isSearchOpen]);
 
   if (!videos.length) {
     return (
@@ -50,19 +63,73 @@ const VideosSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
       
       <div className="relative z-10 max-w-7xl mx-auto">
+        {/* Search Bar - Same design as Hero */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-16"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mb-8 md:mb-12 flex items-center gap-2 sm:gap-3 justify-end"
         >
-          <h2 className="text-5xl md:text-7xl font-bold tracking-[0.3em] text-white uppercase">VIDEOS</h2>
+          <motion.button
+            type="button"
+            onClick={() => setIsSearchOpen((prev) => !prev)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`relative z-10 flex h-10 w-10 items-center justify-center border border-white/40 bg-black/80 backdrop-blur-sm text-white shadow-lg transition hover:border-white hover:bg-black ${
+              isSearchOpen ? "border-white bg-black" : ""
+            }`}
+            aria-label="Toggle search"
+          >
+            <Search className="h-4 w-4" strokeWidth={2.5} />
+          </motion.button>
+          <AnimatePresence>
+            {isSearchOpen && (
+              <motion.div
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: "auto" }}
+                exit={{ opacity: 0, width: 0 }}
+                transition={{ duration: 0.3 }}
+                className="relative z-10"
+              >
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                  }}
+                  className="relative z-10 flex items-center border border-white/20 bg-black/80 px-4 py-2 text-white backdrop-blur-xl shadow-lg"
+                >
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder="Search videos..."
+                    className="relative z-10 w-36 sm:w-52 bg-transparent text-xs uppercase tracking-[0.3em] text-white placeholder:text-white/30 focus:outline-none"
+                    onBlur={(event) => {
+                      // delay closing to allow click on videos
+                      setTimeout(() => {
+                        const nextTarget = event.relatedTarget as HTMLElement | null;
+                        if (!nextTarget?.closest(".group")) {
+                          setIsSearchOpen(false);
+                        }
+                      }, 120);
+                    }}
+                  />
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          {searchQuery && isSearchOpen && (
+            <p className="text-xs text-white/50 uppercase tracking-[0.2em]">
+              {filteredVideos.length} {filteredVideos.length === 1 ? 'video' : 'videos'}
+            </p>
+          )}
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {videos.map((video, index) => {
+        {/* Video Grid */}
+        {filteredVideos.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+            {filteredVideos.map((video, index) => {
             const thumbnailUrl = getYouTubeThumbnailUrl(video.videoId);
-            const year = getYear(video);
             
             return (
               <motion.div
@@ -78,12 +145,13 @@ const VideosSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                whileHover={{ y: -5 }}
-                className="group relative cursor-pointer"
-                onClick={() => setSelectedVideo({ id: video.videoId, title: video.title })}
+                className="group"
               >
                 {/* Thumbnail */}
-                <div className="relative aspect-square overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl transition-all duration-500 group-hover:border-white/30">
+                <div 
+                  className="relative aspect-video overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl transition-all duration-500 group-hover:border-white/30 cursor-pointer mb-4"
+                  onClick={() => navigate(`/video/${video.id}`)}
+                >
                   {thumbnailUrl ? (
                     <img
                       src={thumbnailUrl}
@@ -92,44 +160,42 @@ const VideosSection = () => {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-black/60">
-                      <Youtube className="h-12 w-12 text-white/30" />
+                      <Youtube className="h-16 w-16 text-white/30" />
                     </div>
                   )}
                   
                   {/* Play overlay */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/40">
-                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                      <Play className="w-8 h-8 text-white ml-1" fill="currentColor" />
+                    <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <Play className="w-10 h-10 text-white ml-1" fill="currentColor" />
                     </div>
                   </div>
 
                   {/* Corner accent */}
-                  <div className="pointer-events-none absolute top-0 right-0 h-12 w-12 border-t-2 border-r-2 border-pink-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  <div className="pointer-events-none absolute top-0 right-0 h-16 w-16 border-t-2 border-r-2 border-pink-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
 
-                {/* Title and Year */}
-                <div className="mt-4 space-y-1">
-                  <h3 className="text-lg font-bold text-white tracking-[0.1em] uppercase line-clamp-2 group-hover:text-pink-400 transition-colors">
+                {/* Video Title */}
+                <div className="mb-3">
+                  <h3 className="text-lg md:text-xl font-semibold text-white uppercase tracking-wide elms-sans">
                     {video.title}
                   </h3>
-                  {year && (
-                    <p className="text-xs text-white/50 uppercase tracking-[0.3em]">
-                      {year}
-                    </p>
-                  )}
                 </div>
               </motion.div>
             );
           })}
-        </div>
-        
-        {selectedVideo && (
-          <YouTubePlayer
-            videoId={selectedVideo.id}
-            title={selectedVideo.title}
-            isOpen={!!selectedVideo}
-            onClose={() => setSelectedVideo(null)}
-          />
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="text-center py-12"
+          >
+            <p className="text-white/60 text-lg uppercase tracking-[0.2em] elms-sans">
+              No videos found matching "{searchQuery}"
+            </p>
+          </motion.div>
         )}
       </div>
     </section>

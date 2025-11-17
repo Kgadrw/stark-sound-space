@@ -107,12 +107,12 @@ export const adminApi = {
       method: "DELETE",
     }),
   getVideos: () => request<{ videos: any[] }>("/admin/videos"),
-  createVideo: (payload: { title: string; youtubeUrl: string; views?: string; description?: string }) =>
+  createVideo: (payload: { title: string; youtubeUrl: string; views?: string; description?: string; lyrics?: string }) =>
     request("/admin/videos", {
       method: "POST",
       json: payload,
     }),
-  updateVideo: (id: string, payload: { title?: string; youtubeUrl?: string; views?: string; description?: string }) =>
+  updateVideo: (id: string, payload: { title?: string; youtubeUrl?: string; views?: string; description?: string; lyrics?: string }) =>
     request(`/admin/videos/${id}`, {
       method: "PUT",
       json: payload,

@@ -91,7 +91,9 @@ export type Video = {
   title: string;
   views: string;
   videoId: string;
+  youtubeUrl?: string;
   description: string;
+  lyrics?: string;
 };
 
 export type Tour = {

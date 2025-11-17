@@ -41,7 +41,9 @@ const mapVideo = (video: any) => ({
   title: video.title ?? "Untitled video",
   views: video.views ?? "0",
   videoId: video.videoId ?? "",
+  youtubeUrl: video.youtubeUrl ?? "",
   description: video.description ?? "",
+  lyrics: video.lyrics ?? "",
   createdAt: video.createdAt ?? video.updatedAt ?? new Date().toISOString(),
 });
 
