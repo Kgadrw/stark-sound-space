@@ -94,6 +94,8 @@ export type Video = {
   youtubeUrl?: string;
   description: string;
   lyrics?: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Tour = {

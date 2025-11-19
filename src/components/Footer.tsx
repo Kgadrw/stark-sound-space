@@ -30,8 +30,7 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl font-normal tracking-tighter"
-            style={{ fontFamily: '"Kablammo", "Oi", cursive' }}
+            className="text-3xl font-normal"
           >
             NEL NGABO
           </motion.div>
