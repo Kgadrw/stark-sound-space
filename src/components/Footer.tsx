@@ -76,7 +76,7 @@ const Footer = () => {
             transition={{ delay: 0.8 }}
             className="text-sm text-gray-400"
           >
-            © 2024 NEL NGABO. ALL RIGHTS RESERVED.
+            © {new Date().getFullYear()} NEL NGABO. ALL RIGHTS RESERVED.
           </motion.p>
         </div>
       </div>
