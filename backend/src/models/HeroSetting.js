@@ -39,7 +39,7 @@ const heroSettingSchema = new mongoose.Schema(
         url: { type: String, default: "" },
         preset: {
           type: String,
-          enum: ["spotify", "appleMusic", "youtube", "soundcloud", "tiktok", "instagram", "x", "facebook", "mail", "phone", "website"],
+          enum: ["spotify", "appleMusic", "youtube", "soundcloud", "boomplay", "tiktok", "instagram", "x", "facebook", "mail", "phone", "website"],
           default: "website",
         },
       },

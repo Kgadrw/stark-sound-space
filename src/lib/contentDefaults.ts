@@ -25,6 +25,7 @@ export const initialContent: ContentState = {
       { id: createId("stream"), label: "Apple Music", url: "https://music.apple.com/", preset: "appleMusic" },
       { id: createId("stream"), label: "YouTube", url: "https://www.youtube.com/@nelngabo9740", preset: "youtube" },
       { id: createId("stream"), label: "SoundCloud", url: "https://soundcloud.com/", preset: "soundcloud" },
+      { id: createId("stream"), label: "Boomplay", url: "https://www.boomplay.com/artists/2599783?srModel=COPYLINK&srList=WEB", preset: "boomplay" },
       { id: createId("stream"), label: "TikTok", url: "https://www.tiktok.com/@nelngabo", preset: "tiktok" },
       { id: createId("stream"), label: "Instagram", url: "https://www.instagram.com/nelngabo", preset: "instagram" },
       { id: createId("stream"), label: "X", url: "https://twitter.com/nelngabo", preset: "x" },

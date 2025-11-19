@@ -1,13 +1,60 @@
 import { motion } from "framer-motion";
-import { Instagram, Twitter, Youtube, Facebook } from "lucide-react";
+import { Instagram, Twitter, Youtube, Facebook, Music2, type LucideIcon } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
+
+const iconMap: Record<string, LucideIcon> = {
+  instagram: Instagram,
+  twitter: Twitter,
+  x: Twitter,
+  youtube: Youtube,
+  facebook: Facebook,
+  tiktok: Music2,
+};
+
+const detectIconFromUrl = (url: string): LucideIcon => {
+  const lowerUrl = url.toLowerCase();
+  if (lowerUrl.includes("instagram")) return Instagram;
+  if (lowerUrl.includes("twitter") || lowerUrl.includes("x.com")) return Twitter;
+  if (lowerUrl.includes("facebook")) return Facebook;
+  if (lowerUrl.includes("tiktok")) return Music2;
+  if (lowerUrl.includes("youtube")) return Youtube;
+  return Instagram; // Default fallback
+};
+
+const getLabelFromUrl = (url: string): string => {
+  const lowerUrl = url.toLowerCase();
+  if (lowerUrl.includes("instagram")) return "Instagram";
+  if (lowerUrl.includes("twitter") || lowerUrl.includes("x.com")) return "Twitter";
+  if (lowerUrl.includes("facebook")) return "Facebook";
+  if (lowerUrl.includes("tiktok")) return "TikTok";
+  if (lowerUrl.includes("youtube")) return "YouTube";
+  return "Social";
+};
 
 const Footer = () => {
-  const socialLinks = [
-    { href: "https://www.instagram.com/nelngabo/", icon: Instagram, label: "Instagram" },
-    { href: "https://twitter.com/nelngabo", icon: Twitter, label: "Twitter" },
-    { href: "https://www.youtube.com/@nelngabo9740", icon: Youtube, label: "YouTube" },
-    { href: "https://facebook.com/nelngabo", icon: Facebook, label: "Facebook" },
-  ];
+  const { content } = useContent();
+  
+  // Get social links from admin portal
+  const adminSocialLinks = content.hero.socialLinks ?? [];
+  
+  // Map admin social links to footer format, or use fallback if none exist
+  const socialLinks = adminSocialLinks.length > 0 
+    ? adminSocialLinks
+        .filter((link) => link.url && link.url.trim() !== "") // Filter out empty URLs
+        .map((link) => ({
+          id: link.id,
+          href: link.url,
+          icon: detectIconFromUrl(link.url),
+          label: getLabelFromUrl(link.url),
+        }))
+    : [
+        // Fallback to default links if none are set in admin
+        { id: "instagram", href: "https://www.instagram.com/nelngabo/", icon: Instagram, label: "Instagram" },
+        { id: "twitter", href: "https://twitter.com/nelngabo", icon: Twitter, label: "Twitter" },
+        { id: "youtube", href: "https://www.youtube.com/@nelngabo9740", icon: Youtube, label: "YouTube" },
+        { id: "facebook", href: "https://facebook.com/nelngabo", icon: Facebook, label: "Facebook" },
+        { id: "tiktok", href: "https://www.tiktok.com/@nelngabo", icon: Music2, label: "TikTok" },
+      ];
 
 
   return (
@@ -51,9 +98,9 @@ const Footer = () => {
             transition={{ delay: 0.3 }}
             className="flex space-x-6"
           >
-            {socialLinks.map(({ href, icon: Icon, label }, index) => (
+            {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
               <motion.a
-                key={label}
+                key={id || index}
                 href={href}
                 initial={{ opacity: 0, scale: 0 }}
                 whileInView={{ opacity: 1, scale: 1 }}

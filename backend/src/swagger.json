@@ -536,7 +536,7 @@
                 "url": { "type": "string" },
                 "preset": {
                   "type": "string",
-                  "enum": ["spotify", "appleMusic", "youtube", "soundcloud", "tiktok", "instagram", "x", "facebook", "mail", "phone", "website"]
+                  "enum": ["spotify", "appleMusic", "youtube", "soundcloud", "boomplay", "tiktok", "instagram", "x", "facebook", "mail", "phone", "website"]
                 }
               }
             }
@@ -603,7 +603,7 @@
                 "url": { "type": "string" },
                 "preset": {
                   "type": "string",
-                  "enum": ["spotify", "appleMusic", "youtube", "soundcloud", "tiktok", "instagram", "x", "facebook", "mail", "phone", "website"]
+                  "enum": ["spotify", "appleMusic", "youtube", "soundcloud", "boomplay", "tiktok", "instagram", "x", "facebook", "mail", "phone", "website"]
                 }
               }
             }

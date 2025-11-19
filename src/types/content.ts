@@ -21,6 +21,7 @@ export type IconPreset =
   | "appleMusic"
   | "youtube"
   | "soundcloud"
+  | "boomplay"
   | "tiktok"
   | "instagram"
   | "x"

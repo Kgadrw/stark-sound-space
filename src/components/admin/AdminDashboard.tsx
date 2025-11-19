@@ -33,6 +33,7 @@ const iconPresetOptions: Array<{ value: IconPreset; label: string }> = [
   { value: "appleMusic", label: "Apple Music" },
   { value: "youtube", label: "YouTube" },
   { value: "soundcloud", label: "SoundCloud" },
+  { value: "boomplay", label: "Boomplay" },
   { value: "tiktok", label: "TikTok" },
   { value: "instagram", label: "Instagram" },
   { value: "x", label: "X / Twitter" },

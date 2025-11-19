@@ -38,7 +38,7 @@ export function getYouTubeEmbedUrl(videoIdOrUrl: string | null | undefined): str
 }
 
 /**
- * Generates YouTube thumbnail URL from video ID or URL
+ * Generates YouTube thumbnail URL from video ID or URL (HD quality)
  */
 export function getYouTubeThumbnailUrl(videoIdOrUrl: string | null | undefined): string | null {
   if (!videoIdOrUrl) return null;
@@ -46,6 +46,7 @@ export function getYouTubeThumbnailUrl(videoIdOrUrl: string | null | undefined):
   const videoId = extractYouTubeVideoId(videoIdOrUrl);
   if (!videoId) return null;
 
-  return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+  // Use maxresdefault for HD quality (1280x720), falls back to hqdefault (480x360) if not available
+  return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 }
 
