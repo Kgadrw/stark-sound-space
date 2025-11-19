@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const formatTourDate = (value: string) => {
   const parsed = new Date(value);
@@ -9,8 +10,23 @@ const formatTourDate = (value: string) => {
 };
 
 const ToursSection = () => {
-  const { content } = useContent();
+  const { content, isLoading } = useContent();
   const tours = content.tours;
+
+  if (isLoading) {
+    return (
+      <section id="tours" className="py-24 bg-background relative overflow-hidden p-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
+          <Skeleton className="h-16 w-48 mb-16 bg-muted" />
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-32 w-full bg-muted" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   if (!tours.length) {
     return (

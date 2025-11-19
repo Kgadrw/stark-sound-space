@@ -2,11 +2,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, Youtube, Search } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { getYouTubeThumbnailUrl } from "@/lib/youtube";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo, useRef, useEffect } from "react";
 
 const VideosSection = () => {
-  const { content } = useContent();
+  const { content, isLoading } = useContent();
   const videos = content.videos;
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,6 +32,27 @@ const VideosSection = () => {
       searchInputRef.current?.blur();
     }
   }, [isSearchOpen]);
+
+  if (isLoading) {
+    return (
+      <section id="videos" className="min-h-screen bg-black relative overflow-hidden py-24 px-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <div className="mb-8 md:mb-12 flex items-center gap-2 sm:gap-3 justify-end">
+            <Skeleton className="h-10 w-10 bg-white/10" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="aspect-video w-full rounded-lg bg-white/10" />
+                <Skeleton className="h-6 w-3/4 bg-white/10" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   if (!videos.length) {
     return (

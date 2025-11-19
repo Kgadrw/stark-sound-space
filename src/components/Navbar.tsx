@@ -17,6 +17,7 @@ type NavbarProps = {
 
 const frontendNavLinks: NavbarNavLink[] = [
   { label: "Home", to: "/", icon: Home },
+  { label: "Audio", to: "/#audio-music", icon: Music4 },
   { label: "Albums", to: "/music", icon: Music4 },
   { label: "Videos", to: "/videos", icon: Clapperboard },
   { label: "About", to: "/about", icon: User },
@@ -85,25 +86,58 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-2">
-          {navLinks.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={label}
-              to={to}
-              end={variant === "admin" && to === "/administrationneln"}
-              className={({ isActive }) =>
-                [
-                  "px-4 py-2 text-sm uppercase tracking-[0.2em] transition",
-                  isActive ? "text-white" : "text-white/60 hover:text-white",
-                ].join(" ")
+          {navLinks.map(({ to, label, icon: Icon }) => {
+            const isHashLink = to.includes('#');
+            const handleClick = (e: React.MouseEvent) => {
+              if (isHashLink) {
+                e.preventDefault();
+                const hash = to.split('#')[1];
+                if (hash) {
+                  const element = document.getElementById(hash);
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    navigate('/');
+                    setTimeout(() => {
+                      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }
+                }
               }
-            >
-              {({ isActive }) => (
-                <span className={isActive ? "underline decoration-white decoration-2 underline-offset-8" : ""}>
+            };
+
+            if (isHashLink) {
+              return (
+                <button
+                  key={label}
+                  onClick={handleClick}
+                  className="px-4 py-2 text-sm uppercase tracking-[0.2em] transition text-white/60 hover:text-white"
+                >
                   {label}
-                </span>
-              )}
-            </NavLink>
-          ))}
+                </button>
+              );
+            }
+
+            return (
+              <NavLink
+                key={label}
+                to={to}
+                end={variant === "admin" && to === "/administrationneln"}
+                className={({ isActive }) =>
+                  [
+                    "px-4 py-2 text-sm uppercase tracking-[0.2em] transition",
+                    isActive ? "text-white" : "text-white/60 hover:text-white",
+                  ].join(" ")
+                }
+              >
+                {({ isActive }) => (
+                  <span className={isActive ? "underline decoration-white decoration-2 underline-offset-8" : ""}>
+                    {label}
+                  </span>
+                )}
+              </NavLink>
+            );
+          })}
         </nav>
 
         {/* Mobile Menu Button */}
@@ -193,28 +227,68 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
               </motion.button>
             </motion.div>
             <nav className="flex flex-col gap-6 text-3xl font-bold tracking-[0.2em]">
-              {navLinks.map(({ to, label }, index) => (
-                <motion.div
-                  key={label}
-                  initial={{ x: -50, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 + index * 0.1 }}
-                >
-                  <NavLink
-                    to={to}
-                    end={variant === "admin" && to === "/administrationneln"}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={({ isActive }) =>
-                      [
-                        "uppercase transition relative",
-                        isActive ? "text-white underline decoration-white decoration-2 underline-offset-8" : "text-white/60 hover:text-white",
-                      ].join(" ")
+              {navLinks.map(({ to, label }, index) => {
+                const isHashLink = to.includes('#');
+                const handleClick = (e: React.MouseEvent) => {
+                  setIsMobileMenuOpen(false);
+                  if (isHashLink) {
+                    e.preventDefault();
+                    const hash = to.split('#')[1];
+                    if (hash) {
+                      const element = document.getElementById(hash);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      } else {
+                        navigate('/');
+                        setTimeout(() => {
+                          document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
+                      }
                     }
+                  }
+                };
+
+                if (isHashLink) {
+                  return (
+                    <motion.div
+                      key={label}
+                      initial={{ x: -50, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: 0.2 + index * 0.1 }}
+                    >
+                      <button
+                        onClick={handleClick}
+                        className="uppercase transition relative text-white/60 hover:text-white"
+                      >
+                        {label}
+                      </button>
+                    </motion.div>
+                  );
+                }
+
+                return (
+                  <motion.div
+                    key={label}
+                    initial={{ x: -50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 + index * 0.1 }}
                   >
-                    {label}
-                  </NavLink>
-                </motion.div>
-              ))}
+                    <NavLink
+                      to={to}
+                      end={variant === "admin" && to === "/administrationneln"}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={({ isActive }) =>
+                        [
+                          "uppercase transition relative",
+                          isActive ? "text-white underline decoration-white decoration-2 underline-offset-8" : "text-white/60 hover:text-white",
+                        ].join(" ")
+                      }
+                    >
+                      {label}
+                    </NavLink>
+                  </motion.div>
+                );
+              })}
             </nav>
             {variant === "frontend" && (
               <motion.div

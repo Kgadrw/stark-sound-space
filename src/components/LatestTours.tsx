@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useMemo } from "react";
 
 const formatTourDate = (value: string) => {
@@ -11,7 +12,7 @@ const formatTourDate = (value: string) => {
 };
 
 const LatestTours = () => {
-  const { content } = useContent();
+  const { content, isLoading } = useContent();
 
   // Sort tours by date (newest first) and get the latest ones
   const latestTours = useMemo(() => {
@@ -22,6 +23,24 @@ const LatestTours = () => {
     });
     return sorted; // Return all tours, or you can limit with .slice(0, N)
   }, [content.tours]);
+
+  if (isLoading) {
+    return (
+      <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <div className="mb-12 text-center">
+            <Skeleton className="h-12 w-32 mx-auto bg-white/10" />
+          </div>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-32 w-full rounded-lg bg-white/10" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   if (latestTours.length === 0) {
     return null;

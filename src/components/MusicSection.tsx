@@ -1,24 +1,16 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ExternalLink, X } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-
+import { Skeleton } from "@/components/ui/skeleton";
 
 const MusicSection = () => {
-  const orbitronStyle = `
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-    .orbitron {
-      font-family: "Orbitron", sans-serif;
-      font-optical-sizing: auto;
-      font-style: normal;
-    }
-  `;
-
-  const { content } = useContent();
-  const navigate = useNavigate();
+  const { content, isLoading } = useContent();
+  const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+  
   // Sort albums by createdAt (newest first)
   const albums = [...content.albums].sort((a, b) => {
     const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
@@ -26,9 +18,28 @@ const MusicSection = () => {
     return dateB - dateA; // Descending order (newest first)
   });
 
+  const selectedAlbumData = albums.find((album) => album.id === selectedAlbum);
+
+  if (isLoading) {
+    return (
+      <section id="music" className="min-h-screen bg-black relative overflow-hidden pt-24 pb-0 px-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-6 md:gap-8 pb-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <Skeleton key={i} className="w-48 md:w-56 lg:w-64 aspect-square flex-shrink-0 rounded-lg bg-white/10" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (!albums.length) {
     return (
-      <section id="music" className="min-h-screen bg-black relative overflow-hidden py-24 px-6">
+      <section id="music" className="min-h-screen bg-black relative overflow-hidden pt-24 pb-0 px-6">
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
           <motion.p
@@ -46,108 +57,131 @@ const MusicSection = () => {
 
   return (
     <>
-      <style>{orbitronStyle}</style>
-      <section id="music" className="min-h-screen bg-black relative overflow-hidden py-24 px-6">
+      <section id="music" className="min-h-screen bg-black relative overflow-hidden pt-24 pb-0 px-6">
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
         
-        <div className="relative z-10 max-w-7xl mx-auto space-y-24">
-          {albums.map((album, index) => {
-            const isEven = index % 2 === 1; // Second album (index 1), fourth (index 3), etc.
-            
-            return (
-              <motion.div
-                key={album.id}
-                id={`album-card-${album.id}`}
-                data-search-item="music"
-                data-search-label={`Album · ${album.title}`}
-                data-search-category="Album"
-                data-search-description={`${album.year} · ${(album.tracks ?? []).length} tracks`}
-                data-search-keywords={[album.title, album.year, ...(album.tracks ?? [])].join("|")}
-                data-search-target="music"
-                data-search-target-element={`album-card-${album.id}`}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`grid lg:grid-cols-2 gap-8 lg:gap-12 items-center ${
-                  isEven ? "lg:grid-flow-dense" : ""
-                }`}
-              >
-                {/* Album Image */}
+        <div className="relative z-10 max-w-7xl mx-auto">
+          {/* Album Cover Horizontal Scroll */}
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-6 md:gap-8 pb-4">
+              {albums.map((album, index) => (
                 <motion.div
-                  className={`relative overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl aspect-square group cursor-pointer ${
-                    isEven ? "lg:col-start-2" : ""
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
-                  onClick={() => navigate(`/album/${album.id}`)}
+                  key={album.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  className="group cursor-pointer flex-shrink-0"
+                  onClick={() => setSelectedAlbum(album.id)}
                 >
-                  <img
-                    src={album.image}
-                    alt={album.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground to-transparent opacity-0 group-hover:opacity-10 transform translate-x-full group-hover:translate-x-[-100%] transition-all duration-1000" />
+                  <div className="relative w-48 md:w-56 lg:w-64 aspect-square overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl transition-all duration-300 group-hover:border-white/30 group-hover:scale-105">
+                    <img
+                      src={album.image}
+                      alt={album.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <p className="text-white text-sm font-medium truncate">{album.title}</p>
+                      {album.year && (
+                        <p className="text-white/70 text-xs">{album.year}</p>
+                      )}
+                    </div>
+                  </div>
                 </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Modal for Audio Links */}
+      <AnimatePresence>
+        {selectedAlbumData && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedAlbum(null)}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+            />
+            
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="relative bg-black border border-white/20 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedAlbum(null)}
+                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  aria-label="Close"
+                >
+                  <X className="h-5 w-5 text-white" />
+                </button>
+
+                {/* Album Cover */}
+                <div className="relative aspect-square w-full max-w-md mx-auto">
+                  <img
+                    src={selectedAlbumData.image}
+                    alt={selectedAlbumData.title}
+                    className="w-full h-full object-cover rounded-t-lg"
+                  />
+                </div>
 
                 {/* Album Info */}
-                <motion.div
-                  className={`space-y-6 ${isEven ? "lg:col-start-1 lg:row-start-1" : ""}`}
-                  initial={{ opacity: 0, x: isEven ? -20 : 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
-                >
-                  {/* Album Title */}
-                  <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-[0.1em] orbitron">
-                    {album.title}
-                  </h2>
+                <div className="p-6 space-y-4">
+                  <div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-wide mb-2">
+                      {selectedAlbumData.title}
+                    </h2>
+                    {selectedAlbumData.year && (
+                      <p className="text-white/60 text-sm uppercase tracking-wider">{selectedAlbumData.year}</p>
+                    )}
+                  </div>
 
-                  {/* Year */}
-                  {album.year && (
-                    <p className="text-xs tracking-[0.4em] text-white/50 uppercase">{album.year}</p>
+                  {selectedAlbumData.summary && (
+                    <p className="text-white/70 text-sm leading-relaxed">{selectedAlbumData.summary}</p>
                   )}
 
-                  {/* Summary */}
-                  {album.summary && (
-                    <p className="text-base text-white/70 leading-relaxed elms-sans">{album.summary}</p>
-                  )}
-
-                  {/* Streaming Platform Links */}
-                  {album.links && album.links.length > 0 && (
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        {album.links.map((link, linkIndex) => (
-                          <motion.div
-                            key={link.id || linkIndex}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: linkIndex * 0.05 }}
+                  {/* Audio Links */}
+                  {selectedAlbumData.links && selectedAlbumData.links.length > 0 && (
+                    <div className="pt-4 space-y-3">
+                      <h3 className="text-white/90 text-sm font-semibold uppercase tracking-wider">Stream Now</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {selectedAlbumData.links.map((link) => (
+                          <Button
+                            key={link.id}
+                            asChild
+                            variant="outline"
+                            className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-red-600/20 hover:border-red-500 hover:text-red-400 transition group"
                           >
-                            <Button
-                              asChild
-                              variant="outline"
-                              className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-red-600/20 hover:border-red-500 hover:text-red-400 transition group"
+                            <a
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 group-hover:text-red-400 transition"
                             >
-                              <a
-                                href={link.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 group-hover:text-red-400 transition"
-                              >
-                                <span className="elms-sans group-hover:text-red-400 transition">{link.label || "Stream Now"}</span>
-                                <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-red-400 transition" />
-                              </a>
-                            </Button>
-                          </motion.div>
+                              <span className="text-sm">{link.label || "Stream Now"}</span>
+                              <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-red-400 transition" />
+                            </a>
+                          </Button>
                         ))}
                       </div>
                     </div>
                   )}
-                </motion.div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </section>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 };

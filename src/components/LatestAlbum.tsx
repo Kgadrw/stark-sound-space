@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 
 const LatestAlbum = () => {
@@ -14,7 +15,7 @@ const LatestAlbum = () => {
     }
   `;
 
-  const { content } = useContent();
+  const { content, isLoading } = useContent();
   const navigate = useNavigate();
   
   // Sort albums by createdAt (newest first) and get the latest one
@@ -25,6 +26,29 @@ const LatestAlbum = () => {
   });
 
   const latestAlbum = sortedAlbums[0];
+
+  if (isLoading) {
+    return (
+      <>
+        <style>{orbitronStyle}</style>
+        <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+          <div className="relative z-10 max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              <Skeleton className="aspect-square w-full rounded-lg bg-white/10" />
+              <div className="space-y-6">
+                <Skeleton className="h-4 w-24 bg-white/10" />
+                <Skeleton className="h-10 w-64 bg-white/10" />
+                <Skeleton className="h-4 w-32 bg-white/10" />
+                <Skeleton className="h-20 w-full bg-white/10" />
+                <Skeleton className="h-10 w-32 bg-white/10" />
+              </div>
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
 
   if (!latestAlbum) {
     return null;

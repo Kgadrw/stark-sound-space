@@ -2,11 +2,12 @@ import { motion } from "framer-motion";
 import { Play, Youtube } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { getYouTubeThumbnailUrl } from "@/lib/youtube";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 
 const LatestVideos = () => {
-  const { content } = useContent();
+  const { content, isLoading } = useContent();
   const navigate = useNavigate();
 
   // Sort videos by createdAt (newest first) and get the latest 2
@@ -19,27 +20,43 @@ const LatestVideos = () => {
     return sorted.slice(0, 2); // Get the latest 2 videos (or all if less than 2)
   }, [content.videos]);
 
+  if (isLoading) {
+    return (
+      <section className="relative bg-black pt-0 pb-24 px-4 sm:px-6 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <Skeleton className="h-8 md:h-10 lg:h-12 w-64 md:w-80 mb-6 md:mb-8 bg-white/10" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+            {[1, 2].map((i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="aspect-video w-full rounded-lg bg-white/10" />
+                <Skeleton className="h-6 w-3/4 bg-white/10" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (latestVideos.length === 0) {
     return null;
   }
 
   return (
-    <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden">
+    <section className="relative bg-black pt-12 pb-24 px-4 sm:px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
         
         <div className="relative z-10 max-w-7xl mx-auto">
-          {/* Section Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+          {/* Title */}
+          <motion.h2
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-12 text-center"
+            className="text-xl md:text-2xl lg:text-3xl font-extrabold text-white uppercase tracking-wide mb-6 md:mb-8"
           >
-            <h2 className="text-4xl md:text-5xl font-normal tracking-[0.1em] text-white uppercase">
-              Videos
-            </h2>
-          </motion.div>
+            Latest Videos from Nel Ngabo
+          </motion.h2>
 
         {/* Video Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
