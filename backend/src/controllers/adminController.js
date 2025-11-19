@@ -3,6 +3,7 @@ const Album = require("../models/Album");
 const Video = require("../models/Video");
 const Tour = require("../models/Tour");
 const About = require("../models/About");
+const Audio = require("../models/Audio");
 const { getUploadSignature } = require("../services/cloudinary");
 
 const normalizeTracks = (tracks) => {
@@ -688,6 +689,119 @@ const updateAbout = async (req, res, next) => {
   }
 };
 
+const formatAudio = (audio) => {
+  try {
+    let createdAt = new Date().toISOString();
+    let updatedAt = new Date().toISOString();
+    
+    if (audio.createdAt) {
+      if (audio.createdAt instanceof Date) {
+        createdAt = audio.createdAt.toISOString();
+      } else if (typeof audio.createdAt === 'string') {
+        createdAt = audio.createdAt;
+      } else if (audio.createdAt.toISOString) {
+        createdAt = audio.createdAt.toISOString();
+      }
+    }
+    
+    if (audio.updatedAt) {
+      if (audio.updatedAt instanceof Date) {
+        updatedAt = audio.updatedAt.toISOString();
+      } else if (typeof audio.updatedAt === 'string') {
+        updatedAt = audio.updatedAt;
+      } else if (audio.updatedAt.toISOString) {
+        updatedAt = audio.updatedAt.toISOString();
+      }
+    }
+    
+    return {
+      id: audio.id ?? (audio._id ? audio._id.toString() : null),
+      image: audio.image || "",
+      link: audio.link || "",
+      title: audio.title || "",
+      createdAt,
+      updatedAt,
+    };
+  } catch (error) {
+    console.error("Error formatting audio:", error);
+    return {
+      id: audio.id ?? (audio._id ? audio._id.toString() : null),
+      image: audio.image || "",
+      link: audio.link || "",
+      title: audio.title || "",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  }
+};
+
+const listAudios = async (_req, res, next) => {
+  try {
+    const audios = await Audio.find().sort({ createdAt: -1 });
+    res.json({ audios: audios.map(formatAudio) });
+  } catch (error) {
+    console.error("Error listing audios:", error);
+    next(error);
+  }
+};
+
+const createAudio = async (req, res, next) => {
+  try {
+    const { image, link, title } = req.body;
+    
+    if (!image || !link) {
+      return res.status(400).json({ error: "Image and link are required" });
+    }
+    
+    const audio = await Audio.create({
+      image,
+      link,
+      title: title || "",
+    });
+    
+    res.status(201).json(formatAudio(audio));
+  } catch (error) {
+    console.error("Error creating audio:", error);
+    next(error);
+  }
+};
+
+const updateAudioHandler = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { image, link, title } = req.body;
+    
+    const audio = await Audio.findById(id);
+    if (!audio) {
+      return res.status(404).json({ error: "Audio not found" });
+    }
+    
+    if (image !== undefined) audio.image = image;
+    if (link !== undefined) audio.link = link;
+    if (title !== undefined) audio.title = title;
+    
+    await audio.save();
+    res.json(formatAudio(audio));
+  } catch (error) {
+    console.error("Error updating audio:", error);
+    next(error);
+  }
+};
+
+const deleteAudioHandler = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const audio = await Audio.findByIdAndDelete(id);
+    if (!audio) {
+      return res.status(404).json({ error: "Audio not found" });
+    }
+    res.json({ message: "Audio deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting audio:", error);
+    next(error);
+  }
+};
+
 module.exports = {
   getHeroImage,
   saveHeroImage,
@@ -706,5 +820,9 @@ module.exports = {
   getAbout,
   updateAbout,
   getCloudinarySignature,
+  listAudios,
+  createAudio,
+  updateAudioHandler,
+  deleteAudioHandler,
 };
 

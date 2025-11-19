@@ -1691,5 +1691,268 @@ export const AboutEditor = ({
   );
 };
 
+export const AudiosEditor = ({
+  content,
+  setContent,
+  refreshContent,
+}: {
+  content: ContentState;
+  setContent: ContentSetter;
+  refreshContent: () => Promise<void>;
+}) => {
+  const { audios } = content;
+  const [savingAudioId, setSavingAudioId] = useState<string | null>(null);
+  const [deletingAudioId, setDeletingAudioId] = useState<string | null>(null);
+
+  const updateAudio = (audioId: string, patch: Partial<ContentState["audios"][number]>) => {
+    setContent((prev) => ({
+      ...prev,
+      audios: prev.audios.map((audio) => (audio.id === audioId ? { ...audio, ...patch } : audio)),
+    }));
+  };
+
+  const addAudio = async () => {
+    const placeholder = {
+      image: "/Album.jpeg",
+      link: "https://",
+      title: "",
+    };
+    try {
+      const response = await adminApi.createAudio(placeholder);
+      console.log("Audio created successfully:", response);
+      toast.success("Audio created successfully!", {
+        description: "A new audio item has been added. You can now edit it.",
+      });
+      await refreshContent();
+    } catch (error) {
+      console.error("Failed to create audio", error);
+      toast.error("Failed to create audio", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  };
+
+  const handleSaveAudio = async (audioId: string) => {
+    const audio = audios.find((item) => item.id === audioId);
+    if (!audio) {
+      console.error("Audio not found in state:", audioId);
+      toast.error("Audio not found", {
+        description: "The audio could not be found. Please refresh the page.",
+      });
+      return;
+    }
+    
+    setSavingAudioId(audioId);
+    try {
+      const payload = {
+        image: audio.image || "/Album.jpeg",
+        link: audio.link || "https://",
+        title: audio.title || "",
+      };
+      
+      console.log("Saving audio:", { audioId, payload });
+      
+      const response = await adminApi.updateAudio(audioId, payload);
+      console.log("Audio saved successfully:", response);
+      toast.success("Audio saved successfully!", {
+        description: audio.title ? `"${audio.title}" has been saved.` : "Audio has been saved to the database.",
+      });
+      await refreshContent();
+    } catch (error) {
+      console.error("Failed to save audio", error);
+      
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : typeof error === 'object' && error !== null && 'message' in error
+        ? String(error.message)
+        : "Unknown error";
+        
+      toast.error("Failed to save audio", {
+        description: errorMessage,
+      });
+    } finally {
+      setSavingAudioId(null);
+    }
+  };
+
+  const removeAudio = async (audioId: string) => {
+    const audio = audios.find((item) => item.id === audioId);
+    if (!audio) return;
+    
+    if (!confirm(`Are you sure you want to delete this audio? This action cannot be undone.`)) {
+      return;
+    }
+    
+    setDeletingAudioId(audioId);
+    try {
+      await adminApi.deleteAudio(audioId);
+      await refreshContent();
+      console.log("Audio deleted successfully");
+      toast.success("Audio deleted successfully!", {
+        description: "Audio has been removed from the database.",
+      });
+    } catch (error) {
+      console.error("Failed to delete audio", error);
+      toast.error("Failed to delete audio", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
+    } finally {
+      setDeletingAudioId(null);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-white/50 mb-1">Audio Management</p>
+          <h3 className="text-xl font-semibold text-white">Audio Items</h3>
+        </div>
+        <Button onClick={addAudio} variant="secondary">
+          <Plus className="mr-2 h-4 w-4" />
+          Add Audio
+        </Button>
+      </div>
+
+      {!audios.length && (
+        <Card className="border-white/10 bg-black/40">
+          <CardContent className="pt-6">
+            <p className="text-center text-white/60">
+              No audio items yet. Click "Add Audio" to create one.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {audios.map((audio) => (
+        <Card key={audio.id} className="border-white/10 bg-black/40">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {audio.image && (
+                  <div className="w-16 h-16 rounded-lg overflow-hidden border border-white/10">
+                    <img
+                      src={audio.image}
+                      alt={audio.title || "Audio"}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/Album.jpeg";
+                      }}
+                    />
+                  </div>
+                )}
+                <div>
+                  <CardTitle className="text-white">{audio.title || "Untitled Audio"}</CardTitle>
+                  <CardDescription className="text-white/60">{audio.link || "No link"}</CardDescription>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => handleSaveAudio(audio.id)}
+                  disabled={savingAudioId === audio.id}
+                >
+                  {savingAudioId === audio.id ? "Saving..." : "Save"}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeAudio(audio.id)}
+                  disabled={deletingAudioId === audio.id}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  {deletingAudioId === audio.id ? "Removing..." : "Delete"}
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="grid gap-4 lg:grid-cols-2">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-white">Title (Optional)</label>
+              <Input 
+                value={audio.title} 
+                onChange={(event) => updateAudio(audio.id, { title: event.target.value })} 
+                placeholder="Audio title"
+                className="bg-black/40 text-white placeholder:text-white/40 border-white/20" 
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-white">Link</label>
+              <Input 
+                value={audio.link} 
+                onChange={(event) => updateAudio(audio.id, { link: event.target.value })} 
+                placeholder="https://"
+                className="bg-black/40 text-white placeholder:text-white/40 border-white/20" 
+              />
+            </div>
+            <div className="space-y-2 lg:col-span-2">
+              <label className="text-sm font-medium text-white">Image URL</label>
+              <Input 
+                value={audio.image} 
+                onChange={(event) => updateAudio(audio.id, { image: event.target.value })} 
+                placeholder="Image URL"
+                className="bg-black/40 text-white placeholder:text-white/40 border-white/20" 
+              />
+              {audio.image && (
+                <div className="mt-2">
+                  <img
+                    src={audio.image}
+                    alt="Audio preview"
+                    className="w-full h-48 object-cover rounded-lg border border-white/10"
+                    onError={(e) => {
+                      console.error("Failed to load audio image:", audio.image);
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+              <label className="text-sm text-white/50">Or upload from computer</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={async (event) => {
+                  const file = event.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    const maxSizeBytes = 2 * 1024 * 1024; // 2MB
+                    if (file.size > maxSizeBytes) {
+                      toast.error("Image too large", {
+                        description: `Image size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds the maximum of 2MB. Please compress the image or use an image hosting service and paste the URL instead.`,
+                      });
+                      event.target.value = '';
+                      return;
+                    }
+                    const dataUrl = await readFileAsDataUrl(file);
+                    if (dataUrl.length > 3 * 1024 * 1024) {
+                      toast.error("Image too large", {
+                        description: "The image is too large after encoding. Please use a smaller image or upload to an image hosting service.",
+                      });
+                      event.target.value = '';
+                      return;
+                    }
+                    updateAudio(audio.id, { image: dataUrl });
+                    event.target.value = '';
+                    toast.success("Image loaded", {
+                      description: "Click 'Save' to update the audio image.",
+                    });
+                  } catch (error) {
+                    console.error("Error reading file:", error);
+                    toast.error("Failed to load image", {
+                      description: error instanceof Error ? error.message : "Could not read the selected file.",
+                    });
+                    event.target.value = '';
+                  }
+                }}
+                className="w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+};
+
 
 

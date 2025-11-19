@@ -17,6 +17,10 @@ const {
   getAbout,
   updateAbout,
   getCloudinarySignature,
+  listAudios,
+  createAudio,
+  updateAudioHandler,
+  deleteAudioHandler,
 } = require("../controllers/adminController");
 
 const router = Router();
@@ -41,6 +45,11 @@ router.delete("/tours/:id", deleteTourHandler);
 
 router.get("/about", getAbout);
 router.put("/about", updateAbout);
+
+router.get("/audios", listAudios);
+router.post("/audios", createAudio);
+router.put("/audios/:id", updateAudioHandler);
+router.delete("/audios/:id", deleteAudioHandler);
 
 router.get("/uploads/signature", getCloudinarySignature);
 

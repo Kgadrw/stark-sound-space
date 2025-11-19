@@ -13,6 +13,7 @@
     { "name": "Auth" },
     { "name": "Hero" },
     { "name": "Albums" },
+    { "name": "Audios" },
     { "name": "Videos" },
     { "name": "Tours" },
     { "name": "About" }
@@ -335,6 +336,74 @@
         }
       }
     },
+    "/admin/audios": {
+      "get": {
+        "tags": ["Audios"],
+        "summary": "List audio items",
+        "responses": {
+          "200": {
+            "description": "Audio items list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "audios": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Audio" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Audios"],
+        "summary": "Create audio item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AudioInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/AudioResponse" },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/admin/audios/{id}": {
+      "put": {
+        "tags": ["Audios"],
+        "summary": "Update audio item",
+        "parameters": [{ "$ref": "#/components/parameters/ResourceId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AudioInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "$ref": "#/components/responses/AudioResponse" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "tags": ["Audios"],
+        "summary": "Delete audio item",
+        "parameters": [{ "$ref": "#/components/parameters/ResourceId" }],
+        "responses": {
+          "200": { "$ref": "#/components/responses/DeleteResponse" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
     "/admin/about": {
       "get": {
         "tags": ["About"],
@@ -491,6 +560,26 @@
           "city": { "type": "string" },
           "venue": { "type": "string" },
           "ticketUrl": { "type": "string" }
+        }
+      },
+      "Audio": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "image": { "type": "string" },
+          "link": { "type": "string" },
+          "title": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "AudioInput": {
+        "type": "object",
+        "required": ["image", "link"],
+        "properties": {
+          "image": { "type": "string" },
+          "link": { "type": "string" },
+          "title": { "type": "string" }
         }
       },
       "Hero": {
@@ -747,6 +836,12 @@
         "description": "Tour payload",
         "content": {
           "application/json": { "schema": { "$ref": "#/components/schemas/Tour" }           }
+        }
+      },
+      "AudioResponse": {
+        "description": "Audio payload",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Audio" } }
         }
       },
       "AboutResponse": {

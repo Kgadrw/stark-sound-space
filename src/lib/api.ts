@@ -152,6 +152,21 @@ export const adminApi = {
       method: "PUT",
       json: payload,
     }),
+  getAudios: () => request<{ audios: any[] }>("/admin/audios"),
+  createAudio: (payload: { image: string; link: string; title?: string }) =>
+    request("/admin/audios", {
+      method: "POST",
+      json: payload,
+    }),
+  updateAudio: (id: string, payload: { image?: string; link?: string; title?: string }) =>
+    request(`/admin/audios/${id}`, {
+      method: "PUT",
+      json: payload,
+    }),
+  deleteAudio: (id: string) =>
+    request(`/admin/audios/${id}`, {
+      method: "DELETE",
+    }),
   searchYouTube: (query: string) =>
     request<{ videos: Array<{
       id: string;

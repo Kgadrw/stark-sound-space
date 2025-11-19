@@ -55,6 +55,15 @@ const mapTour = (tour: any) => ({
   ticketUrl: tour.ticketUrl ?? "#",
 });
 
+const mapAudio = (audio: any) => ({
+  id: audio.id ?? audio._id ?? createFallbackId(),
+  image: audio.image ?? "",
+  link: audio.link ?? "",
+  title: audio.title ?? "",
+  createdAt: audio.createdAt ? (typeof audio.createdAt === 'string' ? audio.createdAt : audio.createdAt.toISOString()) : new Date().toISOString(),
+  updatedAt: audio.updatedAt ? (typeof audio.updatedAt === 'string' ? audio.updatedAt : audio.updatedAt.toISOString()) : new Date().toISOString(),
+});
+
 export const ContentProvider = ({ children }: { children: React.ReactNode }) => {
   const [content, setContent] = useState<ContentState>(() => cloneContent(initialContent));
   const [isLoading, setIsLoading] = useState(true);
@@ -76,12 +85,13 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
   const refreshContent = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [heroResponse, albumsResponse, videosResponse, toursResponse, aboutResponse] = await Promise.allSettled([
+      const [heroResponse, albumsResponse, videosResponse, toursResponse, aboutResponse, audiosResponse] = await Promise.allSettled([
         adminApi.getHero(),
         adminApi.getAlbums(),
         adminApi.getVideos(),
         adminApi.getTours(),
         adminApi.getAbout().catch(() => ({ about: null })),
+        adminApi.getAudios().catch(() => ({ audios: [] })),
       ]);
       
       const hero = heroResponse.status === "fulfilled" ? heroResponse.value : null;
@@ -89,6 +99,7 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
       const videos = videosResponse.status === "fulfilled" ? videosResponse.value : { videos: [] };
       const tours = toursResponse.status === "fulfilled" ? toursResponse.value : { tours: [] };
       const about = aboutResponse.status === "fulfilled" ? aboutResponse.value : { about: null };
+      const audios = audiosResponse.status === "fulfilled" ? audiosResponse.value : { audios: [] };
       
       setContent((prev) => ({
         ...prev,
@@ -112,6 +123,7 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
         videos: (videos.videos ?? []).map(mapVideo),
         tours: (tours.tours ?? []).map(mapTour),
         about: about.about ? mapAbout(about.about) : prev.about,
+        audios: (audios.audios ?? []).map(mapAudio),
       }));
       
       // Only set error if critical requests failed

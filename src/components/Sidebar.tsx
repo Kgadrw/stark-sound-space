@@ -27,6 +27,7 @@ const frontendNavLinks: SidebarNavLink[] = [
 const adminNavLinks: SidebarNavLink[] = [
   { label: "Hero", icon: Sparkles, to: "/administrationneln" },
   { label: "Albums", icon: Music4, to: "/administrationneln/albums" },
+  { label: "Audios", icon: Music4, to: "/administrationneln/audios" },
   { label: "Videos", icon: Clapperboard, to: "/administrationneln/videos" },
   { label: "About", icon: User, to: "/administrationneln/about" },
   { label: "Tours", icon: MapPin, to: "/administrationneln/tours" },

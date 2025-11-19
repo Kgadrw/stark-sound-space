@@ -19,6 +19,7 @@ import AlbumsAdmin from "./pages/admin/AlbumsAdmin";
 import VideosAdmin from "./pages/admin/VideosAdmin";
 import ToursAdmin from "./pages/admin/ToursAdmin";
 import AboutAdmin from "./pages/admin/AboutAdmin";
+import AudiosAdmin from "./pages/admin/AudiosAdmin";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AccountAdmin from "./pages/admin/AccountAdmin";
 import RequireAdmin from "@/components/RequireAdmin";
@@ -52,6 +53,7 @@ const App = () => (
             <Route index element={<HeroAdmin />} />
             <Route path="hero" element={<HeroAdmin />} />
             <Route path="albums" element={<AlbumsAdmin />} />
+            <Route path="audios" element={<AudiosAdmin />} />
             <Route path="videos" element={<VideosAdmin />} />
             <Route path="about" element={<AboutAdmin />} />
             <Route path="tours" element={<ToursAdmin />} />

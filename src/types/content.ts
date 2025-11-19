@@ -136,12 +136,22 @@ export type AboutContent = {
   artistImage: string;
 };
 
+export type Audio = {
+  id: string;
+  image: string;
+  link: string;
+  title: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type ContentState = {
   hero: HeroContent;
   albums: Album[];
   videos: Video[];
   tours: Tour[];
   about: AboutContent;
+  audios: Audio[];
 };
 
 
