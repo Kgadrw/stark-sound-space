@@ -1,10 +1,12 @@
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
 import { useContent } from "@/context/ContentContext";
+import { useNavigate } from "react-router-dom";
 import { Award, Trophy, Music, Building2, Calendar, MapPin, Mail, Phone } from "lucide-react";
 
 const About = () => {
   const { content } = useContent();
+  const navigate = useNavigate();
   const artistName = content.hero.artistName || "NEL NGABO";
   const about = content.about;
   // Sort albums by createdAt (newest first)
@@ -50,7 +52,7 @@ const About = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="lg:col-span-2 space-y-6 md:space-y-8"
+              className="lg:col-span-2 space-y-6 md:space-y-8 order-2 lg:order-1"
             >
               {/* Biography */}
               {about.biography && (
@@ -88,7 +90,11 @@ const About = () => {
                 </h2>
                 <div className="space-y-3 md:space-y-4">
                   {albums.map((album, index) => (
-                    <div key={album.id} className="flex items-start gap-3 sm:gap-4 pb-3 md:pb-4 border-b border-white/10 last:border-0">
+                    <div 
+                      key={album.id} 
+                      onClick={() => navigate(`/album/${album.id}`)}
+                      className="flex items-start gap-3 sm:gap-4 pb-3 md:pb-4 border-b border-white/10 last:border-0 md:cursor-default cursor-pointer active:opacity-70 transition-opacity md:transition-none"
+                    >
                       <div className="text-white/50 text-xs sm:text-sm font-mono w-10 sm:w-12 flex-shrink-0">{album.year}</div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-white font-semibold mb-1 text-sm sm:text-base">{album.title}</h3>
@@ -105,7 +111,7 @@ const About = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="space-y-4 md:space-y-6"
+              className="space-y-4 md:space-y-6 order-1 lg:order-2"
             >
               {/* Artist Image */}
               <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg overflow-hidden">

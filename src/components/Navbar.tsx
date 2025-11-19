@@ -75,19 +75,11 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
             className="relative cursor-pointer hover:opacity-80 transition-opacity"
             aria-label="Go to homepage"
           >
-            <div className="text-lg md:text-xl font-bold tracking-[0.3em] relative z-10">
-              NEL NGABO
-            </div>
-            {/* Glitch effect text shadow */}
-            <div
-              className="text-lg md:text-xl font-bold tracking-[0.3em] absolute top-0 left-0 opacity-50 text-gray-medium"
-              style={{
-                transform: "translate(2px, 2px)",
-              }}
-              aria-hidden="true"
-            >
-              NEL NGABO
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="NEL NGABO" 
+              className="h-8 md:h-10 w-auto"
+            />
           </button>
         </div>
 
@@ -182,7 +174,11 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                 className="hover:opacity-80 transition-opacity cursor-pointer"
                 aria-label="Go to homepage"
               >
-                NEL NGABO
+                <img 
+                  src="/logo.png" 
+                  alt="NEL NGABO" 
+                  className="h-8 w-auto"
+                />
               </button>
               <motion.button
                 type="button"
