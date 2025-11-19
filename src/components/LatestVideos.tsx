@@ -9,14 +9,14 @@ const LatestVideos = () => {
   const { content } = useContent();
   const navigate = useNavigate();
 
-  // Sort videos by createdAt (newest first) and get the latest 4
+  // Sort videos by createdAt (newest first) and get the latest 2
   const latestVideos = useMemo(() => {
     const sorted = [...content.videos].sort((a, b) => {
       const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
       const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
       return dateB - dateA; // Descending order (newest first)
     });
-    return sorted.slice(0, 4); // Get at least 4 videos (or all if less than 4)
+    return sorted.slice(0, 2); // Get the latest 2 videos (or all if less than 2)
   }, [content.videos]);
 
   if (latestVideos.length === 0) {
@@ -36,7 +36,7 @@ const LatestVideos = () => {
             transition={{ duration: 0.6 }}
             className="mb-12 text-center"
           >
-            <h2 className="text-4xl md:text-5xl font-bold tracking-[0.1em] text-white uppercase">
+            <h2 className="text-4xl md:text-5xl font-normal tracking-[0.1em] text-white uppercase">
               Videos
             </h2>
           </motion.div>
@@ -84,8 +84,8 @@ const LatestVideos = () => {
                 </div>
 
                 {/* Video Title */}
-                <div>
-                  <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-white uppercase tracking-wide elms-sans line-clamp-2">
+                <div className="text-left">
+                  <h3 className="text-base md:text-lg lg:text-xl font-light text-white uppercase tracking-wide elms-sans line-clamp-2">
                     {video.title}
                   </h3>
                 </div>
@@ -95,7 +95,7 @@ const LatestVideos = () => {
         </div>
 
         {/* View All Videos Button */}
-        {content.videos.length > 4 && (
+        {content.videos.length > 2 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

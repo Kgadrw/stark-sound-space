@@ -11,6 +11,7 @@ import { adminApi } from "@/lib/api";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import NotificationBanner from "@/components/NotificationBanner";
 
+
 type PlatformSearchItem = {
   id: string;
   label: string;
@@ -354,20 +355,57 @@ const Hero = () => {
   // Attempt to ensure video autoplay on mobile after iframe loads
   const handleVideoIframeLoad = () => {
     if (videoIframeRef.current?.contentWindow && heroVideoUrl) {
-      // Small delay to ensure iframe API is ready
-      setTimeout(() => {
+      // Multiple attempts to ensure autoplay works on mobile
+      const attemptPlay = (delay: number) => {
+        setTimeout(() => {
+          try {
+            // Try to trigger play via YouTube iframe API
+            videoIframeRef.current?.contentWindow?.postMessage(
+              JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
+              '*'
+            );
+          } catch (e) {
+            // Silent fail
+          }
+        }, delay);
+      };
+      
+      // Try multiple times with increasing delays for better mobile compatibility
+      attemptPlay(500);
+      attemptPlay(1000);
+      attemptPlay(2000);
+    }
+  };
+
+  // Handle user interaction to trigger autoplay on mobile
+  useEffect(() => {
+    if (!heroVideoUrl) return;
+
+    const handleUserInteraction = () => {
+      if (videoIframeRef.current?.contentWindow) {
         try {
-          // Try to trigger play via YouTube iframe API
-          videoIframeRef.current?.contentWindow?.postMessage(
+          videoIframeRef.current.contentWindow.postMessage(
             JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
             '*'
           );
         } catch (e) {
-          // Silent fail - autoplay params in URL should handle it
+          // Silent fail
         }
-      }, 1000);
-    }
-  };
+      }
+      // Remove listeners after first interaction
+      document.removeEventListener('touchstart', handleUserInteraction);
+      document.removeEventListener('click', handleUserInteraction);
+    };
+
+    // Add listeners for user interaction (required for mobile autoplay)
+    document.addEventListener('touchstart', handleUserInteraction, { once: true });
+    document.addEventListener('click', handleUserInteraction, { once: true });
+
+    return () => {
+      document.removeEventListener('touchstart', handleUserInteraction);
+      document.removeEventListener('click', handleUserInteraction);
+    };
+  }, [heroVideoUrl]);
 
   const glowStyle = `
     @keyframes glow {
@@ -577,7 +615,8 @@ const Hero = () => {
             src={getYouTubeEmbedUrl(heroVideoUrl) || ""}
             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowFullScreen
-            playsInline
+            playsInline={true}
+            {...({ 'webkit-playsinline': 'true' } as any)}
             loading="eager"
             onLoad={handleVideoIframeLoad}
             style={{ pointerEvents: "none" }}

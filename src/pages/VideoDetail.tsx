@@ -115,8 +115,8 @@ const VideoDetail = () => {
               className="space-y-6"
             >
               {/* Video Title */}
-              <div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white uppercase tracking-[0.1em] orbitron mb-4">
+              <div className="text-left">
+                <h1 className="text-base md:text-lg lg:text-xl font-light text-white uppercase tracking-wide elms-sans mb-4">
                   {video.title}
                 </h1>
               </div>

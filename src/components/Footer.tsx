@@ -9,11 +9,6 @@ const Footer = () => {
     { href: "https://facebook.com/nelngabo", icon: Facebook, label: "Facebook" },
   ];
 
-  const footerLinks = [
-    { href: "#", label: "PRIVACY POLICY" },
-    { href: "#", label: "TERMS OF SERVICE" },
-    { href: "#", label: "CONTACT" },
-  ];
 
   return (
     <motion.footer
@@ -21,7 +16,7 @@ const Footer = () => {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="bg-black text-white py-12 border-t border-border"
+      className="bg-black text-white py-12"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center space-y-8">
@@ -30,6 +25,20 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
+            className="flex items-center justify-center"
+          >
+            <img 
+              src="/kinamusic.png" 
+              alt="KINA MUSIC" 
+              className="h-12 md:h-16 w-auto"
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
             className="text-3xl font-normal"
           >
             NEL NGABO
@@ -39,7 +48,7 @@ const Footer = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.3 }}
             className="flex space-x-6"
           >
             {socialLinks.map(({ href, icon: Icon, label }, index) => (
@@ -56,29 +65,6 @@ const Footer = () => {
                 aria-label={label}
               >
                 <Icon className="w-5 h-5" />
-              </motion.a>
-            ))}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="flex flex-wrap justify-center gap-6 text-sm"
-          >
-            {footerLinks.map(({ href, label }, index) => (
-              <motion.a
-                key={label}
-                href={href}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.6 + index * 0.1 }}
-                whileHover={{ y: -2 }}
-                className="hover:text-gray-400 transition-colors"
-              >
-                {label}
               </motion.a>
             ))}
           </motion.div>
