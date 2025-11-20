@@ -57,16 +57,27 @@ const Footer = () => {
       ];
 
 
+  const chewyStyle = `
+    @import url('https://fonts.googleapis.com/css2?family=Chewy&display=swap');
+    .chewy-regular {
+      font-family: "Chewy", system-ui;
+      font-weight: 400;
+      font-style: normal;
+    }
+  `;
+
   return (
-    <motion.footer
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="bg-black text-white py-12"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center space-y-8">
+    <>
+      <style>{chewyStyle}</style>
+      <motion.footer
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="bg-black text-white py-12 relative"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center space-y-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -96,40 +107,38 @@ const Footer = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="flex flex-col items-center space-y-4"
+            className="flex space-x-6 items-center justify-center"
           >
-            <div className="flex space-x-6">
-              {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
-                <motion.a
-                  key={id || index}
-                  href={href}
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="w-10 h-10 rounded-full border border-white hover:bg-green-500 hover:border-green-500 hover:text-white transition-all duration-300 flex items-center justify-center"
-                  aria-label={label}
-                >
-                  <Icon className="w-5 h-5" />
-                </motion.a>
-              ))}
-            </div>
+            {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
+              <motion.a
+                key={id || index}
+                href={href}
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
+                whileHover={{ scale: 1.2, rotate: 5 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-10 h-10 rounded-full border border-white hover:bg-green-500 hover:border-green-500 hover:text-white transition-all duration-300 flex items-center justify-center"
+                aria-label={label}
+              >
+                <Icon className="w-5 h-5" />
+              </motion.a>
+            ))}
             
-            {/* Email */}
+            {/* Email Icon */}
             <motion.a
               href="mailto:nelngabo1@gmail.com"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 text-white/70 hover:text-green-500 transition-colors"
+              transition={{ delay: 0.3 + socialLinks.length * 0.1, type: "spring" }}
+              whileHover={{ scale: 1.2, rotate: 5 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-10 h-10 rounded-full border border-white hover:bg-green-500 hover:border-green-500 hover:text-white transition-all duration-300 flex items-center justify-center"
+              aria-label="Email"
             >
-              <Mail className="w-4 h-4" />
-              <span className="text-sm">nelngabo1@gmail.com</span>
+              <Mail className="w-5 h-5" />
             </motion.a>
           </motion.div>
 
@@ -143,8 +152,28 @@ const Footer = () => {
             © {new Date().getFullYear()} NEL NGABO. ALL RIGHTS RESERVED.
           </motion.p>
         </div>
-      </div>
-    </motion.footer>
+        </div>
+        
+        {/* Powered by kgad - Bottom Right */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.9 }}
+          className="absolute bottom-4 right-4 sm:right-6"
+        >
+          <a
+            href="https://linktr.ee/gadkalisa?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGn0PLsFLZd2YSLpgDw_dOAn18oaBArs7i4qZjbp8TsHDNhIw4mxMo_ffRcGFY_aem_jjk3dfEQVikEqOTBnZsaGQ&brid=NIusz0WLIVMiYQakpSSWLA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-white/40 flex items-center gap-1 group"
+          >
+            <span>powered by</span>
+            <span className="chewy-regular text-white/60 group-hover:text-green-500 transition-colors">kgad</span>
+          </a>
+        </motion.div>
+      </motion.footer>
+    </>
   );
 };
 
