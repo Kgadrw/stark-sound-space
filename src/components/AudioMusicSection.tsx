@@ -111,18 +111,18 @@ const AudioMusicSection = () => {
               className="fixed inset-0 z-50 flex items-center justify-center p-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative bg-black border border-white/20 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="relative bg-black border border-white/20 rounded-lg max-w-md w-full max-h-[85vh] overflow-y-auto">
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedAudio(null)}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
                   aria-label="Close"
                 >
-                  <X className="h-5 w-5 text-white" />
+                  <X className="h-4 w-4 text-white" />
                 </button>
 
                 {/* Audio Image */}
-                <div className="relative aspect-square w-full max-w-md mx-auto">
+                <div className="relative aspect-square w-full max-w-xs mx-auto">
                   <img
                     src={selectedAudioData.image}
                     alt={selectedAudioData.title || "Audio"}
@@ -131,10 +131,10 @@ const AudioMusicSection = () => {
                 </div>
 
                 {/* Audio Info */}
-                <div className="p-6 space-y-4">
+                <div className="p-4 space-y-3">
                   {selectedAudioData.title && (
                     <div>
-                      <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-wide mb-2">
+                      <h2 className="text-lg md:text-xl font-bold text-white uppercase tracking-wide mb-2">
                         {selectedAudioData.title}
                       </h2>
                     </div>
@@ -142,18 +142,18 @@ const AudioMusicSection = () => {
 
                   {/* Audio Link */}
                   {selectedAudioData.link && (
-                    <div className="pt-4 space-y-3">
-                      <h3 className="text-white/90 text-sm font-semibold uppercase tracking-wider">Listen Now</h3>
+                    <div className="pt-2 space-y-2">
+                      <h3 className="text-white/90 text-xs font-semibold uppercase tracking-wider">Listen Now</h3>
                       <Button
                         asChild
                         variant="outline"
-                        className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-red-600/20 hover:border-red-500 hover:text-red-400 transition group"
+                        className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-red-600/20 hover:border-red-500 hover:text-red-400 transition group w-full"
                       >
                         <a
                           href={selectedAudioData.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 group-hover:text-red-400 transition"
+                          className="flex items-center justify-center gap-2 group-hover:text-red-400 transition"
                         >
                           <span className="text-sm">Listen Now</span>
                           <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-red-400 transition" />
