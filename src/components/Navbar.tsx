@@ -17,11 +17,11 @@ type NavbarProps = {
 
 const frontendNavLinks: NavbarNavLink[] = [
   { label: "Home", to: "/", icon: Home },
-  { label: "Audio", to: "/#audio-music", icon: Music4 },
+  { label: "MUSIC", to: "/#audio-music", icon: Music4 },
   { label: "Albums", to: "/music", icon: Music4 },
   { label: "Videos", to: "/videos", icon: Clapperboard },
   { label: "About", to: "/about", icon: User },
-  { label: "Tours", to: "/tours", icon: MapPin },
+  { label: "Events", to: "/tours", icon: MapPin },
 ];
 
 const adminNavLinks: NavbarNavLink[] = [
@@ -29,7 +29,7 @@ const adminNavLinks: NavbarNavLink[] = [
   { label: "Albums", icon: Music4, to: "/administrationneln/albums" },
   { label: "Videos", icon: Clapperboard, to: "/administrationneln/videos" },
   { label: "About", icon: User, to: "/administrationneln/about" },
-  { label: "Tours", icon: MapPin, to: "/administrationneln/tours" },
+  { label: "Events", icon: MapPin, to: "/administrationneln/tours" },
   { label: "Account", icon: Home, to: "/administrationneln/account" },
 ];
 

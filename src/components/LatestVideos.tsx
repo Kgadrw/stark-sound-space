@@ -53,7 +53,7 @@ const LatestVideos = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-xl md:text-2xl lg:text-3xl font-extrabold text-white uppercase tracking-wide mb-6 md:mb-8"
+            className="text-xs md:text-sm lg:text-sm font-extrabold text-white uppercase tracking-wide mb-6 md:mb-8"
           >
             Latest Videos from Nel Ngabo
           </motion.h2>
@@ -102,7 +102,7 @@ const LatestVideos = () => {
 
                 {/* Video Title */}
                 <div className="text-left">
-                  <h3 className="text-base md:text-lg lg:text-xl font-light text-white uppercase tracking-wide elms-sans line-clamp-2">
+                  <h3 className="text-xs md:text-xs lg:text-xs font-light text-white uppercase tracking-wide elms-sans line-clamp-2">
                     {video.title}
                   </h3>
                 </div>

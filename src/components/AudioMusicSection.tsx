@@ -52,7 +52,7 @@ const AudioMusicSection = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-xl md:text-2xl lg:text-3xl font-extrabold text-white uppercase tracking-wide mb-6 md:mb-8"
+            className="text-xs md:text-sm lg:text-sm font-extrabold text-white uppercase tracking-wide mb-6 md:mb-8"
           >
             More Music from Nel Ngabo
           </motion.h2>
