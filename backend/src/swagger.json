@@ -339,10 +339,10 @@
     "/admin/audios": {
       "get": {
         "tags": ["Audios"],
-        "summary": "List audio items",
+        "summary": "List audios",
         "responses": {
           "200": {
-            "description": "Audio items list",
+            "description": "Audios list",
             "content": {
               "application/json": {
                 "schema": {
@@ -361,7 +361,7 @@
       },
       "post": {
         "tags": ["Audios"],
-        "summary": "Create audio item",
+        "summary": "Create audio",
         "requestBody": {
           "required": true,
           "content": {
@@ -379,8 +379,10 @@
     "/admin/audios/{id}": {
       "put": {
         "tags": ["Audios"],
-        "summary": "Update audio item",
-        "parameters": [{ "$ref": "#/components/parameters/ResourceId" }],
+        "summary": "Update audio",
+        "parameters": [
+          { "$ref": "#/components/parameters/ResourceId" }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -396,8 +398,10 @@
       },
       "delete": {
         "tags": ["Audios"],
-        "summary": "Delete audio item",
-        "parameters": [{ "$ref": "#/components/parameters/ResourceId" }],
+        "summary": "Delete audio",
+        "parameters": [
+          { "$ref": "#/components/parameters/ResourceId" }
+        ],
         "responses": {
           "200": { "$ref": "#/components/responses/DeleteResponse" },
           "404": { "$ref": "#/components/responses/NotFound" }

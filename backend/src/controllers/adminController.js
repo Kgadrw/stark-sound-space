@@ -737,10 +737,9 @@ const formatAudio = (audio) => {
 
 const listAudios = async (_req, res, next) => {
   try {
-    const audios = await Audio.find().sort({ createdAt: -1 });
-    res.json({ audios: audios.map(formatAudio) });
+    const data = await Audio.find().sort({ createdAt: -1 });
+    res.json({ audios: data.map(formatAudio) });
   } catch (error) {
-    console.error("Error listing audios:", error);
     next(error);
   }
 };
@@ -748,20 +747,16 @@ const listAudios = async (_req, res, next) => {
 const createAudio = async (req, res, next) => {
   try {
     const { image, link, title } = req.body;
-    
     if (!image || !link) {
-      return res.status(400).json({ error: "Image and link are required" });
+      return res.status(400).json({ message: "image and link are required" });
     }
-    
     const audio = await Audio.create({
       image,
       link,
       title: title || "",
     });
-    
     res.status(201).json(formatAudio(audio));
   } catch (error) {
-    console.error("Error creating audio:", error);
     next(error);
   }
 };
@@ -773,7 +768,7 @@ const updateAudioHandler = async (req, res, next) => {
     
     const audio = await Audio.findById(id);
     if (!audio) {
-      return res.status(404).json({ error: "Audio not found" });
+      return res.status(404).json({ message: "Audio not found" });
     }
     
     if (image !== undefined) audio.image = image;
@@ -783,7 +778,6 @@ const updateAudioHandler = async (req, res, next) => {
     await audio.save();
     res.json(formatAudio(audio));
   } catch (error) {
-    console.error("Error updating audio:", error);
     next(error);
   }
 };
@@ -793,11 +787,10 @@ const deleteAudioHandler = async (req, res, next) => {
     const { id } = req.params;
     const audio = await Audio.findByIdAndDelete(id);
     if (!audio) {
-      return res.status(404).json({ error: "Audio not found" });
+      return res.status(404).json({ message: "Audio not found" });
     }
     res.json({ message: "Audio deleted successfully" });
   } catch (error) {
-    console.error("Error deleting audio:", error);
     next(error);
   }
 };
