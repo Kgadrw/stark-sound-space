@@ -115,23 +115,8 @@ const Hero = () => {
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const videoIframeRef = useRef<HTMLIFrameElement>(null);
-  const autoplayAttemptedRef = useRef(false);
-  const isMobileRef = useRef<boolean | null>(null);
   const { content } = useContent();
   const navigate = useNavigate();
-
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      if (isMobileRef.current === null) {
-        isMobileRef.current = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-                              (window.matchMedia && window.matchMedia("(max-width: 768px)").matches) ||
-                              ('ontouchstart' in window);
-      }
-      return isMobileRef.current;
-    };
-    checkMobile();
-  }, []);
 
   const heroContent = content.hero;
   const heroNavLinks = heroContent.navLinks ?? [];
@@ -376,124 +361,70 @@ const Hero = () => {
     }
   }, [isSearchOpen]);
 
-  // Function to attempt video play
-  const attemptVideoPlay = (attemptNumber: number = 0) => {
-    if (!videoIframeRef.current?.contentWindow || !heroVideoUrl) return false;
-
-    try {
-      // Ensure muted for mobile autoplay (required)
-      videoIframeRef.current.contentWindow.postMessage(
-        JSON.stringify({ event: 'command', func: 'mute', args: '' }),
-        '*'
-      );
-      
-      // Set HD quality
-      videoIframeRef.current.contentWindow.postMessage(
-        JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
-        '*'
-      );
-      
-      // Try to trigger play via YouTube iframe API
-      videoIframeRef.current.contentWindow.postMessage(
-        JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
-        '*'
-      );
-      
-      setIsMuted(true);
-      setIsPlaying(true);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
   // Attempt to ensure video autoplay on mobile after iframe loads and set HD quality
   const handleVideoIframeLoad = () => {
-    if (!videoIframeRef.current?.contentWindow || !heroVideoUrl) return;
-
-    const isMobile = isMobileRef.current ?? false;
-    
-    // For mobile, we need more aggressive retry attempts
-    if (isMobile) {
-      // Immediate attempt
-      setTimeout(() => attemptVideoPlay(0), 100);
-      // Multiple retries with increasing delays for mobile
-      setTimeout(() => attemptVideoPlay(1), 500);
-      setTimeout(() => attemptVideoPlay(2), 1000);
-      setTimeout(() => attemptVideoPlay(3), 2000);
-      setTimeout(() => attemptVideoPlay(4), 3000);
-      // Last attempt after 5 seconds
-      setTimeout(() => attemptVideoPlay(5), 5000);
-    } else {
-      // Desktop: fewer attempts
-      setTimeout(() => attemptVideoPlay(0), 100);
-      setTimeout(() => attemptVideoPlay(1), 500);
-      setTimeout(() => attemptVideoPlay(2), 1000);
+    if (videoIframeRef.current?.contentWindow && heroVideoUrl) {
+      // Multiple attempts to ensure autoplay works on mobile and set HD quality
+      const attemptPlay = (delay: number) => {
+        setTimeout(() => {
+          try {
+            // Set HD quality
+            videoIframeRef.current?.contentWindow?.postMessage(
+              JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
+              '*'
+            );
+            // Try to trigger play via YouTube iframe API
+            videoIframeRef.current?.contentWindow?.postMessage(
+              JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
+              '*'
+            );
+          } catch (e) {
+            // Silent fail
+          }
+        }, delay);
+      };
+      
+      // Try multiple times with increasing delays for better mobile compatibility
+      attemptPlay(500);
+      attemptPlay(1000);
+      attemptPlay(2000);
     }
   };
 
-  // Handle user interaction to trigger autoplay on mobile (critical for mobile browsers)
+  // Handle user interaction to trigger autoplay on mobile
   useEffect(() => {
     if (!heroVideoUrl) return;
 
     const handleUserInteraction = () => {
-      // Immediate attempt on user interaction (don't check if already attempted - retry is safe)
-      attemptVideoPlay();
-      autoplayAttemptedRef.current = true;
-      
-      // Also retry after short delays to ensure it plays
-      setTimeout(() => attemptVideoPlay(), 200);
-      setTimeout(() => attemptVideoPlay(), 500);
+      if (videoIframeRef.current?.contentWindow) {
+        try {
+          // Set HD quality
+          videoIframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
+            '*'
+          );
+          // Play video
+          videoIframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
+            '*'
+          );
+        } catch (e) {
+          // Silent fail
+        }
+      }
+      // Remove listeners after first interaction
+      document.removeEventListener('touchstart', handleUserInteraction);
+      document.removeEventListener('click', handleUserInteraction);
     };
 
-    const isMobile = isMobileRef.current ?? false;
+    // Add listeners for user interaction (required for mobile autoplay)
+    document.addEventListener('touchstart', handleUserInteraction, { once: true });
+    document.addEventListener('click', handleUserInteraction, { once: true });
 
-    // For mobile, we need to listen to multiple touch events
-    if (isMobile) {
-      // Use capture phase for earlier detection
-      const options = { passive: true, capture: true };
-      
-      // Multiple touch events for better mobile support
-      document.addEventListener('touchstart', handleUserInteraction, options);
-      document.addEventListener('touchend', handleUserInteraction, options);
-      document.addEventListener('touchmove', handleUserInteraction, options);
-      document.addEventListener('click', handleUserInteraction, { passive: true });
-      
-      // Also listen on the hero section itself - this is critical for mobile
-      const heroSection = document.querySelector('[data-hero-section]');
-      if (heroSection) {
-        heroSection.addEventListener('touchstart', handleUserInteraction, options);
-        heroSection.addEventListener('touchend', handleUserInteraction, options);
-        heroSection.addEventListener('click', handleUserInteraction, { passive: true });
-      }
-
-      // Try to trigger on page visibility change (when user returns to tab)
-      const handleVisibilityChange = () => {
-        if (!document.hidden && videoIframeRef.current) {
-          setTimeout(() => attemptVideoPlay(), 100);
-        }
-      };
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-
-      return () => {
-        document.removeEventListener('touchstart', handleUserInteraction, true);
-        document.removeEventListener('touchend', handleUserInteraction, true);
-        document.removeEventListener('touchmove', handleUserInteraction, true);
-        document.removeEventListener('click', handleUserInteraction);
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-        if (heroSection) {
-          heroSection.removeEventListener('touchstart', handleUserInteraction, true);
-          heroSection.removeEventListener('touchend', handleUserInteraction, true);
-          heroSection.removeEventListener('click', handleUserInteraction);
-        }
-      };
-    } else {
-      // Desktop: simpler click handler
-      document.addEventListener('click', handleUserInteraction, { once: true, passive: true });
-      return () => {
-        document.removeEventListener('click', handleUserInteraction);
-      };
-    }
+    return () => {
+      document.removeEventListener('touchstart', handleUserInteraction);
+      document.removeEventListener('click', handleUserInteraction);
+    };
   }, [heroVideoUrl]);
 
   // Auto-hide video controls after 3 seconds
@@ -597,7 +528,7 @@ const Hero = () => {
         linkText={notificationLinkText}
         isVisible={isNotificationVisible && !!notificationText.trim()}
       />
-    <section data-hero-section className="fixed inset-0 h-screen w-full overflow-hidden border-0 bg-black z-[1]">
+    <section className="fixed inset-0 h-screen w-full overflow-hidden border-0 bg-black z-[1]">
       {/* Video Controls - Top Left */}
       {heroVideoUrl && getYouTubeEmbedUrl(heroVideoUrl) && (
         <motion.div 
@@ -833,10 +764,10 @@ const Hero = () => {
             ref={videoIframeRef}
             className="absolute top-1/2 left-1/2 w-[177.77777778vh] h-[56.25vw] min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 object-cover z-0"
             src={getYouTubeEmbedUrl(heroVideoUrl) || ""}
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen; accelerometer; gyroscope"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowFullScreen
             playsInline={true}
-            {...({ 'webkit-playsinline': 'true', 'playsinline': 'true' } as any)}
+            {...({ 'webkit-playsinline': 'true' } as any)}
             loading="eager"
             onLoad={handleVideoIframeLoad}
             style={{ pointerEvents: "none" }}
