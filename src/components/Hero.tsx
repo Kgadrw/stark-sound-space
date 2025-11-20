@@ -368,11 +368,18 @@ const Hero = () => {
       const attemptPlay = (delay: number) => {
         setTimeout(() => {
           try {
-            // Set HD quality
+            // Set HD quality - use 'highres' for highest available quality, 'hd1080' as fallback
             videoIframeRef.current?.contentWindow?.postMessage(
-              JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
+              JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['highres'] }),
               '*'
             );
+            // Fallback to hd1080 if highres is not available
+            setTimeout(() => {
+              videoIframeRef.current?.contentWindow?.postMessage(
+                JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
+                '*'
+              );
+            }, 100);
             // Try to trigger play via YouTube iframe API
             videoIframeRef.current?.contentWindow?.postMessage(
               JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
@@ -388,21 +395,29 @@ const Hero = () => {
       attemptPlay(500);
       attemptPlay(1000);
       attemptPlay(2000);
+      attemptPlay(3000);
     }
   };
 
-  // Handle user interaction to trigger autoplay on mobile
+  // Handle user interaction to trigger autoplay on mobile and set HD quality
   useEffect(() => {
     if (!heroVideoUrl) return;
 
     const handleUserInteraction = () => {
       if (videoIframeRef.current?.contentWindow) {
         try {
-          // Set HD quality
+          // Set HD quality - use 'highres' for highest available quality
           videoIframeRef.current.contentWindow.postMessage(
-            JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
+            JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['highres'] }),
             '*'
           );
+          // Fallback to hd1080
+          setTimeout(() => {
+            videoIframeRef.current?.contentWindow?.postMessage(
+              JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
+              '*'
+            );
+          }, 100);
           // Play video
           videoIframeRef.current.contentWindow.postMessage(
             JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
@@ -425,6 +440,25 @@ const Hero = () => {
       document.removeEventListener('touchstart', handleUserInteraction);
       document.removeEventListener('click', handleUserInteraction);
     };
+  }, [heroVideoUrl]);
+
+  // Additional effect to continuously ensure HD quality is set
+  useEffect(() => {
+    if (!heroVideoUrl || !videoIframeRef.current?.contentWindow) return;
+
+    const interval = setInterval(() => {
+      try {
+        // Continuously try to set HD quality
+        videoIframeRef.current?.contentWindow?.postMessage(
+          JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['highres'] }),
+          '*'
+        );
+      } catch (e) {
+        // Silent fail
+      }
+    }, 5000); // Check every 5 seconds
+
+    return () => clearInterval(interval);
   }, [heroVideoUrl]);
 
   // Auto-hide video controls after 3 seconds
@@ -476,6 +510,11 @@ const Hero = () => {
           }),
           '*'
         );
+        // Ensure HD quality is maintained
+        videoIframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['highres'] }),
+          '*'
+        );
         setIsMuted(newMutedState);
       } catch (e) {
         // Silent fail
@@ -494,6 +533,11 @@ const Hero = () => {
             func: newPlayingState ? 'playVideo' : 'pauseVideo', 
             args: '' 
           }),
+          '*'
+        );
+        // Ensure HD quality is maintained
+        videoIframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['highres'] }),
           '*'
         );
         setIsPlaying(newPlayingState);
