@@ -117,6 +117,7 @@ const startServer = async () => {
       console.log(`Backend server listening on http://localhost:${PORT}`);
       console.log(`Admin dashboard available at http://localhost:${PORT}/admin`);
       console.log(`API Documentation (Swagger) available at http://localhost:${PORT}/api/docs`);
+      console.log(`Audio endpoints available at http://localhost:${PORT}/api/admin/audios`);
     });
   } catch (error) {
     console.error("Failed to start server:", error.message);
