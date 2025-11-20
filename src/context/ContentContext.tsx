@@ -118,6 +118,7 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
           notificationLink: hero.notificationLink ?? prev.hero.notificationLink ?? "",
           notificationLinkText: hero.notificationLinkText ?? prev.hero.notificationLinkText ?? "Learn More",
           isNotificationVisible: hero.isNotificationVisible ?? prev.hero.isNotificationVisible ?? false,
+          colorSettings: hero.colorSettings ?? prev.hero.colorSettings,
         } : prev.hero,
         albums: (albums.albums ?? []).map(mapAlbum),
         videos: (videos.videos ?? []).map(mapVideo),

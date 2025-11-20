@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/context/SidebarContext";
 import CookieConsent from "@/components/CookieConsent";
+import ColorTheme from "@/components/ColorTheme";
 import Index from "./pages/Index";
 import Music from "./pages/Music";
 import AudioMusic from "./pages/AudioMusic";
@@ -34,6 +35,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+        <ColorTheme />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/music" element={<Music />} />

@@ -43,6 +43,35 @@ const iconPresetOptions: Array<{ value: IconPreset; label: string }> = [
   { value: "website", label: "Website" },
 ];
 
+// Color Schemes
+const solidColorSchemes = [
+  { name: "Black", color: "#000000" },
+  { name: "Dark Gray", color: "#1a1a1a" },
+  { name: "Charcoal", color: "#2d2d2d" },
+  { name: "Navy", color: "#0a0e27" },
+  { name: "Deep Blue", color: "#0d1117" },
+  { name: "Dark Purple", color: "#1a0d2e" },
+  { name: "Dark Green", color: "#0d1b0d" },
+  { name: "Burgundy", color: "#1a0a0a" },
+  { name: "Midnight", color: "#0a0a1a" },
+  { name: "Slate", color: "#1e293b" },
+];
+
+const gradientColorSchemes = [
+  { name: "Black to Dark Gray", start: "#000000", end: "#1a1a1a", direction: "to bottom" },
+  { name: "Navy to Black", start: "#0a0e27", end: "#000000", direction: "to bottom" },
+  { name: "Purple to Black", start: "#1a0d2e", end: "#000000", direction: "to bottom" },
+  { name: "Blue to Navy", start: "#1e3a8a", end: "#0a0e27", direction: "to bottom" },
+  { name: "Purple to Blue", start: "#6b21a8", end: "#1e3a8a", direction: "to bottom" },
+  { name: "Pink to Purple", start: "#ec4899", end: "#8b5cf6", direction: "to bottom" },
+  { name: "Orange to Red", start: "#f97316", end: "#dc2626", direction: "to bottom" },
+  { name: "Green to Teal", start: "#10b981", end: "#14b8a6", direction: "to bottom" },
+  { name: "Dark to Light Gray", start: "#000000", end: "#2d2d2d", direction: "to bottom" },
+  { name: "Blue to Purple", start: "#3b82f6", end: "#8b5cf6", direction: "to right" },
+  { name: "Red to Orange", start: "#dc2626", end: "#f97316", direction: "to right" },
+  { name: "Teal to Blue", start: "#14b8a6", end: "#3b82f6", direction: "to bottom right" },
+];
+
 export const HeroEditor = ({
   content,
   setContent,
@@ -165,6 +194,7 @@ export const HeroEditor = ({
         notificationLink: hero.notificationLink,
         notificationLinkText: hero.notificationLinkText,
         isNotificationVisible: hero.isNotificationVisible,
+        colorSettings: hero.colorSettings,
       });
       console.log("Hero saved successfully:", response);
       toast.success("Hero saved successfully!", {
@@ -537,6 +567,373 @@ export const HeroEditor = ({
             </div>
           ))}
           {!hero.socialLinks.length && <p className="text-sm text-white/50">No social links configured. Click "Add Link" to add one.</p>}
+        </CardContent>
+      </Card>
+
+      <Card className="border-white/10 bg-black/40 text-white">
+        <CardHeader className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <CardTitle className="text-white">Website Color Theme</CardTitle>
+              <CardDescription className="text-white/60">Customize the website background color with solid or gradient colors.</CardDescription>
+            </div>
+            <Button size="sm" onClick={persistHeroData}>
+              Save Changes
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Color Type Selection */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-white">Color Type</label>
+            <Select 
+              value={hero.colorSettings?.colorType || "solid"} 
+              onValueChange={(value) => updateHero({ 
+                colorSettings: { 
+                  ...hero.colorSettings, 
+                  colorType: value as "solid" | "gradient" 
+                } 
+              })}
+            >
+              <SelectTrigger className="bg-black/40 text-white border-white/20">
+                <SelectValue placeholder="Select color type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="solid">Solid Color</SelectItem>
+                <SelectItem value="gradient">Gradient Color</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Solid Color Picker */}
+          {hero.colorSettings?.colorType === "solid" && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Color Schemes</label>
+                <p className="text-xs text-white/50">Click a color swatch to apply it</p>
+                <div className="grid grid-cols-5 sm:grid-cols-5 gap-3">
+                  {solidColorSchemes.map((scheme) => (
+                    <button
+                      key={scheme.name}
+                      type="button"
+                      onClick={() => updateHero({ 
+                        colorSettings: { 
+                          ...hero.colorSettings, 
+                          solidColor: scheme.color 
+                        } 
+                      })}
+                      className="group relative"
+                      title={scheme.name}
+                    >
+                      <div
+                        className="w-full h-16 rounded-lg border-2 transition-all cursor-pointer hover:scale-105 hover:border-white/50"
+                        style={{
+                          backgroundColor: scheme.color,
+                          borderColor: hero.colorSettings?.solidColor === scheme.color ? "#ffffff" : "rgba(255, 255, 255, 0.2)"
+                        }}
+                      />
+                      <p className="text-xs text-white/60 mt-1 text-center truncate">{scheme.name}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Custom Color</label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="color"
+                    value={hero.colorSettings?.solidColor || "#000000"}
+                    onChange={(e) => updateHero({ 
+                      colorSettings: { 
+                        ...hero.colorSettings, 
+                        solidColor: e.target.value 
+                      } 
+                    })}
+                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer"
+                  />
+                  <Input
+                    value={hero.colorSettings?.solidColor || "#000000"}
+                    onChange={(e) => updateHero({ 
+                      colorSettings: { 
+                        ...hero.colorSettings, 
+                        solidColor: e.target.value 
+                      } 
+                    })}
+                    placeholder="#000000"
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 flex-1"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Gradient Color Picker */}
+          {hero.colorSettings?.colorType === "gradient" && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Gradient Schemes</label>
+                <p className="text-xs text-white/50">Click a gradient to apply it</p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {gradientColorSchemes.map((scheme) => (
+                    <button
+                      key={scheme.name}
+                      type="button"
+                      onClick={() => updateHero({ 
+                        colorSettings: { 
+                          ...hero.colorSettings, 
+                          gradientColors: {
+                            startColor: scheme.start,
+                            endColor: scheme.end,
+                            direction: scheme.direction as any
+                          }
+                        } 
+                      })}
+                      className="group relative"
+                      title={scheme.name}
+                    >
+                      <div
+                        className="w-full h-20 rounded-lg border-2 transition-all cursor-pointer hover:scale-105 hover:border-white/50"
+                        style={{
+                          background: `linear-gradient(${scheme.direction}, ${scheme.start}, ${scheme.end})`,
+                          borderColor: hero.colorSettings?.gradientColors?.startColor === scheme.start && 
+                                     hero.colorSettings?.gradientColors?.endColor === scheme.end ? "#ffffff" : "rgba(255, 255, 255, 0.2)"
+                        }}
+                      />
+                      <p className="text-xs text-white/60 mt-1 text-center truncate">{scheme.name}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <Separator className="bg-white/10" />
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Start Color</label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="color"
+                    value={hero.colorSettings?.gradientColors?.startColor || "#000000"}
+                    onChange={(e) => updateHero({ 
+                      colorSettings: { 
+                        ...hero.colorSettings, 
+                        gradientColors: {
+                          ...hero.colorSettings?.gradientColors,
+                          startColor: e.target.value
+                        }
+                      } 
+                    })}
+                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer"
+                  />
+                  <Input
+                    value={hero.colorSettings?.gradientColors?.startColor || "#000000"}
+                    onChange={(e) => updateHero({ 
+                      colorSettings: { 
+                        ...hero.colorSettings, 
+                        gradientColors: {
+                          ...hero.colorSettings?.gradientColors,
+                          startColor: e.target.value
+                        }
+                      } 
+                    })}
+                    placeholder="#000000"
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 flex-1"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">End Color</label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="color"
+                    value={hero.colorSettings?.gradientColors?.endColor || "#000000"}
+                    onChange={(e) => updateHero({ 
+                      colorSettings: { 
+                        ...hero.colorSettings, 
+                        gradientColors: {
+                          ...hero.colorSettings?.gradientColors,
+                          endColor: e.target.value
+                        }
+                      } 
+                    })}
+                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer"
+                  />
+                  <Input
+                    value={hero.colorSettings?.gradientColors?.endColor || "#000000"}
+                    onChange={(e) => updateHero({ 
+                      colorSettings: { 
+                        ...hero.colorSettings, 
+                        gradientColors: {
+                          ...hero.colorSettings?.gradientColors,
+                          endColor: e.target.value
+                        }
+                      } 
+                    })}
+                    placeholder="#000000"
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 flex-1"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Gradient Direction</label>
+                <Select 
+                  value={hero.colorSettings?.gradientColors?.direction || "to bottom"} 
+                  onValueChange={(value) => updateHero({ 
+                    colorSettings: { 
+                      ...hero.colorSettings, 
+                      gradientColors: {
+                        ...hero.colorSettings?.gradientColors,
+                        direction: value as any
+                      }
+                    } 
+                  })}
+                >
+                  <SelectTrigger className="bg-black/40 text-white border-white/20">
+                    <SelectValue placeholder="Select direction" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="to right">To Right →</SelectItem>
+                    <SelectItem value="to bottom">To Bottom ↓</SelectItem>
+                    <SelectItem value="to left">To Left ←</SelectItem>
+                    <SelectItem value="to top">To Top ↑</SelectItem>
+                    <SelectItem value="to bottom right">To Bottom Right ↘</SelectItem>
+                    <SelectItem value="to bottom left">To Bottom Left ↙</SelectItem>
+                    <SelectItem value="to top right">To Top Right ↗</SelectItem>
+                    <SelectItem value="to top left">To Top Left ↖</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Gradient Preview */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Preview</label>
+                <div 
+                  className="w-full h-32 rounded-lg border border-white/20"
+                  style={{
+                    background: `linear-gradient(${hero.colorSettings?.gradientColors?.direction || "to bottom"}, ${hero.colorSettings?.gradientColors?.startColor || "#000000"}, ${hero.colorSettings?.gradientColors?.endColor || "#000000"})`
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Solid Color Preview */}
+          {hero.colorSettings?.colorType === "solid" && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-white">Preview</label>
+              <div 
+                className="w-full h-32 rounded-lg border border-white/20"
+                style={{
+                  backgroundColor: hero.colorSettings?.solidColor || "#000000"
+                }}
+              />
+            </div>
+          )}
+
+          <Separator className="bg-white/10" />
+
+          {/* Title Text Color */}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-white">Title Text Color</label>
+              <p className="text-xs text-white/50">Customize the color of section titles throughout the website</p>
+              
+              {/* Text Color Schemes */}
+              <div className="space-y-2">
+                <p className="text-xs text-white/50">Color Schemes</p>
+                <div className="grid grid-cols-5 sm:grid-cols-5 gap-3">
+                  {[
+                    { name: "White", color: "#ffffff" },
+                    { name: "Light Gray", color: "#e5e5e5" },
+                    { name: "Yellow", color: "#fbbf24" },
+                    { name: "Pink", color: "#ec4899" },
+                    { name: "Purple", color: "#a855f7" },
+                    { name: "Blue", color: "#3b82f6" },
+                    { name: "Green", color: "#10b981" },
+                    { name: "Red", color: "#ef4444" },
+                    { name: "Orange", color: "#f97316" },
+                    { name: "Cyan", color: "#06b6d4" },
+                  ].map((scheme) => (
+                    <button
+                      key={scheme.name}
+                      type="button"
+                      onClick={() => updateHero({ 
+                        colorSettings: { 
+                          ...hero.colorSettings, 
+                          titleTextColor: scheme.color 
+                        } 
+                      })}
+                      className="group relative"
+                      title={scheme.name}
+                    >
+                      <div
+                        className="w-full h-16 rounded-lg border-2 transition-all cursor-pointer hover:scale-105 hover:border-white/50 flex items-center justify-center"
+                        style={{
+                          backgroundColor: scheme.color,
+                          borderColor: hero.colorSettings?.titleTextColor === scheme.color ? "#ffffff" : "rgba(255, 255, 255, 0.2)"
+                        }}
+                      >
+                        <span 
+                          className="text-xs font-bold"
+                          style={{
+                            color: scheme.color === "#ffffff" || scheme.color === "#e5e5e5" ? "#000000" : "#ffffff"
+                          }}
+                        >
+                          Aa
+                        </span>
+                      </div>
+                      <p className="text-xs text-white/60 mt-1 text-center truncate">{scheme.name}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Custom Text Color Picker */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Custom Color</label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="color"
+                    value={hero.colorSettings?.titleTextColor || "#ffffff"}
+                    onChange={(e) => updateHero({ 
+                      colorSettings: { 
+                        ...hero.colorSettings, 
+                        titleTextColor: e.target.value 
+                      } 
+                    })}
+                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer"
+                  />
+                  <Input
+                    value={hero.colorSettings?.titleTextColor || "#ffffff"}
+                    onChange={(e) => updateHero({ 
+                      colorSettings: { 
+                        ...hero.colorSettings, 
+                        titleTextColor: e.target.value 
+                      } 
+                    })}
+                    placeholder="#ffffff"
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 flex-1"
+                  />
+                </div>
+              </div>
+
+              {/* Text Color Preview */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Text Preview</label>
+                <div 
+                  className="w-full p-4 rounded-lg border border-white/20 bg-black/40"
+                  style={{
+                    color: hero.colorSettings?.titleTextColor || "#ffffff"
+                  }}
+                >
+                  <h3 className="text-xl font-bold">Sample Title Text</h3>
+                  <p className="text-sm mt-2">This is how your titles will appear</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

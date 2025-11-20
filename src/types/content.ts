@@ -50,6 +50,17 @@ export type ContactMethod = {
   preset: IconPreset;
 };
 
+export type ColorSettings = {
+  colorType: "solid" | "gradient";
+  solidColor: string; // Hex color
+  gradientColors: {
+    startColor: string; // Hex color
+    endColor: string; // Hex color
+    direction: "to right" | "to bottom" | "to left" | "to top" | "to bottom right" | "to bottom left" | "to top right" | "to top left";
+  };
+  titleTextColor: string; // Hex color for titles
+};
+
 export type HeroContent = {
   artistName: string;
   backgroundImage: string; // Fallback image
@@ -65,6 +76,7 @@ export type HeroContent = {
   notificationLink: string; // Optional link for notification
   notificationLinkText: string; // Text for the notification link
   isNotificationVisible: boolean; // Whether to show the notification
+  colorSettings: ColorSettings;
 };
 
 export type AlbumLink = {

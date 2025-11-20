@@ -10,6 +10,12 @@ const VideosSection = () => {
   const { content, isLoading } = useContent();
   const videos = content.videos;
   const navigate = useNavigate();
+  const colorSettings = content.hero.colorSettings;
+  const backgroundStyle = colorSettings?.colorType === "solid"
+    ? colorSettings.solidColor
+    : colorSettings?.gradientColors
+    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
+    : "#000000";
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -35,8 +41,8 @@ const VideosSection = () => {
 
   if (isLoading) {
     return (
-      <section id="videos" className="min-h-screen bg-black relative overflow-hidden py-24 px-6">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section id="videos" className="min-h-screen bg-black relative overflow-hidden py-24 px-6" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="mb-8 md:mb-12 flex items-center gap-2 sm:gap-3 justify-end">
             <Skeleton className="h-10 w-10 bg-white/10" />
@@ -56,8 +62,8 @@ const VideosSection = () => {
 
   if (!videos.length) {
     return (
-      <section id="videos" className="min-h-screen bg-black relative overflow-hidden py-24 px-6">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section id="videos" className="min-h-screen bg-black relative overflow-hidden py-24 px-6" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}

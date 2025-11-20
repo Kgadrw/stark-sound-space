@@ -10,6 +10,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 const AudioMusicSection = () => {
   const { content, isLoading } = useContent();
   const [selectedAudio, setSelectedAudio] = useState<string | null>(null);
+  const colorSettings = content.hero.colorSettings;
+  const backgroundStyle = colorSettings?.colorType === "solid"
+    ? colorSettings.solidColor
+    : colorSettings?.gradientColors
+    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
+    : "#000000";
   
   // Sort audios by createdAt (newest first)
   const audios = [...content.audios].sort((a, b) => {
@@ -22,8 +28,8 @@ const AudioMusicSection = () => {
 
   if (isLoading) {
     return (
-      <section id="audio-music" className="bg-black relative overflow-hidden pt-24 pb-0 px-6">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section id="audio-music" className="bg-black relative overflow-hidden pt-24 pb-0 px-6" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-6 md:gap-8 pb-4">
@@ -43,8 +49,8 @@ const AudioMusicSection = () => {
 
   return (
     <>
-      <section id="audio-music" className="bg-black relative overflow-hidden pt-24 pb-12 px-6">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section id="audio-music" className="bg-black relative overflow-hidden pt-24 pb-12 px-6" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Title */}
@@ -52,7 +58,10 @@ const AudioMusicSection = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-xs md:text-sm lg:text-sm font-extrabold text-white uppercase tracking-wide mb-6 md:mb-8"
+            className="text-xs md:text-sm lg:text-sm font-extrabold uppercase tracking-wide mb-6 md:mb-8 section-title"
+            style={{
+              color: content.hero.colorSettings?.titleTextColor || "#ffffff"
+            }}
           >
             More Music from Nel Ngabo
           </motion.h2>

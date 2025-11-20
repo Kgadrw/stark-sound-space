@@ -68,6 +68,13 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
         animate={hasAnimated ? false : { y: 0, opacity: 1 }}
         transition={hasAnimated ? {} : { duration: 0.5 }}
         className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b border-white/10 bg-black px-6 py-4 text-white"
+        style={{
+          background: content.hero.colorSettings?.colorType === "solid"
+            ? content.hero.colorSettings.solidColor
+            : content.hero.colorSettings?.gradientColors
+            ? `linear-gradient(${content.hero.colorSettings.gradientColors.direction}, ${content.hero.colorSettings.gradientColors.startColor}, ${content.hero.colorSettings.gradientColors.endColor})`
+            : "#000000"
+        }}
       >
         {/* Logo/Brand */}
         <div className="flex items-center space-x-2">

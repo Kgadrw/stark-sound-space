@@ -18,11 +18,17 @@ const AudioMusic = () => {
   });
 
   const selectedAudioData = audios.find((audio) => audio.id === selectedAudio);
+  const colorSettings = content.hero.colorSettings;
+  const backgroundStyle = colorSettings?.colorType === "solid"
+    ? colorSettings.solidColor
+    : colorSettings?.gradientColors
+    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
+    : "#000000";
 
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black pt-24 pb-24 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black pt-24 pb-24 px-4 sm:px-6 lg:px-8" style={{ background: backgroundStyle }}>
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <motion.div

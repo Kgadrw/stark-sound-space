@@ -10,6 +10,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 const MusicSection = () => {
   const { content, isLoading } = useContent();
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+  const colorSettings = content.hero.colorSettings;
+  const backgroundStyle = colorSettings?.colorType === "solid"
+    ? colorSettings.solidColor
+    : colorSettings?.gradientColors
+    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
+    : "#000000";
   
   // Sort albums by createdAt (newest first)
   const albums = [...content.albums].sort((a, b) => {
@@ -22,8 +28,8 @@ const MusicSection = () => {
 
   if (isLoading) {
     return (
-      <section id="music" className="min-h-screen bg-black relative overflow-hidden pt-24 pb-0 px-6">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section id="music" className="min-h-screen bg-black relative overflow-hidden pt-24 pb-0 px-6" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-6 md:gap-8 pb-4">
@@ -39,8 +45,8 @@ const MusicSection = () => {
 
   if (!albums.length) {
     return (
-      <section id="music" className="min-h-screen bg-black relative overflow-hidden pt-24 pb-0 px-6">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section id="music" className="min-h-screen bg-black relative overflow-hidden pt-24 pb-0 px-6" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -57,8 +63,8 @@ const MusicSection = () => {
 
   return (
     <>
-      <section id="music" className="min-h-screen bg-black relative overflow-hidden pt-24 pb-0 px-6">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section id="music" className="min-h-screen bg-black relative overflow-hidden pt-24 pb-0 px-6" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Album Cover Horizontal Scroll */}

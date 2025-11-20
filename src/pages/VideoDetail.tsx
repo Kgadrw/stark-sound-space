@@ -12,6 +12,12 @@ const VideoDetail = () => {
   const { content } = useContent();
 
   const video = content.videos.find((v) => v.id === id);
+  const colorSettings = content.hero.colorSettings;
+  const backgroundStyle = colorSettings?.colorType === "solid"
+    ? colorSettings.solidColor
+    : colorSettings?.gradientColors
+    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
+    : "#000000";
 
   useEffect(() => {
     if (!video && content.videos.length > 0) {
@@ -24,7 +30,7 @@ const VideoDetail = () => {
     return (
       <>
         <Navbar />
-        <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24">
+        <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24" style={{ background: backgroundStyle }}>
           <div className="relative z-10 max-w-7xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -61,8 +67,8 @@ const VideoDetail = () => {
     <>
       <style>{orbitronStyle}</style>
       <Navbar />
-      <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Back Button */}

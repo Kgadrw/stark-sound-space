@@ -50,6 +50,7 @@ export const adminApi = {
     notificationLink?: string;
     notificationLinkText?: string;
     isNotificationVisible?: boolean;
+    colorSettings?: any;
   }) =>
     request<{ 
       artistName?: string;

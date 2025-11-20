@@ -9,6 +9,12 @@ import { useMemo } from "react";
 const LatestVideos = () => {
   const { content, isLoading } = useContent();
   const navigate = useNavigate();
+  const colorSettings = content.hero.colorSettings;
+  const backgroundStyle = colorSettings?.colorType === "solid"
+    ? colorSettings.solidColor
+    : colorSettings?.gradientColors
+    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
+    : "#000000";
 
   // Sort videos by createdAt (newest first) and get the latest 2
   const latestVideos = useMemo(() => {
@@ -22,8 +28,8 @@ const LatestVideos = () => {
 
   if (isLoading) {
     return (
-      <section className="relative bg-black pt-0 pb-24 px-4 sm:px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section className="relative bg-black pt-0 pb-24 px-4 sm:px-6 overflow-hidden" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         <div className="relative z-10 max-w-7xl mx-auto">
           <Skeleton className="h-8 md:h-10 lg:h-12 w-64 md:w-80 mb-6 md:mb-8 bg-white/10" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
@@ -44,8 +50,8 @@ const LatestVideos = () => {
   }
 
   return (
-    <section className="relative bg-black pt-12 pb-24 px-4 sm:px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+    <section className="relative bg-black pt-12 pb-24 px-4 sm:px-6 overflow-hidden" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Title */}
@@ -53,7 +59,10 @@ const LatestVideos = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-xs md:text-sm lg:text-sm font-extrabold text-white uppercase tracking-wide mb-6 md:mb-8"
+            className="text-xs md:text-sm lg:text-sm font-extrabold uppercase tracking-wide mb-6 md:mb-8 section-title"
+            style={{
+              color: content.hero.colorSettings?.titleTextColor || "#ffffff"
+            }}
           >
             Latest Videos from Nel Ngabo
           </motion.h2>

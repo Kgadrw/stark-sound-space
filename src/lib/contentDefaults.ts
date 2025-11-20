@@ -28,6 +28,16 @@ export const initialContent: ContentState = {
     notificationLink: "",
     notificationLinkText: "Learn More",
     isNotificationVisible: false,
+    colorSettings: {
+      colorType: "solid",
+      solidColor: "#000000",
+      gradientColors: {
+        startColor: "#000000",
+        endColor: "#000000",
+        direction: "to bottom",
+      },
+      titleTextColor: "#ffffff",
+    },
   },
   albums: [],
   videos: [],

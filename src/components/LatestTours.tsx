@@ -13,6 +13,12 @@ const formatTourDate = (value: string) => {
 
 const LatestTours = () => {
   const { content, isLoading } = useContent();
+  const colorSettings = content.hero.colorSettings;
+  const backgroundStyle = colorSettings?.colorType === "solid"
+    ? colorSettings.solidColor
+    : colorSettings?.gradientColors
+    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
+    : "#000000";
 
   // Sort tours by date (newest first) and get the latest ones
   const latestTours = useMemo(() => {
@@ -26,8 +32,8 @@ const LatestTours = () => {
 
   if (isLoading) {
     return (
-      <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="mb-12 text-center">
             <Skeleton className="h-12 w-32 mx-auto bg-white/10" />
@@ -47,8 +53,8 @@ const LatestTours = () => {
   }
 
   return (
-    <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+    <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden" style={{ background: backgroundStyle }}>
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
       
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}

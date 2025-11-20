@@ -17,6 +17,12 @@ const LatestAlbum = () => {
 
   const { content, isLoading } = useContent();
   const navigate = useNavigate();
+  const colorSettings = content.hero.colorSettings;
+  const backgroundStyle = colorSettings?.colorType === "solid"
+    ? colorSettings.solidColor
+    : colorSettings?.gradientColors
+    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
+    : "#000000";
   
   // Sort albums by createdAt (newest first) and get the latest one
   const sortedAlbums = [...content.albums].sort((a, b) => {
@@ -31,8 +37,8 @@ const LatestAlbum = () => {
     return (
       <>
         <style>{orbitronStyle}</style>
-        <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+        <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden" style={{ background: backgroundStyle }}>
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
           <div className="relative z-10 max-w-7xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               <Skeleton className="aspect-square w-full rounded-lg bg-white/10" />
@@ -57,8 +63,8 @@ const LatestAlbum = () => {
   return (
     <>
       <style>{orbitronStyle}</style>
-      <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
+      <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden" style={{ background: backgroundStyle }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         
         <div className="relative z-10 max-w-7xl mx-auto">
           <motion.div
