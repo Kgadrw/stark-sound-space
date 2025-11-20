@@ -142,6 +142,16 @@ const formatHero = (hero) => ({
   notificationLink: hero.notificationLink || "",
   notificationLinkText: hero.notificationLinkText || "Learn More",
   isNotificationVisible: hero.isNotificationVisible ?? false,
+  colorSettings: hero.colorSettings || {
+    colorType: "solid",
+    solidColor: "#000000",
+    gradientColors: {
+      startColor: "#000000",
+      endColor: "#000000",
+      direction: "to bottom",
+    },
+    titleTextColor: "#ffffff",
+  },
   updatedAt: hero.updatedAt,
 });
 
@@ -215,6 +225,28 @@ const saveHeroImage = async (req, res, next) => {
     }
     if (isNotificationVisible !== undefined) {
       hero.isNotificationVisible = isNotificationVisible ?? false;
+    }
+    if (req.body.colorSettings !== undefined) {
+      if (req.body.colorSettings.colorType !== undefined) {
+        hero.colorSettings = hero.colorSettings || {};
+        hero.colorSettings.colorType = req.body.colorSettings.colorType;
+      }
+      if (req.body.colorSettings.solidColor !== undefined) {
+        hero.colorSettings = hero.colorSettings || {};
+        hero.colorSettings.solidColor = req.body.colorSettings.solidColor;
+      }
+      if (req.body.colorSettings.gradientColors !== undefined) {
+        hero.colorSettings = hero.colorSettings || {};
+        hero.colorSettings.gradientColors = {
+          startColor: req.body.colorSettings.gradientColors.startColor || "#000000",
+          endColor: req.body.colorSettings.gradientColors.endColor || "#000000",
+          direction: req.body.colorSettings.gradientColors.direction || "to bottom",
+        };
+      }
+      if (req.body.colorSettings.titleTextColor !== undefined) {
+        hero.colorSettings = hero.colorSettings || {};
+        hero.colorSettings.titleTextColor = req.body.colorSettings.titleTextColor || "#ffffff";
+      }
     }
     
     await hero.save();

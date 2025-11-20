@@ -74,6 +74,36 @@ const heroSettingSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    colorSettings: {
+      colorType: {
+        type: String,
+        enum: ["solid", "gradient"],
+        default: "solid",
+      },
+      solidColor: {
+        type: String,
+        default: "#000000", // Black default
+      },
+      gradientColors: {
+        startColor: {
+          type: String,
+          default: "#000000",
+        },
+        endColor: {
+          type: String,
+          default: "#000000",
+        },
+        direction: {
+          type: String,
+          enum: ["to right", "to bottom", "to left", "to top", "to bottom right", "to bottom left", "to top right", "to top left"],
+          default: "to bottom",
+        },
+      },
+      titleTextColor: {
+        type: String,
+        default: "#ffffff", // White default
+      },
+    },
   },
   { timestamps: true },
 );

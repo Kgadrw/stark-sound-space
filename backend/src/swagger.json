@@ -650,6 +650,26 @@
           "notificationLink": { "type": "string", "example": "" },
           "notificationLinkText": { "type": "string", "example": "Learn More" },
           "isNotificationVisible": { "type": "boolean", "example": false },
+          "colorSettings": {
+            "type": "object",
+            "properties": {
+              "colorType": { "type": "string", "enum": ["solid", "gradient"], "default": "solid" },
+              "solidColor": { "type": "string", "default": "#000000", "example": "#000000" },
+              "gradientColors": {
+                "type": "object",
+                "properties": {
+                  "startColor": { "type": "string", "default": "#000000", "example": "#000000" },
+                  "endColor": { "type": "string", "default": "#000000", "example": "#000000" },
+                  "direction": {
+                    "type": "string",
+                    "enum": ["to right", "to bottom", "to left", "to top", "to bottom right", "to bottom left", "to top right", "to top left"],
+                    "default": "to bottom"
+                  }
+                }
+              },
+              "titleTextColor": { "type": "string", "default": "#ffffff", "example": "#ffffff" }
+            }
+          },
           "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
@@ -716,7 +736,26 @@
           "notificationText": { "type": "string" },
           "notificationLink": { "type": "string" },
           "notificationLinkText": { "type": "string" },
-          "isNotificationVisible": { "type": "boolean" }
+          "isNotificationVisible": { "type": "boolean" },
+          "colorSettings": {
+            "type": "object",
+            "properties": {
+              "colorType": { "type": "string", "enum": ["solid", "gradient"] },
+              "solidColor": { "type": "string" },
+              "gradientColors": {
+                "type": "object",
+                "properties": {
+                  "startColor": { "type": "string" },
+                  "endColor": { "type": "string" },
+                  "direction": {
+                    "type": "string",
+                    "enum": ["to right", "to bottom", "to left", "to top", "to bottom right", "to bottom left", "to top right", "to top left"]
+                  }
+                }
+              },
+              "titleTextColor": { "type": "string" }
+            }
+          }
         }
       },
       "About": {
