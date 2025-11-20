@@ -111,6 +111,8 @@ const Hero = () => {
   const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [showVideoControls, setShowVideoControls] = useState(true);
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const videoIframeRef = useRef<HTMLIFrameElement>(null);
   const { content } = useContent();
@@ -422,6 +424,42 @@ const Hero = () => {
     };
   }, [heroVideoUrl]);
 
+  // Auto-hide video controls after 3 seconds
+  useEffect(() => {
+    if (!heroVideoUrl) return;
+
+    const hideControls = () => {
+      setShowVideoControls(false);
+    };
+
+    const showControls = () => {
+      setShowVideoControls(true);
+      // Clear existing timeout
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
+      // Hide again after 3 seconds
+      controlsTimeoutRef.current = setTimeout(hideControls, 3000);
+    };
+
+    // Initial timeout to hide after 3 seconds
+    controlsTimeoutRef.current = setTimeout(hideControls, 3000);
+
+    // Show controls on mouse move in hero section
+    const handleMouseMove = () => {
+      showControls();
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [heroVideoUrl]);
+
   // Toggle mute/unmute for hero video
   const toggleMute = () => {
     if (videoIframeRef.current?.contentWindow && heroVideoUrl) {
@@ -490,7 +528,19 @@ const Hero = () => {
     <section className="fixed inset-0 h-screen w-full overflow-hidden border-0 bg-black z-[1]">
       {/* Video Controls - Top Left */}
       {heroVideoUrl && getYouTubeEmbedUrl(heroVideoUrl) && (
-        <div className={`absolute left-4 sm:left-6 ${hasNotification ? 'top-28 sm:top-32' : 'top-20'} z-[200] flex items-center gap-2`}>
+        <motion.div 
+          className={`absolute left-4 sm:left-6 ${hasNotification ? 'top-28 sm:top-32' : 'top-20'} z-[200] flex items-center gap-2`}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: showVideoControls ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+          onMouseEnter={() => setShowVideoControls(true)}
+          onMouseLeave={() => {
+            if (controlsTimeoutRef.current) {
+              clearTimeout(controlsTimeoutRef.current);
+            }
+            controlsTimeoutRef.current = setTimeout(() => setShowVideoControls(false), 3000);
+          }}
+        >
           {/* Play/Pause Button */}
           <motion.button
             type="button"
@@ -528,7 +578,7 @@ const Hero = () => {
               <Volume2 className="h-5 w-5" />
             )}
           </motion.button>
-        </div>
+        </motion.div>
       )}
       
       <motion.div
@@ -741,7 +791,7 @@ const Hero = () => {
               <Button
                 type="button"
                 size="lg"
-                  className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto text-green-500"
+                  className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto"
                 onClick={() => handleHeroCta(primaryCta)}
               >
                 <span className="relative z-10">{primaryCta.label}</span>
@@ -750,14 +800,15 @@ const Hero = () => {
             </motion.div>
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button asChild size="lg" variant="outline" className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto text-[#FF0000] border-[#FF0000]/50 bg-transparent hover:scale-105 hover:bg-transparent hover:text-[#FF0000] hover:border-[#FF0000] transition-transform duration-300">
+              <Button asChild size="lg" variant="outline" className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto">
               <a
                   href={secondaryCta.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative flex items-center justify-center"
               >
-                  <Play className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1.5 sm:mr-2 fill-[#FF0000] text-[#FF0000] group-hover:scale-110 transition-transform duration-300" />
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 opacity-0 group-hover:opacity-20 group-hover:scale-110 transition-all duration-300 transform origin-center" />
+                  <Play className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1.5 sm:mr-2 fill-pink-500 text-pink-500 play-icon-glow" />
                 <span className="relative z-10 group-hover:tracking-wider transition-all duration-300">
                     {secondaryCta.label}
                 </span>
