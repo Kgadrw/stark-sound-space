@@ -47,7 +47,7 @@ const ShopSection = () => {
       </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
-        <h2 className="text-5xl md:text-7xl font-bold mb-16 tracking-tighter">SHOP</h2>
+        <h2 className="text-5xl md:text-7xl font-bold mb-16 tracking-tighter text-green-500">SHOP</h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product, index) => (

@@ -157,7 +157,7 @@ const AudioMusic = () => {
                 <div className="p-6 space-y-4 bg-gradient-to-b from-transparent to-black">
                   {selectedAudioData.title && (
                     <div>
-                      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                      <h2 className="text-2xl md:text-3xl font-bold text-green-500 mb-1">
                         {selectedAudioData.title}
                       </h2>
                       <p className="text-gray-400 text-sm">Nel Ngabo</p>

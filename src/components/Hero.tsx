@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
-import { Play, Music3, Music4, Disc3, Youtube, Radio, Search, Phone, Mail, Instagram, Twitter, Music2, Facebook, Globe } from "lucide-react";
+import { Play, Pause, Music3, Music4, Disc3, Youtube, Radio, Search, Phone, Mail, Instagram, Twitter, Music2, Facebook, Globe, Volume2, VolumeX } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import type { HeroCta, HeroNavLink, IconPreset } from "@/types/content";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
@@ -109,6 +109,8 @@ const Hero = () => {
   const [youtubeVideos, setYoutubeVideos] = useState<YouTubeVideo[]>([]);
   const [isLoadingYouTube, setIsLoadingYouTube] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const videoIframeRef = useRef<HTMLIFrameElement>(null);
   const { content } = useContent();
@@ -354,13 +356,18 @@ const Hero = () => {
     }
   }, [isSearchOpen]);
 
-  // Attempt to ensure video autoplay on mobile after iframe loads
+  // Attempt to ensure video autoplay on mobile after iframe loads and set HD quality
   const handleVideoIframeLoad = () => {
     if (videoIframeRef.current?.contentWindow && heroVideoUrl) {
-      // Multiple attempts to ensure autoplay works on mobile
+      // Multiple attempts to ensure autoplay works on mobile and set HD quality
       const attemptPlay = (delay: number) => {
         setTimeout(() => {
           try {
+            // Set HD quality
+            videoIframeRef.current?.contentWindow?.postMessage(
+              JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
+              '*'
+            );
             // Try to trigger play via YouTube iframe API
             videoIframeRef.current?.contentWindow?.postMessage(
               JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
@@ -386,6 +393,12 @@ const Hero = () => {
     const handleUserInteraction = () => {
       if (videoIframeRef.current?.contentWindow) {
         try {
+          // Set HD quality
+          videoIframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
+            '*'
+          );
+          // Play video
           videoIframeRef.current.contentWindow.postMessage(
             JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
             '*'
@@ -408,6 +421,46 @@ const Hero = () => {
       document.removeEventListener('click', handleUserInteraction);
     };
   }, [heroVideoUrl]);
+
+  // Toggle mute/unmute for hero video
+  const toggleMute = () => {
+    if (videoIframeRef.current?.contentWindow && heroVideoUrl) {
+      try {
+        const newMutedState = !isMuted;
+        videoIframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ 
+            event: 'command', 
+            func: newMutedState ? 'mute' : 'unMute', 
+            args: '' 
+          }),
+          '*'
+        );
+        setIsMuted(newMutedState);
+      } catch (e) {
+        // Silent fail
+      }
+    }
+  };
+
+  // Toggle play/pause for hero video
+  const togglePlayPause = () => {
+    if (videoIframeRef.current?.contentWindow && heroVideoUrl) {
+      try {
+        const newPlayingState = !isPlaying;
+        videoIframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ 
+            event: 'command', 
+            func: newPlayingState ? 'playVideo' : 'pauseVideo', 
+            args: '' 
+          }),
+          '*'
+        );
+        setIsPlaying(newPlayingState);
+      } catch (e) {
+        // Silent fail
+      }
+    }
+  };
 
   const glowStyle = `
     @keyframes glow {
@@ -435,6 +488,49 @@ const Hero = () => {
         isVisible={isNotificationVisible && !!notificationText.trim()}
       />
     <section className="fixed inset-0 h-screen w-full overflow-hidden border-0 bg-black z-[1]">
+      {/* Video Controls - Top Left */}
+      {heroVideoUrl && getYouTubeEmbedUrl(heroVideoUrl) && (
+        <div className={`absolute left-4 sm:left-6 ${hasNotification ? 'top-28 sm:top-32' : 'top-20'} z-[200] flex items-center gap-2`}>
+          {/* Play/Pause Button */}
+          <motion.button
+            type="button"
+            onClick={togglePlayPause}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex h-10 w-10 items-center justify-center border border-white/40 text-white transition hover:border-green-500"
+            aria-label={isPlaying ? "Pause video" : "Play video"}
+          >
+            {isPlaying ? (
+              <Pause className="h-5 w-5" />
+            ) : (
+              <Play className="h-5 w-5" />
+            )}
+          </motion.button>
+          
+          {/* Mute/Unmute Button */}
+          <motion.button
+            type="button"
+            onClick={toggleMute}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex h-10 w-10 items-center justify-center border border-white/40 text-white transition hover:border-green-500"
+            aria-label={isMuted ? "Unmute video" : "Mute video"}
+          >
+            {isMuted ? (
+              <VolumeX className="h-5 w-5" />
+            ) : (
+              <Volume2 className="h-5 w-5" />
+            )}
+          </motion.button>
+        </div>
+      )}
+      
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -446,7 +542,7 @@ const Hero = () => {
           onClick={() => setIsSearchOpen((prev) => !prev)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className={`relative z-[200] flex h-10 w-10 items-center justify-center border border-white/40 bg-black/80 backdrop-blur-sm text-white shadow-lg transition hover:border-white hover:bg-black ${
+          className={`relative z-[200] flex h-10 w-10 items-center justify-center border border-white/40 bg-black/80 backdrop-blur-sm text-white shadow-lg transition hover:border-green-500 hover:bg-black ${
             isSearchOpen ? "border-white bg-black" : ""
           }`}
           aria-label="Toggle search"
@@ -502,7 +598,7 @@ const Hero = () => {
                       >
                     <button
                       type="button"
-                          className="search-suggestion relative z-[200] block w-full px-4 py-3 text-left transition hover:bg-white/10"
+                          className="search-suggestion relative z-[200] block w-full px-4 py-3 text-left transition hover:bg-green-500/10"
                       onClick={() => {
                         handleNavigate(item);
                         setSearchQuery("");
@@ -645,7 +741,7 @@ const Hero = () => {
               <Button
                 type="button"
                 size="lg"
-                  className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto"
+                  className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto text-green-500"
                 onClick={() => handleHeroCta(primaryCta)}
               >
                 <span className="relative z-10">{primaryCta.label}</span>
@@ -654,15 +750,14 @@ const Hero = () => {
             </motion.div>
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button asChild size="lg" variant="outline" className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto">
+              <Button asChild size="lg" variant="outline" className="text-base sm:text-sm md:text-base lg:text-lg px-6 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2.5 md:py-3 group relative overflow-hidden w-full sm:w-auto text-[#FF0000] border-[#FF0000]/50 bg-transparent hover:scale-105 hover:bg-transparent hover:text-[#FF0000] hover:border-[#FF0000] transition-transform duration-300">
               <a
                   href={secondaryCta.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative flex items-center justify-center"
               >
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 opacity-0 group-hover:opacity-20 group-hover:scale-110 transition-all duration-300 transform origin-center" />
-                  <Play className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1.5 sm:mr-2 fill-pink-500 text-pink-500 play-icon-glow" />
+                  <Play className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1.5 sm:mr-2 fill-[#FF0000] text-[#FF0000] group-hover:scale-110 transition-transform duration-300" />
                 <span className="relative z-10 group-hover:tracking-wider transition-all duration-300">
                     {secondaryCta.label}
                 </span>
@@ -709,7 +804,7 @@ const Hero = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.9 + index * 0.1 }}
                     whileHover={{ x: -5 }}
-              className="flex items-center gap-2 hover:text-white transition"
+              className="flex items-center gap-2 hover:text-green-500 transition"
             >
                     {isSpotify ? (
                       <svg className="h-3.5 w-3.5 md:h-4 md:w-4" viewBox="0 0 24 24" fill="#1DB954">

@@ -32,7 +32,7 @@ const ToursSection = () => {
     return (
       <section id="tours" className="py-24 bg-background relative overflow-hidden p-4">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12 text-center space-y-4">
-          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter">TOURS</h2>
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-green-500">TOURS</h2>
           <p className="text-gray-400 text-lg">No tour dates announced. Add locations and ticket links in the admin dashboard.</p>
         </div>
       </section>
@@ -90,7 +90,7 @@ const ToursSection = () => {
                 </div>
               </div>
               
-              <Button asChild className="w-full md:w-auto relative z-10 group-hover:scale-105 transition-transform duration-300">
+              <Button asChild className="w-full md:w-auto relative z-10 group-hover:scale-105 transition-transform duration-300 border-white/20 text-white hover:bg-green-500/20 hover:border-green-500 hover:text-green-400" variant="outline">
                 <a href={tour.ticketUrl} target="_blank" rel="noopener noreferrer">
                   GET TICKETS
                 </a>

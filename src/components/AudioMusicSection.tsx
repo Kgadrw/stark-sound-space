@@ -58,10 +58,7 @@ const AudioMusicSection = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-xs md:text-sm lg:text-sm font-extrabold uppercase tracking-wide mb-6 md:mb-8 section-title"
-            style={{
-              color: content.hero.colorSettings?.titleTextColor || "#ffffff"
-            }}
+            className="text-xs md:text-sm lg:text-sm font-extrabold uppercase tracking-wide mb-6 md:mb-8 section-title text-white"
           >
             More Music from Nel Ngabo
           </motion.h2>
@@ -124,7 +121,7 @@ const AudioMusicSection = () => {
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedAudio(null)}
-                  className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/10 hover:bg-green-500/20 transition-colors"
                   aria-label="Close"
                 >
                   <X className="h-4 w-4 text-white" />
@@ -156,16 +153,16 @@ const AudioMusicSection = () => {
                       <Button
                         asChild
                         variant="outline"
-                        className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-red-600/20 hover:border-red-500 hover:text-red-400 transition group w-full"
+                        className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-green-600/20 hover:border-green-500 hover:text-green-400 transition group w-full"
                       >
                         <a
                           href={selectedAudioData.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 group-hover:text-red-400 transition"
+                          className="flex items-center justify-center gap-2 group-hover:text-green-400 transition"
                         >
                           <span className="text-sm">Listen Now</span>
-                          <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-red-400 transition" />
+                          <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-green-400 transition" />
                         </a>
                       </Button>
                     </div>

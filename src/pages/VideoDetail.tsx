@@ -39,7 +39,7 @@ const VideoDetail = () => {
               className="space-y-4"
             >
               <p className="text-white/60 text-lg uppercase tracking-[0.2em]">Video not found</p>
-              <Button onClick={() => navigate("/videos")} variant="outline">
+              <Button onClick={() => navigate("/videos")} variant="outline" className="border-white/20 text-white hover:bg-green-500/20 hover:border-green-500 hover:text-green-400">
                 Back to Videos
               </Button>
             </motion.div>
@@ -81,7 +81,7 @@ const VideoDetail = () => {
             <Button
               onClick={() => navigate("/videos")}
               variant="ghost"
-              className="text-white/70 hover:text-white hover:bg-white/10"
+              className="text-white/70 hover:text-green-500 hover:bg-green-500/10"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Videos

@@ -118,7 +118,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                 <button
                   key={label}
                   onClick={handleClick}
-                  className="px-4 py-2 text-sm uppercase tracking-[0.2em] transition text-white/60 hover:text-white"
+                  className="px-4 py-2 text-sm uppercase tracking-[0.2em] transition text-white/60 hover:text-green-500"
                 >
                   {label}
                 </button>
@@ -133,12 +133,12 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                 className={({ isActive }) =>
                   [
                     "px-4 py-2 text-sm uppercase tracking-[0.2em] transition",
-                    isActive ? "text-white" : "text-white/60 hover:text-white",
+                    isActive ? "text-green-500" : "text-white/60 hover:text-green-500",
                   ].join(" ")
                 }
               >
                 {({ isActive }) => (
-                  <span className={isActive ? "underline decoration-white decoration-2 underline-offset-8" : ""}>
+                  <span className={isActive ? "underline decoration-green-500 decoration-2 underline-offset-8" : ""}>
                     {label}
                   </span>
                 )}
@@ -178,7 +178,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                 {latestAlbumName}
               </div>
             </div>
-            <Button variant="secondary" asChild className="uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-transform text-xs px-3 py-1.5">
+            <Button variant="secondary" asChild className="uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-transform text-xs px-3 py-1.5 bg-green-500 text-white hover:bg-green-600">
               <a 
                 href={latestAlbumLink.startsWith('http') ? latestAlbumLink : `https://${latestAlbumLink}`}
                 target={latestAlbumLink.startsWith('http') ? '_blank' : undefined}
@@ -265,7 +265,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                     >
                       <button
                         onClick={handleClick}
-                        className="uppercase transition relative text-white/60 hover:text-white"
+                        className="uppercase transition relative text-white/60 hover:text-green-500"
                       >
                         {label}
                       </button>
@@ -287,7 +287,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                       className={({ isActive }) =>
                         [
                           "uppercase transition relative",
-                          isActive ? "text-white underline decoration-white decoration-2 underline-offset-8" : "text-white/60 hover:text-white",
+                          isActive ? "text-green-500 underline decoration-green-500 decoration-2 underline-offset-8" : "text-white/60 hover:text-green-500",
                         ].join(" ")
                       }
                     >

@@ -59,10 +59,7 @@ const LatestVideos = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-xs md:text-sm lg:text-sm font-extrabold uppercase tracking-wide mb-6 md:mb-8 section-title"
-            style={{
-              color: content.hero.colorSettings?.titleTextColor || "#ffffff"
-            }}
+            className="text-xs md:text-sm lg:text-sm font-extrabold uppercase tracking-wide mb-6 md:mb-8 section-title text-white"
           >
             Latest Videos from Nel Ngabo
           </motion.h2>
@@ -129,14 +126,16 @@ const LatestVideos = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-12 text-center"
           >
-            <motion.button
-              onClick={() => navigate("/videos")}
+            <motion.a
+              href="https://www.youtube.com/@nelngabo9740"
+              target="_blank"
+              rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-3 border border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/40 transition uppercase tracking-[0.2em] text-sm"
+              className="inline-block px-8 py-3 border border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-green-500/20 hover:border-green-500 transition uppercase tracking-[0.2em] text-sm cursor-pointer"
             >
               View All Videos
-            </motion.button>
+            </motion.a>
           </motion.div>
         )}
       </div>

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Instagram, Twitter, Youtube, Facebook, Music2, type LucideIcon } from "lucide-react";
+import { Instagram, Twitter, Youtube, Facebook, Music2, Mail, type LucideIcon } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -86,7 +86,7 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-3xl font-normal"
+            className="text-3xl font-normal text-green-500"
           >
             NEL NGABO
           </motion.div>
@@ -96,24 +96,41 @@ const Footer = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="flex space-x-6"
+            className="flex flex-col items-center space-y-4"
           >
-            {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
-              <motion.a
-                key={id || index}
-                href={href}
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
-                whileHover={{ scale: 1.2, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
-                aria-label={label}
-              >
-                <Icon className="w-5 h-5" />
-              </motion.a>
-            ))}
+            <div className="flex space-x-6">
+              {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
+                <motion.a
+                  key={id || index}
+                  href={href}
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
+                  whileHover={{ scale: 1.2, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-10 h-10 rounded-full border border-white hover:bg-green-500 hover:border-green-500 hover:text-white transition-all duration-300 flex items-center justify-center"
+                  aria-label={label}
+                >
+                  <Icon className="w-5 h-5" />
+                </motion.a>
+              ))}
+            </div>
+            
+            {/* Email */}
+            <motion.a
+              href="mailto:nelngabo1@gmail.com"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-2 text-white/70 hover:text-green-500 transition-colors"
+            >
+              <Mail className="w-4 h-4" />
+              <span className="text-sm">nelngabo1@gmail.com</span>
+            </motion.a>
           </motion.div>
 
           <motion.p

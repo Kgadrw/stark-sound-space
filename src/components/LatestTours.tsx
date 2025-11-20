@@ -65,7 +65,7 @@ const LatestTours = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 text-center"
         >
-          <h2 className="text-4xl md:text-5xl font-normal tracking-[0.1em] text-white uppercase">
+          <h2 className="text-4xl md:text-5xl font-normal tracking-[0.1em] text-green-500 uppercase">
             Tours
           </h2>
         </motion.div>
@@ -102,7 +102,7 @@ const LatestTours = () => {
               
               <Button 
                 asChild 
-                className="w-full md:w-auto relative z-10 group-hover:scale-105 transition-transform duration-300"
+                className="w-full md:w-auto relative z-10 group-hover:scale-105 transition-transform duration-300 border-white/20 text-white hover:bg-green-500/20 hover:border-green-500 hover:text-green-400"
                 variant="outline"
               >
                 <a href={tour.ticketUrl} target="_blank" rel="noopener noreferrer">
