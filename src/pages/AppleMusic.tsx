@@ -38,10 +38,10 @@ const Spotify = () => {
         
         <div className="relative z-10 h-[calc(100vh-4rem)] flex flex-col">
           {/* Header */}
-          <div className="p-4 sm:p-6 border-b border-white/10 bg-black/50 backdrop-blur-sm">
+          <div className="p-3 sm:p-4 md:p-6 border-b border-white/10 bg-black/50 backdrop-blur-sm">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white">Spotify</h1>
-              <p className="text-gray-400 text-sm mt-1">Nel Ngabo</p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Spotify</h1>
+              <p className="text-gray-400 text-xs sm:text-sm mt-0.5 sm:mt-1">Nel Ngabo</p>
             </div>
           </div>
 

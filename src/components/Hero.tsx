@@ -368,6 +368,11 @@ const Hero = () => {
       const attemptPlay = (delay: number) => {
         setTimeout(() => {
           try {
+            // Ensure muted for mobile autoplay
+            videoIframeRef.current?.contentWindow?.postMessage(
+              JSON.stringify({ event: 'command', func: 'mute', args: '' }),
+              '*'
+            );
             // Set HD quality
             videoIframeRef.current?.contentWindow?.postMessage(
               JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
@@ -378,6 +383,8 @@ const Hero = () => {
               JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
               '*'
             );
+            setIsMuted(true);
+            setIsPlaying(true);
           } catch (e) {
             // Silent fail
           }
@@ -385,6 +392,7 @@ const Hero = () => {
       };
       
       // Try multiple times with increasing delays for better mobile compatibility
+      attemptPlay(100);
       attemptPlay(500);
       attemptPlay(1000);
       attemptPlay(2000);
@@ -396,34 +404,55 @@ const Hero = () => {
     if (!heroVideoUrl) return;
 
     const handleUserInteraction = () => {
-      if (videoIframeRef.current?.contentWindow) {
-        try {
-          // Set HD quality
-          videoIframeRef.current.contentWindow.postMessage(
-            JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
-            '*'
-          );
-          // Play video
-          videoIframeRef.current.contentWindow.postMessage(
-            JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
-            '*'
-          );
-        } catch (e) {
-          // Silent fail
+      // Delay to ensure iframe is ready
+      setTimeout(() => {
+        if (videoIframeRef.current?.contentWindow) {
+          try {
+            // Ensure video is muted for mobile autoplay
+            videoIframeRef.current.contentWindow.postMessage(
+              JSON.stringify({ event: 'command', func: 'mute', args: '' }),
+              '*'
+            );
+            // Set HD quality
+            videoIframeRef.current.contentWindow.postMessage(
+              JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
+              '*'
+            );
+            // Play video
+            videoIframeRef.current.contentWindow.postMessage(
+              JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
+              '*'
+            );
+            setIsMuted(true);
+            setIsPlaying(true);
+          } catch (e) {
+            // Silent fail
+          }
         }
-      }
-      // Remove listeners after first interaction
-      document.removeEventListener('touchstart', handleUserInteraction);
-      document.removeEventListener('click', handleUserInteraction);
+      }, 100);
     };
 
     // Add listeners for user interaction (required for mobile autoplay)
-    document.addEventListener('touchstart', handleUserInteraction, { once: true });
-    document.addEventListener('click', handleUserInteraction, { once: true });
+    // Use capture phase and multiple touch events for better mobile support
+    document.addEventListener('touchstart', handleUserInteraction, { once: true, passive: true });
+    document.addEventListener('touchend', handleUserInteraction, { once: true, passive: true });
+    document.addEventListener('click', handleUserInteraction, { once: true, passive: true });
+    
+    // Also listen on the hero section itself
+    const heroSection = document.querySelector('[data-hero-section]');
+    if (heroSection) {
+      heroSection.addEventListener('touchstart', handleUserInteraction, { once: true, passive: true });
+      heroSection.addEventListener('touchend', handleUserInteraction, { once: true, passive: true });
+    }
 
     return () => {
       document.removeEventListener('touchstart', handleUserInteraction);
+      document.removeEventListener('touchend', handleUserInteraction);
       document.removeEventListener('click', handleUserInteraction);
+      if (heroSection) {
+        heroSection.removeEventListener('touchstart', handleUserInteraction);
+        heroSection.removeEventListener('touchend', handleUserInteraction);
+      }
     };
   }, [heroVideoUrl]);
 
@@ -528,7 +557,7 @@ const Hero = () => {
         linkText={notificationLinkText}
         isVisible={isNotificationVisible && !!notificationText.trim()}
       />
-    <section className="fixed inset-0 h-screen w-full overflow-hidden border-0 bg-black z-[1]">
+    <section data-hero-section className="fixed inset-0 h-screen w-full overflow-hidden border-0 bg-black z-[1]">
       {/* Video Controls - Top Left */}
       {heroVideoUrl && getYouTubeEmbedUrl(heroVideoUrl) && (
         <motion.div 
