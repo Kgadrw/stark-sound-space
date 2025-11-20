@@ -69,15 +69,15 @@ const Footer = () => {
   return (
     <>
       <style>{chewyStyle}</style>
-      <motion.footer
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+    <motion.footer
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
         className="bg-black text-white py-12 relative"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center space-y-8">
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center space-y-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -152,7 +152,7 @@ const Footer = () => {
             © {new Date().getFullYear()} NEL NGABO. ALL RIGHTS RESERVED.
           </motion.p>
         </div>
-        </div>
+      </div>
         
         {/* Powered by kgad - Bottom Right */}
         <motion.div
@@ -172,7 +172,7 @@ const Footer = () => {
             <span className="chewy-regular text-white/60 group-hover:text-white transition-colors">kgad</span>
           </a>
         </motion.div>
-      </motion.footer>
+    </motion.footer>
     </>
   );
 };

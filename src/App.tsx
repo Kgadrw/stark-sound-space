@@ -9,6 +9,7 @@ import ColorTheme from "@/components/ColorTheme";
 import Index from "./pages/Index";
 import Music from "./pages/Music";
 import AudioMusic from "./pages/AudioMusic";
+import Spotify from "./pages/AppleMusic";
 import Videos from "./pages/Videos";
 import VideoDetail from "./pages/VideoDetail";
 import About from "./pages/About";
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/music" element={<Music />} />
           <Route path="/audio-music" element={<AudioMusic />} />
+          <Route path="/apple-music" element={<Spotify />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/video/:id" element={<VideoDetail />} />
           <Route path="/album/:id" element={<AlbumDetail />} />

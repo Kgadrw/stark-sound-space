@@ -27,7 +27,7 @@ const MusicSection = () => {
       font-style: normal;
     }
   `;
-
+  
   // Sort albums by createdAt (newest first)
   const albums = [...content.albums].sort((a, b) => {
     const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
@@ -42,7 +42,7 @@ const MusicSection = () => {
       <>
         <style>{orbitronStyle}</style>
         <section id="music" className="min-h-screen bg-black relative overflow-hidden pt-24 pb-24 px-4 sm:px-6" style={{ background: backgroundStyle }}>
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
           <div className="relative z-10 max-w-7xl mx-auto space-y-24">
             {[1, 2, 3].map((i) => (
               <div key={i} className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -52,11 +52,11 @@ const MusicSection = () => {
                   <Skeleton className="h-10 w-64 bg-white/10" />
                   <Skeleton className="h-4 w-32 bg-white/10" />
                   <Skeleton className="h-20 w-full bg-white/10" />
-                </div>
-              </div>
-            ))}
+            </div>
           </div>
-        </section>
+            ))}
+        </div>
+      </section>
       </>
     );
   }
@@ -112,11 +112,11 @@ const MusicSection = () => {
                   whileHover={{ scale: 1.02 }}
                   onClick={() => navigate(`/album/${encodeURIComponent(album.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
                 >
-                  <img
-                    src={album.image}
-                    alt={album.title}
+                    <img
+                      src={album.image}
+                      alt={album.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
+                    />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground to-transparent opacity-0 group-hover:opacity-10 transform translate-x-full group-hover:translate-x-[-100%] transition-all duration-1000" />
                 </motion.div>
 
@@ -137,9 +137,9 @@ const MusicSection = () => {
                     </h2>
                     
                     {/* Year */}
-                    {album.year && (
+                      {album.year && (
                       <p className="text-sm tracking-[0.4em] text-white/50 uppercase elms-sans">{album.year}</p>
-                    )}
+                      )}
                   </div>
 
                   {/* Summary */}
@@ -175,9 +175,9 @@ const MusicSection = () => {
                               <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-white transition" />
                             </a>
                           </Button>
-                        </motion.div>
-                      ))}
-                    </div>
+                </motion.div>
+              ))}
+            </div>
                   )}
 
                   {/* View Album Button */}

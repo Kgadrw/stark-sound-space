@@ -125,6 +125,28 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
               );
             }
 
+            // Handle MUSIC link specially to navigate to Apple Music page
+            if (label === "MUSIC" && variant === "frontend") {
+              return (
+                <NavLink
+                  key={label}
+                  to="/apple-music"
+                  className={({ isActive }) =>
+                    [
+                      "px-4 py-2 text-sm uppercase tracking-[0.2em] transition",
+                      isActive ? "text-white" : "text-white/60 hover:text-white",
+                    ].join(" ")
+                  }
+                >
+                  {({ isActive }) => (
+                    <span className={isActive ? "underline decoration-white decoration-2 underline-offset-8" : ""}>
+                      {label}
+                    </span>
+                  )}
+                </NavLink>
+              );
+            }
+
             return (
               <NavLink
                 key={label}
@@ -254,6 +276,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                     }
                   }
                 };
+
 
                 if (isHashLink) {
                   return (
