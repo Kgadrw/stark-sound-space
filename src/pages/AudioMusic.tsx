@@ -106,6 +106,30 @@ const AudioMusic = () => {
                   </motion.div>
                 ))}
               </div>
+
+              {/* Listen More Button */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="mt-12 flex justify-center"
+              >
+                <Button
+                  asChild
+                  className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-8 py-6 text-base transition-all duration-200 hover:scale-105"
+                >
+                  <a
+                    href="https://open.spotify.com/artist/nelngabo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2"
+                  >
+                    <Play className="h-5 w-5" fill="currentColor" />
+                    <span>Listen More</span>
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </motion.div>
             </>
           )}
         </div>
