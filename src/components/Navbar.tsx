@@ -130,7 +130,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
               return (
                 <NavLink
                   key={label}
-                  to="/apple-music"
+                  to="/spotify-music"
                   className={({ isActive }) =>
                     [
                       "px-4 py-2 text-sm uppercase tracking-[0.2em] transition",
