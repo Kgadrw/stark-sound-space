@@ -17,7 +17,7 @@ type NavbarProps = {
 
 const frontendNavLinks: NavbarNavLink[] = [
   { label: "Home", to: "/", icon: Home },
-  { label: "MUSIC", to: "/#audio-music", icon: Music4 },
+  { label: "MUSIC", to: "/audio-music", icon: Music4 },
   { label: "Albums", to: "/music", icon: Music4 },
   { label: "Videos", to: "/videos", icon: Clapperboard },
   { label: "About", to: "/about", icon: User },
