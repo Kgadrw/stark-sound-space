@@ -112,7 +112,6 @@ const Hero = () => {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [showVideoControls, setShowVideoControls] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const videoIframeRef = useRef<HTMLIFrameElement>(null);
@@ -130,18 +129,6 @@ const Hero = () => {
   const notificationLinkText = heroContent.notificationLinkText || "Learn More";
   const isNotificationVisible = heroContent.isNotificationVisible ?? false;
   const hasNotification = isNotificationVisible && !!notificationText.trim();
-
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
-                     (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
-      setIsMobile(mobile);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
   
   // Constant CTA buttons - not editable by admin
   const primaryCta: HeroCta = {
@@ -408,10 +395,6 @@ const Hero = () => {
   useEffect(() => {
     if (!heroVideoUrl) return;
 
-    // Check if device is mobile
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
-                     (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
-
     const handleUserInteraction = () => {
       if (videoIframeRef.current?.contentWindow) {
         try {
@@ -425,42 +408,22 @@ const Hero = () => {
             JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
             '*'
           );
-          // Unmute and play for better mobile compatibility
-          if (isMobile) {
-            setTimeout(() => {
-              videoIframeRef.current?.contentWindow?.postMessage(
-                JSON.stringify({ event: 'command', func: 'unMute', args: '' }),
-                '*'
-              );
-              videoIframeRef.current?.contentWindow?.postMessage(
-                JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
-                '*'
-              );
-            }, 500);
-          }
         } catch (e) {
           // Silent fail
         }
       }
+      // Remove listeners after first interaction
+      document.removeEventListener('touchstart', handleUserInteraction);
+      document.removeEventListener('click', handleUserInteraction);
     };
 
     // Add listeners for user interaction (required for mobile autoplay)
-    if (isMobile) {
-      // More aggressive listeners for mobile
-      const events = ['touchstart', 'touchend', 'click', 'scroll'];
-      events.forEach(event => {
-        document.addEventListener(event, handleUserInteraction, { once: true, passive: true });
-      });
-    } else {
-      document.addEventListener('touchstart', handleUserInteraction, { once: true });
-      document.addEventListener('click', handleUserInteraction, { once: true });
-    }
+    document.addEventListener('touchstart', handleUserInteraction, { once: true });
+    document.addEventListener('click', handleUserInteraction, { once: true });
 
     return () => {
-      const events = ['touchstart', 'touchend', 'click', 'scroll'];
-      events.forEach(event => {
-        document.removeEventListener(event, handleUserInteraction);
-      });
+      document.removeEventListener('touchstart', handleUserInteraction);
+      document.removeEventListener('click', handleUserInteraction);
     };
   }, [heroVideoUrl]);
 
@@ -801,25 +764,13 @@ const Hero = () => {
             ref={videoIframeRef}
             className="absolute top-1/2 left-1/2 w-[177.77777778vh] h-[56.25vw] min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 object-cover z-0"
             src={getYouTubeEmbedUrl(heroVideoUrl) || ""}
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen; accelerometer; gyroscope"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowFullScreen
             playsInline={true}
-            {...({ 'webkit-playsinline': 'true', 'x5-playsinline': 'true', 'x5-video-player-type': 'h5' } as any)}
+            {...({ 'webkit-playsinline': 'true' } as any)}
             loading="eager"
             onLoad={handleVideoIframeLoad}
-            style={{ 
-              pointerEvents: isMobile ? "auto" : "none",
-              WebkitTransform: "translate3d(0,0,0)",
-              transform: "translate3d(0,0,0)"
-            }}
-            onTouchStart={() => {
-              // Allow initial touch on mobile to start video
-              if (isMobile) {
-                setTimeout(() => {
-                  setIsMobile(false);
-                }, 2000); // After 2 seconds, disable pointer events again
-              }
-            }}
+            style={{ pointerEvents: "none" }}
             title="Background Video"
           />
         )}
