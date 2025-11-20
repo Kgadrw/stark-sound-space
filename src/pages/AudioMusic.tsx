@@ -25,11 +25,6 @@ const AudioMusic = () => {
     ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
     : "#000000";
 
-  // Get Spotify link from streaming platforms
-  const streamingPlatforms = content.hero.streamingPlatforms ?? [];
-  const spotifyPlatform = streamingPlatforms.find((platform) => platform.preset === "spotify");
-  const spotifyUrl = spotifyPlatform?.url || "https://open.spotify.com/artist/nelngabo";
-
   return (
     <>
       <Navbar />
@@ -124,7 +119,7 @@ const AudioMusic = () => {
                   className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-8 py-6 text-base transition-all duration-200 hover:scale-105"
                 >
                   <a
-                    href={spotifyUrl}
+                    href="https://open.spotify.com/artist/nelngabo"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2"
