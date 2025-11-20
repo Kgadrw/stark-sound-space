@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Stark Sound Space Admin API",
-    "description": "Endpoints powering the admin dashboard for hero, albums, videos, and tours.",
+    "description": "Endpoints powering the admin dashboard for hero, albums, audios, videos, and tours.",
     "version": "1.0.0"
   },
   "servers": [
