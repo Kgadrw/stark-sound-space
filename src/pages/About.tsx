@@ -193,7 +193,7 @@ const About = () => {
                 <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6">
                   <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-white uppercase mb-3 md:mb-4 flex items-center gap-2">
                     <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 flex-shrink-0" />
-                    Label
+                    RECORD LABEL
                   </h3>
                   <p className="text-white/70 text-xs sm:text-sm elms-sans">{about.musicLabel}</p>
                 </div>
