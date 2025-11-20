@@ -283,7 +283,10 @@ const Hero = () => {
         const response = await adminApi.searchYouTube(trimmedQuery);
         setYoutubeVideos(response.videos || []);
       } catch (error) {
-        console.error("YouTube search error:", error);
+        // Don't log sensitive error details
+        if (process.env.NODE_ENV === 'development') {
+          console.error("YouTube search error");
+        }
         setYoutubeVideos([]);
       } finally {
         setIsLoadingYouTube(false);
@@ -550,7 +553,7 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex h-10 w-10 items-center justify-center border border-white/40 text-white transition hover:border-green-500"
+            className="flex h-10 w-10 items-center justify-center border border-white/40 text-white transition hover:border-white"
             aria-label={isPlaying ? "Pause video" : "Play video"}
           >
             {isPlaying ? (
@@ -569,7 +572,7 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.25 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex h-10 w-10 items-center justify-center border border-white/40 text-white transition hover:border-green-500"
+            className="flex h-10 w-10 items-center justify-center border border-white/40 text-white transition hover:border-white"
             aria-label={isMuted ? "Unmute video" : "Mute video"}
           >
             {isMuted ? (
@@ -592,7 +595,7 @@ const Hero = () => {
           onClick={() => setIsSearchOpen((prev) => !prev)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className={`relative z-[200] flex h-10 w-10 items-center justify-center border border-white/40 bg-black/80 backdrop-blur-sm text-white shadow-lg transition hover:border-green-500 hover:bg-black ${
+          className={`relative z-[200] flex h-10 w-10 items-center justify-center border border-white/40 bg-black/80 backdrop-blur-sm text-white shadow-lg transition hover:border-white hover:bg-black ${
             isSearchOpen ? "border-white bg-black" : ""
           }`}
           aria-label="Toggle search"
@@ -648,7 +651,7 @@ const Hero = () => {
                       >
                     <button
                       type="button"
-                          className="search-suggestion relative z-[200] block w-full px-4 py-3 text-left transition hover:bg-green-500/10"
+                          className="search-suggestion relative z-[200] block w-full px-4 py-3 text-left transition hover:bg-white/10"
                       onClick={() => {
                         handleNavigate(item);
                         setSearchQuery("");
@@ -855,7 +858,7 @@ const Hero = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.9 + index * 0.1 }}
                     whileHover={{ x: -5 }}
-              className="flex items-center gap-2 hover:text-green-500 transition"
+              className="flex items-center gap-2 hover:text-white transition"
             >
                     {isSpotify ? (
                       <svg className="h-3.5 w-3.5 md:h-4 md:w-4" viewBox="0 0 24 24" fill="#1DB954">

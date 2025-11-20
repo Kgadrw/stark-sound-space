@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, X } from "lucide-react";
+import { ExternalLink, X, Play } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -95,7 +95,7 @@ const AudioMusicSection = () => {
         </div>
       </section>
 
-      {/* Modal for Audio Link */}
+      {/* Modal for Audio Link - Spotify Style */}
       <AnimatePresence>
         {selectedAudioData && (
           <>
@@ -110,59 +110,60 @@ const AudioMusicSection = () => {
             
             {/* Modal */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="fixed inset-0 z-50 flex items-center justify-center p-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative bg-black border border-white/20 rounded-lg max-w-md w-full max-h-[85vh] overflow-y-auto">
+              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-2xl max-w-md w-full max-h-[90vh] overflow-hidden shadow-2xl border border-white/10">
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedAudio(null)}
-                  className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/10 hover:bg-green-500/20 transition-colors"
+                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors backdrop-blur-sm"
                   aria-label="Close"
                 >
-                  <X className="h-4 w-4 text-white" />
+                  <X className="h-5 w-5 text-white" />
                 </button>
 
                 {/* Audio Image */}
-                <div className="relative aspect-square w-full max-w-xs mx-auto">
+                <div className="relative w-full aspect-square">
                   <img
                     src={selectedAudioData.image}
                     alt={selectedAudioData.title || "Audio"}
-                    className="w-full h-full object-cover rounded-t-lg"
+                    className="w-full h-full object-cover"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                 </div>
 
                 {/* Audio Info */}
-                <div className="p-4 space-y-3">
+                <div className="p-6 space-y-4 bg-gradient-to-b from-transparent to-black">
                   {selectedAudioData.title && (
                     <div>
-                      <h2 className="text-lg md:text-xl font-bold text-white uppercase tracking-wide mb-2">
+                      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
                         {selectedAudioData.title}
                       </h2>
+                      <p className="text-gray-400 text-sm">Nel Ngabo</p>
                     </div>
                   )}
 
                   {/* Audio Link */}
                   {selectedAudioData.link && (
-                    <div className="pt-2 space-y-2">
-                      <h3 className="text-white/90 text-xs font-semibold uppercase tracking-wider">Listen Now</h3>
+                    <div className="pt-2">
                       <Button
                         asChild
-                        variant="outline"
-                        className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-green-600/20 hover:border-green-500 hover:text-green-400 transition group w-full"
+                        className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-8 py-6 text-base w-full transition-all duration-200 hover:scale-105"
                       >
                         <a
                           href={selectedAudioData.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 group-hover:text-green-400 transition"
+                          className="flex items-center justify-center gap-2"
                         >
-                          <span className="text-sm">Listen Now</span>
-                          <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-green-400 transition" />
+                          <Play className="h-5 w-5" fill="currentColor" />
+                          <span>Listen Now</span>
+                          <ExternalLink className="h-4 w-4" />
                         </a>
                       </Button>
                     </div>

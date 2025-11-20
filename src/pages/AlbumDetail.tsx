@@ -11,7 +11,12 @@ const AlbumDetail = () => {
   const navigate = useNavigate();
   const { content } = useContent();
 
-  const album = content.albums.find((a) => a.id === id);
+  // Support both ID and slug-based URLs
+  const album = content.albums.find((a) => {
+    if (a.id === id) return true;
+    const slug = encodeURIComponent(a.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
+    return decodeURIComponent(id || '') === slug || id === slug;
+  });
   const colorSettings = content.hero.colorSettings;
   const backgroundStyle = colorSettings?.colorType === "solid"
     ? colorSettings.solidColor
@@ -23,6 +28,13 @@ const AlbumDetail = () => {
     if (!album && content.albums.length > 0) {
       // Album not found, redirect to music page
       navigate("/music");
+    } else if (album) {
+      // Hide ID from URL after loading - replace with slug
+      const cleanUrl = `/album/${encodeURIComponent(album.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`;
+      const currentSlug = cleanUrl.split('/').pop();
+      if (id && id !== currentSlug && !id.match(/^[a-z0-9-]+$/i) && window.location.pathname.includes('/album/')) {
+        window.history.replaceState(null, '', cleanUrl);
+      }
     }
   }, [album, content.albums.length, navigate]);
 
@@ -76,7 +88,7 @@ const AlbumDetail = () => {
             <Button
               onClick={() => navigate("/music")}
               variant="ghost"
-              className="text-white/70 hover:text-green-500 hover:bg-green-500/10"
+              className="text-white/70 hover:text-white hover:bg-white/10"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Albums
@@ -108,7 +120,7 @@ const AlbumDetail = () => {
             >
               {/* Album Name */}
               <div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-green-500 uppercase tracking-[0.1em] orbitron mb-4">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white uppercase tracking-[0.1em] orbitron mb-4">
                   {album.title}
                 </h1>
                 
@@ -172,16 +184,16 @@ const AlbumDetail = () => {
                         <Button
                           asChild
                           variant="outline"
-                          className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-green-500/20 hover:border-green-500 hover:text-green-400 transition group"
+                          className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/40 transition group"
                         >
                           <a
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 group-hover:text-green-400 transition"
+                            className="flex items-center gap-2 group-hover:text-white transition"
                           >
-                            <span className="elms-sans group-hover:text-green-400 transition">{link.label || "Stream Now"}</span>
-                            <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-green-400 transition" />
+                            <span className="elms-sans group-hover:text-white transition">{link.label || "Stream Now"}</span>
+                            <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-white transition" />
                           </a>
                         </Button>
                       </motion.div>

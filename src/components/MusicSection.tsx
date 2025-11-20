@@ -110,7 +110,7 @@ const MusicSection = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 + 0.1 }}
                   whileHover={{ scale: 1.02 }}
-                  onClick={() => navigate(`/album/${album.id}`)}
+                  onClick={() => navigate(`/album/${encodeURIComponent(album.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
                 >
                   <img
                     src={album.image}
@@ -132,7 +132,7 @@ const MusicSection = () => {
                 >
                   {/* Album Title */}
                   <div>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-green-500 uppercase tracking-[0.1em] orbitron mb-4">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white uppercase tracking-[0.1em] orbitron mb-4">
                       {album.title}
                     </h2>
                     
@@ -163,16 +163,16 @@ const MusicSection = () => {
                           <Button
                             asChild
                             variant="outline"
-                            className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-green-600/20 hover:border-green-500 hover:text-green-400 transition group"
+                            className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/40 transition group"
                           >
                             <a
                               href={link.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 group-hover:text-green-400 transition"
+                              className="flex items-center gap-2 group-hover:text-white transition"
                             >
-                              <span className="elms-sans group-hover:text-green-400 transition">{link.label || "Stream Now"}</span>
-                              <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-green-400 transition" />
+                              <span className="elms-sans group-hover:text-white transition">{link.label || "Stream Now"}</span>
+                              <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-white transition" />
                             </a>
                           </Button>
                         </motion.div>
@@ -188,9 +188,9 @@ const MusicSection = () => {
                     transition={{ delay: index * 0.1 + 0.4 }}
                   >
                     <Button
-                      onClick={() => navigate(`/album/${album.id}`)}
+                      onClick={() => navigate(`/album/${encodeURIComponent(album.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
                       variant="outline"
-                      className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-green-500/20 hover:border-green-500 hover:text-green-400 transition"
+                      className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/40 transition"
                     >
                       View Album
                     </Button>
@@ -228,7 +228,7 @@ const MusicSection = () => {
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedAlbum(null)}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-green-500/20 transition-colors"
+                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
                   aria-label="Close"
                 >
                   <X className="h-5 w-5 text-white" />
@@ -268,16 +268,16 @@ const MusicSection = () => {
                             key={link.id}
                             asChild
                             variant="outline"
-                            className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-green-600/20 hover:border-green-500 hover:text-green-400 transition group"
+                            className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/40 transition group"
                           >
                             <a
                               href={link.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 group-hover:text-green-400 transition"
+                              className="flex items-center gap-2 group-hover:text-white transition"
                             >
                               <span className="text-sm">{link.label || "Stream Now"}</span>
-                              <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-green-400 transition" />
+                              <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-white transition" />
                             </a>
                           </Button>
                         ))}

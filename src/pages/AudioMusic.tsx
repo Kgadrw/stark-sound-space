@@ -86,7 +86,7 @@ const AudioMusic = () => {
                           <motion.div
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
-                            className="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center shadow-lg"
+                            className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-lg"
                           >
                             <Play className="w-6 h-6 text-black ml-0.5" fill="currentColor" />
                           </motion.div>
@@ -96,7 +96,7 @@ const AudioMusic = () => {
 
                     {/* Title and Info */}
                     <div className="space-y-1">
-                      <h3 className="text-white font-semibold text-sm md:text-base line-clamp-2 group-hover:text-green-400 transition-colors">
+                      <h3 className="text-white font-semibold text-sm md:text-base line-clamp-2 group-hover:text-white transition-colors">
                         {audio.title || "Untitled"}
                       </h3>
                       <p className="text-gray-400 text-xs md:text-sm line-clamp-1">
@@ -157,7 +157,7 @@ const AudioMusic = () => {
                 <div className="p-6 space-y-4 bg-gradient-to-b from-transparent to-black">
                   {selectedAudioData.title && (
                     <div>
-                      <h2 className="text-2xl md:text-3xl font-bold text-green-500 mb-1">
+                      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
                         {selectedAudioData.title}
                       </h2>
                       <p className="text-gray-400 text-sm">Nel Ngabo</p>
@@ -169,7 +169,7 @@ const AudioMusic = () => {
                     <div className="pt-2">
                       <Button
                         asChild
-                        className="bg-green-500 hover:bg-green-600 text-black font-bold rounded-full px-8 py-6 text-base w-full transition-all duration-200 hover:scale-105"
+                        className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-8 py-6 text-base w-full transition-all duration-200 hover:scale-105"
                       >
                         <a
                           href={selectedAudioData.link}

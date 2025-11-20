@@ -48,7 +48,7 @@ const About = () => {
             transition={{ duration: 0.6 }}
             className="mb-8 md:mb-16"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold tracking-[0.2em] md:tracking-[0.3em] text-green-500 uppercase">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold tracking-[0.2em] md:tracking-[0.3em] text-white uppercase">
               ABOUT
             </h1>
           </motion.div>
@@ -64,7 +64,7 @@ const About = () => {
               {/* Biography */}
               {about.biography && (
                 <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6 md:p-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold tracking-[0.1em] text-green-500 uppercase mb-4 md:mb-6">
+                  <h2 className="text-2xl sm:text-3xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6">
                     Biography
                   </h2>
                   <div className="space-y-3 md:space-y-4 text-sm sm:text-base text-white/70 leading-relaxed elms-sans whitespace-pre-line">
@@ -76,13 +76,13 @@ const About = () => {
               {/* Career Highlights */}
               {about.careerHighlights && about.careerHighlights.length > 0 && (
                 <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6 md:p-8">
-                  <h2 className="text-xl sm:text-2xl font-bold tracking-[0.1em] text-green-500 uppercase mb-4 md:mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6">
                     Career Highlights
                   </h2>
                   <div className="space-y-4 md:space-y-6">
                     {about.careerHighlights.map((highlight, index) => (
                       <div key={index}>
-                        <h3 className="text-base sm:text-lg font-semibold text-green-500 mb-2">{highlight.title}</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-white mb-2">{highlight.title}</h3>
                         <p className="text-sm sm:text-base text-white/70 leading-relaxed elms-sans">{highlight.description}</p>
                       </div>
                     ))}
@@ -92,19 +92,19 @@ const About = () => {
 
               {/* Discography Summary */}
               <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6 md:p-8">
-                <h2 className="text-xl sm:text-2xl font-bold tracking-[0.1em] text-green-500 uppercase mb-4 md:mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6">
                   Discography
                 </h2>
                 <div className="space-y-3 md:space-y-4">
                   {albums.map((album, index) => (
                     <div 
                       key={album.id} 
-                      onClick={() => navigate(`/album/${album.id}`)}
+                      onClick={() => navigate(`/album/${encodeURIComponent(album.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
                       className="flex items-start gap-3 sm:gap-4 pb-3 md:pb-4 border-b border-white/10 last:border-0 md:cursor-default cursor-pointer active:opacity-70 transition-opacity md:transition-none"
                     >
                       <div className="text-white/50 text-xs sm:text-sm font-mono w-10 sm:w-12 flex-shrink-0">{album.year}</div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-green-500 font-semibold mb-1 text-sm sm:text-base">{album.title}</h3>
+                        <h3 className="text-white font-semibold mb-1 text-sm sm:text-base">{album.title}</h3>
                         <p className="text-white/60 text-xs sm:text-sm elms-sans line-clamp-2">{album.summary}</p>
                       </div>
                     </div>
@@ -132,7 +132,7 @@ const About = () => {
               {/* Achievements */}
               {about.achievements && about.achievements.length > 0 && (
                 <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6">
-                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-green-500 uppercase mb-3 md:mb-4 flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-white uppercase mb-3 md:mb-4 flex items-center gap-2">
                     <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 flex-shrink-0" />
                     Achievements
                   </h3>
@@ -163,7 +163,7 @@ const About = () => {
               {/* Awards */}
               {about.awards && about.awards.length > 0 && (
                 <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6">
-                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-green-500 uppercase mb-3 md:mb-4 flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-white uppercase mb-3 md:mb-4 flex items-center gap-2">
                     <Award className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 flex-shrink-0" />
                     Awards
                   </h3>
@@ -191,7 +191,7 @@ const About = () => {
               {/* Music Label */}
               {about.musicLabel && (
                 <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6">
-                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-green-500 uppercase mb-3 md:mb-4 flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-white uppercase mb-3 md:mb-4 flex items-center gap-2">
                     <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 flex-shrink-0" />
                     Label
                   </h3>
@@ -202,7 +202,7 @@ const About = () => {
               {/* Contact Info */}
               {(about.location || about.email || about.phone) && (
                 <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6">
-                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-green-500 uppercase mb-3 md:mb-4">
+                  <h3 className="text-base sm:text-lg font-bold tracking-[0.1em] text-white uppercase mb-3 md:mb-4">
                     Contact
                   </h3>
                   <div className="space-y-2 md:space-y-3 text-xs sm:text-sm elms-sans">
@@ -213,13 +213,13 @@ const About = () => {
                       </div>
                     )}
                     {about.email && (
-                      <a href={`mailto:${about.email}`} className="flex items-start gap-3 text-white/70 hover:text-green-500 transition break-all">
+                      <a href={`mailto:${about.email}`} className="flex items-start gap-3 text-white/70 hover:text-white transition break-all">
                         <Mail className="h-4 w-4 text-white/50 flex-shrink-0 mt-0.5" />
                         <span className="break-all">{about.email}</span>
                       </a>
                     )}
                     {about.phone && (
-                      <a href={`tel:${about.phone}`} className="flex items-center gap-3 text-white/70 hover:text-green-500 transition">
+                      <a href={`tel:${about.phone}`} className="flex items-center gap-3 text-white/70 hover:text-white transition">
                         <Phone className="h-4 w-4 text-white/50 flex-shrink-0" />
                         <span>{about.phone}</span>
                       </a>

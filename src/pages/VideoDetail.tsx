@@ -11,7 +11,12 @@ const VideoDetail = () => {
   const navigate = useNavigate();
   const { content } = useContent();
 
-  const video = content.videos.find((v) => v.id === id);
+  // Support both ID and slug-based URLs
+  const video = content.videos.find((v) => {
+    if (v.id === id) return true;
+    const slug = encodeURIComponent(v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
+    return decodeURIComponent(id || '') === slug || id === slug;
+  });
   const colorSettings = content.hero.colorSettings;
   const backgroundStyle = colorSettings?.colorType === "solid"
     ? colorSettings.solidColor
@@ -23,6 +28,13 @@ const VideoDetail = () => {
     if (!video && content.videos.length > 0) {
       // Video not found, redirect to videos page
       navigate("/videos");
+    } else if (video) {
+      // Hide ID from URL after loading - replace with slug
+      const cleanUrl = `/video/${encodeURIComponent(video.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`;
+      const currentSlug = cleanUrl.split('/').pop();
+      if (id && id !== currentSlug && !id.match(/^[a-z0-9-]+$/i) && window.location.pathname.includes('/video/')) {
+        window.history.replaceState(null, '', cleanUrl);
+      }
     }
   }, [video, content.videos.length, navigate]);
 
@@ -39,7 +51,7 @@ const VideoDetail = () => {
               className="space-y-4"
             >
               <p className="text-white/60 text-lg uppercase tracking-[0.2em]">Video not found</p>
-              <Button onClick={() => navigate("/videos")} variant="outline" className="border-white/20 text-white hover:bg-green-500/20 hover:border-green-500 hover:text-green-400">
+              <Button onClick={() => navigate("/videos")} variant="outline" className="border-white/20 text-white hover:bg-white/10 hover:border-white/40">
                 Back to Videos
               </Button>
             </motion.div>
@@ -81,7 +93,7 @@ const VideoDetail = () => {
             <Button
               onClick={() => navigate("/videos")}
               variant="ghost"
-              className="text-white/70 hover:text-green-500 hover:bg-green-500/10"
+              className="text-white/70 hover:text-white hover:bg-white/10"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Videos
@@ -122,7 +134,7 @@ const VideoDetail = () => {
             >
               {/* Video Title */}
               <div className="text-left">
-                <h1 className="text-base md:text-lg lg:text-xl font-light text-green-500 uppercase tracking-wide elms-sans mb-4">
+                <h1 className="text-base md:text-lg lg:text-xl font-light text-white uppercase tracking-wide elms-sans mb-4">
                   {video.title}
                 </h1>
               </div>

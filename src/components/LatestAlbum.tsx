@@ -79,7 +79,7 @@ const LatestAlbum = () => {
               className="relative overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl aspect-square group cursor-pointer"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
-              onClick={() => navigate(`/album/${latestAlbum.id}`)}
+              onClick={() => navigate(`/album/${encodeURIComponent(latestAlbum.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
             >
               <img
                 src={latestAlbum.image}
@@ -109,7 +109,7 @@ const LatestAlbum = () => {
               </motion.p>
 
               {/* Album Title */}
-              <h2 className="text-3xl md:text-4xl font-bold text-green-500 uppercase tracking-[0.1em] orbitron">
+              <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-[0.1em] orbitron">
                 {latestAlbum.title}
               </h2>
 
@@ -138,16 +138,16 @@ const LatestAlbum = () => {
                         <Button
                           asChild
                           variant="outline"
-                          className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-green-600/20 hover:border-green-500 hover:text-green-400 transition group"
+                          className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/40 transition group"
                         >
                           <a
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 group-hover:text-green-400 transition"
+                            className="flex items-center gap-2 group-hover:text-white transition"
                           >
-                            <span className="elms-sans group-hover:text-green-400 transition">{link.label || "Stream Now"}</span>
-                            <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-green-400 transition" />
+                            <span className="elms-sans group-hover:text-white transition">{link.label || "Stream Now"}</span>
+                            <ExternalLink className="h-3.5 w-3.5 text-white/60 group-hover:text-white transition" />
                           </a>
                         </Button>
                       </motion.div>
@@ -164,9 +164,9 @@ const LatestAlbum = () => {
                 transition={{ delay: 0.5 }}
               >
                 <Button
-                  onClick={() => navigate(`/album/${latestAlbum.id}`)}
+                  onClick={() => navigate(`/album/${encodeURIComponent(latestAlbum.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
                   variant="outline"
-                  className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-green-500/20 hover:border-green-500 hover:text-green-400 transition"
+                  className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/40 transition"
                 >
                   View Album
                 </Button>

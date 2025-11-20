@@ -135,17 +135,24 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
         setError(null);
       }
       
-      // Log individual failures without breaking the app
+      // Log individual failures without breaking the app (sanitized)
       if (heroResponse.status === "rejected") {
-        console.warn("Failed to load hero:", heroResponse.reason);
+        if (process.env.NODE_ENV === 'development') {
+          console.warn("Failed to load hero");
+        }
       }
       if (aboutResponse.status === "rejected") {
-        console.warn("Failed to load about (route may not be deployed yet):", aboutResponse.reason);
+        if (process.env.NODE_ENV === 'development') {
+          console.warn("Failed to load about");
+        }
       }
     } catch (fetchError) {
       const message = fetchError instanceof Error ? fetchError.message : "Failed to load content";
       setError(message);
-      console.error(fetchError);
+      // Don't log sensitive error details in production
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error loading content");
+      }
     } finally {
       setIsLoading(false);
     }

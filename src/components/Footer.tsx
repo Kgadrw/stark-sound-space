@@ -97,7 +97,7 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-3xl font-normal text-green-500"
+            className="text-3xl font-normal text-white"
           >
             NEL NGABO
           </motion.div>
@@ -119,7 +119,7 @@ const Footer = () => {
                 transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
                 whileHover={{ scale: 1.2, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 rounded-full border border-white hover:bg-green-500 hover:border-green-500 hover:text-white transition-all duration-300 flex items-center justify-center"
+                className="w-10 h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
                 aria-label={label}
               >
                 <Icon className="w-5 h-5" />
@@ -135,7 +135,7 @@ const Footer = () => {
               transition={{ delay: 0.3 + socialLinks.length * 0.1, type: "spring" }}
               whileHover={{ scale: 1.2, rotate: 5 }}
               whileTap={{ scale: 0.9 }}
-              className="w-10 h-10 rounded-full border border-white hover:bg-green-500 hover:border-green-500 hover:text-white transition-all duration-300 flex items-center justify-center"
+              className="w-10 h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
               aria-label="Email"
             >
               <Mail className="w-5 h-5" />
@@ -169,7 +169,7 @@ const Footer = () => {
             className="text-sm text-white/40 flex items-center gap-1 group"
           >
             <span>powered by</span>
-            <span className="chewy-regular text-white/60 group-hover:text-green-500 transition-colors">kgad</span>
+            <span className="chewy-regular text-white/60 group-hover:text-white transition-colors">kgad</span>
           </a>
         </motion.div>
       </motion.footer>

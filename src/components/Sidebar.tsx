@@ -112,12 +112,12 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
               className={({ isActive }) =>
                 [
                   "flex items-center gap-3 px-4 py-3 text-sm uppercase tracking-[0.3em] transition",
-                  isActive ? "text-green-500" : "text-white/60 hover:text-green-500",
+                  isActive ? "text-white" : "text-white/60 hover:text-white",
                 ].join(" ")
               }
             >
               {({ isActive }) => (
-                <span className={isActive ? "underline decoration-green-500 decoration-2 underline-offset-8 flex items-center gap-3" : "flex items-center gap-3"}>
+                <span className={isActive ? "underline decoration-white decoration-2 underline-offset-8 flex items-center gap-3" : "flex items-center gap-3"}>
                   <Icon className="h-4 w-4" />
                   <span>{label}</span>
                 </span>
@@ -148,7 +148,7 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
                 {latestAlbumName}
               </div>
             </div>
-            <Button variant="secondary" asChild className="w-full uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-transform bg-green-500 text-white hover:bg-green-600">
+            <Button variant="secondary" asChild className="w-full uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-transform">
               <a 
                 href={latestAlbumLink.startsWith('http') ? latestAlbumLink : latestAlbumLink ? `https://${latestAlbumLink}` : '/music'}
                 target={latestAlbumLink && latestAlbumLink.startsWith('http') ? '_blank' : undefined}
@@ -164,7 +164,7 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
             <Button
               onClick={handleLogout}
               variant="ghost"
-              className="w-full flex items-center gap-3 text-white/70 hover:text-green-500 hover:bg-green-500/10 transition"
+              className="w-full flex items-center gap-3 text-white/70 hover:text-white hover:bg-white/10 transition"
             >
               <LogOut className="h-4 w-4" />
               <span className="text-sm uppercase tracking-[0.2em]">Logout</span>
@@ -177,7 +177,7 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(true)}
-          className="flex items-center gap-2 text-white hover:text-green-500 transition"
+          className="flex items-center gap-2 text-white hover:text-white/80 transition"
           aria-label="Open menu"
         >
           <Menu className="h-5 w-5" />
@@ -205,7 +205,7 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="flex items-center gap-2 text-white hover:text-green-500 transition"
+                className="flex items-center gap-2 text-white hover:text-white/80 transition"
                 aria-label="Close menu"
               >
                 Close
@@ -227,7 +227,7 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
                     className={({ isActive }) =>
                       [
                         "flex items-center gap-3 uppercase transition relative py-2",
-                        isActive ? "text-green-500 underline decoration-green-500 decoration-2 underline-offset-8" : "text-white/60 hover:text-green-500",
+                        isActive ? "text-white underline decoration-white decoration-2 underline-offset-8" : "text-white/60 hover:text-white",
                       ].join(" ")
                     }
                   >
@@ -283,7 +283,7 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
                   }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-full flex items-center gap-3 text-white/70 hover:text-green-500 hover:bg-green-500/10 transition px-4 py-3 rounded-lg"
+                  className="w-full flex items-center gap-3 text-white/70 hover:text-white hover:bg-white/10 transition px-4 py-3 rounded-lg"
                 >
                   <LogOut className="h-5 w-5" />
                   <span className="text-lg font-semibold uppercase tracking-[0.2em]">Logout</span>

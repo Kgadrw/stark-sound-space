@@ -69,7 +69,7 @@ const VideosSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-5xl md:text-7xl font-bold tracking-[0.3em] text-green-500 uppercase"
+            className="text-5xl md:text-7xl font-bold tracking-[0.3em] text-white uppercase"
           >
             VIDEOS
           </motion.h2>
@@ -178,7 +178,7 @@ const VideosSection = () => {
                 {/* Thumbnail */}
                 <div 
                   className="relative aspect-video overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl transition-all duration-500 group-hover:border-white/30 cursor-pointer mb-4"
-                  onClick={() => navigate(`/video/${video.id}`)}
+                  onClick={() => navigate(`/video/${encodeURIComponent(video.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
                 >
                   {thumbnailUrl ? (
                     <img

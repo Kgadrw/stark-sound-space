@@ -81,7 +81,7 @@ const LatestVideos = () => {
                 {/* Thumbnail */}
                 <div 
                   className="relative aspect-video overflow-hidden rounded-lg border-2 border-white/10 bg-black/80 backdrop-blur-xl transition-all duration-500 group-hover:border-white/30 cursor-pointer mb-6"
-                  onClick={() => navigate(`/video/${video.id}`)}
+                  onClick={() => navigate(`/video/${encodeURIComponent(video.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
                 >
                   {thumbnailUrl ? (
                     <img
@@ -132,7 +132,7 @@ const LatestVideos = () => {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-block px-8 py-3 border border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-green-500/20 hover:border-green-500 transition uppercase tracking-[0.2em] text-sm cursor-pointer"
+              className="inline-block px-8 py-3 border border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/40 transition uppercase tracking-[0.2em] text-sm cursor-pointer"
             >
               View All Videos
             </motion.a>
