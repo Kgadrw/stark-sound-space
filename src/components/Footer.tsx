@@ -14,7 +14,7 @@ const iconMap: Record<string, LucideIcon> = {
 const detectIconFromUrl = (url: string): LucideIcon => {
   const lowerUrl = url.toLowerCase();
   if (lowerUrl.includes("instagram")) return Instagram;
-  if (lowerUrl.includes("twitter") || lowerUrl.includes("x.com")) return Twitter;
+  if (lowerUrl.includes("twitter") || lowerUrl.includes("x.com") || lowerUrl.includes("x/twitter")) return Twitter;
   if (lowerUrl.includes("facebook")) return Facebook;
   if (lowerUrl.includes("tiktok")) return Music2;
   if (lowerUrl.includes("youtube")) return Youtube;
@@ -24,7 +24,7 @@ const detectIconFromUrl = (url: string): LucideIcon => {
 const getLabelFromUrl = (url: string): string => {
   const lowerUrl = url.toLowerCase();
   if (lowerUrl.includes("instagram")) return "Instagram";
-  if (lowerUrl.includes("twitter") || lowerUrl.includes("x.com")) return "Twitter";
+  if (lowerUrl.includes("twitter") || lowerUrl.includes("x.com") || lowerUrl.includes("x/twitter")) return "X / Twitter";
   if (lowerUrl.includes("facebook")) return "Facebook";
   if (lowerUrl.includes("tiktok")) return "TikTok";
   if (lowerUrl.includes("youtube")) return "YouTube";
@@ -50,7 +50,7 @@ const Footer = () => {
     : [
         // Fallback to default links if none are set in admin
         { id: "instagram", href: "https://www.instagram.com/nelngabo/", icon: Instagram, label: "Instagram" },
-        { id: "twitter", href: "https://twitter.com/nelngabo", icon: Twitter, label: "Twitter" },
+        { id: "twitter", href: "https://x.com/nelngabo_?s=21", icon: Twitter, label: "X / Twitter" },
         { id: "youtube", href: "https://www.youtube.com/@nelngabo9740", icon: Youtube, label: "YouTube" },
         { id: "facebook", href: "https://facebook.com/nelngabo", icon: Facebook, label: "Facebook" },
         { id: "tiktok", href: "https://www.tiktok.com/@nelngabo", icon: Music2, label: "TikTok" },

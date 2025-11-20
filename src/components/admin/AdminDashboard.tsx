@@ -503,6 +503,42 @@ export const HeroEditor = ({
           {!hero.streamingPlatforms.length && <p className="text-sm text-white/50">No streaming platforms configured. Click "Add Platform" to add one.</p>}
         </CardContent>
       </Card>
+
+      <Card className="border-white/10 bg-black/40 text-white">
+        <CardHeader className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <CardTitle className="text-white">Social Links</CardTitle>
+              <CardDescription className="text-white/60">Add social media links displayed in the footer.</CardDescription>
+            </div>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={addSocialLink}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Link
+              </Button>
+              <Button size="sm" onClick={persistHeroData}>
+                Save Changes
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {hero.socialLinks.map((link) => (
+            <div key={link.id} className="grid gap-3 rounded-xl border border-white/20 bg-black/30 p-4 md:grid-cols-[1fr,auto]">
+              <Input 
+                value={link.url} 
+                onChange={(event) => updateSocialLink(link.id, { url: event.target.value })} 
+                placeholder="https://x.com/username or https://twitter.com/username"
+                className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+              />
+              <Button variant="ghost" size="icon" onClick={() => removeSocialLink(link.id)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+          {!hero.socialLinks.length && <p className="text-sm text-white/50">No social links configured. Click "Add Link" to add one.</p>}
+        </CardContent>
+      </Card>
     </div>
   );
 };
