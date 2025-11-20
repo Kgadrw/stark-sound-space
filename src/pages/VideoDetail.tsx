@@ -122,7 +122,7 @@ const VideoDetail = () => {
             >
               {/* Video Title */}
               <div className="text-left">
-                <h1 className="text-base md:text-lg lg:text-xl font-light text-white uppercase tracking-wide elms-sans mb-4">
+                <h1 className="text-base md:text-lg lg:text-xl font-light text-green-500 uppercase tracking-wide elms-sans mb-4">
                   {video.title}
                 </h1>
               </div>

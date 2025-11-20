@@ -82,7 +82,7 @@ const About = () => {
                   <div className="space-y-4 md:space-y-6">
                     {about.careerHighlights.map((highlight, index) => (
                       <div key={index}>
-                        <h3 className="text-base sm:text-lg font-semibold text-white mb-2">{highlight.title}</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-green-500 mb-2">{highlight.title}</h3>
                         <p className="text-sm sm:text-base text-white/70 leading-relaxed elms-sans">{highlight.description}</p>
                       </div>
                     ))}
@@ -104,7 +104,7 @@ const About = () => {
                     >
                       <div className="text-white/50 text-xs sm:text-sm font-mono w-10 sm:w-12 flex-shrink-0">{album.year}</div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-white font-semibold mb-1 text-sm sm:text-base">{album.title}</h3>
+                        <h3 className="text-green-500 font-semibold mb-1 text-sm sm:text-base">{album.title}</h3>
                         <p className="text-white/60 text-xs sm:text-sm elms-sans line-clamp-2">{album.summary}</p>
                       </div>
                     </div>
