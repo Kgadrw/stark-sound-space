@@ -117,14 +117,14 @@ const AudioMusicSection = () => {
               className="fixed inset-0 z-50 flex items-center justify-center p-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-2xl max-w-md w-full max-h-[90vh] overflow-hidden shadow-2xl border border-white/10">
+              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-2xl max-w-sm w-full max-h-[80vh] overflow-hidden shadow-2xl border border-white/10">
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedAudio(null)}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors backdrop-blur-sm"
+                  className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-black/50 hover:bg-black/70 transition-colors backdrop-blur-sm"
                   aria-label="Close"
                 >
-                  <X className="h-5 w-5 text-white" />
+                  <X className="h-4 w-4 text-white" />
                 </button>
 
                 {/* Audio Image */}
@@ -138,22 +138,22 @@ const AudioMusicSection = () => {
                 </div>
 
                 {/* Audio Info */}
-                <div className="p-6 space-y-4 bg-gradient-to-b from-transparent to-black">
+                <div className="p-4 space-y-3 bg-gradient-to-b from-transparent to-black">
                   {selectedAudioData.title && (
                     <div>
-                      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                      <h2 className="text-lg md:text-xl font-bold text-white mb-1">
                         {selectedAudioData.title}
                       </h2>
-                      <p className="text-gray-400 text-sm">Nel Ngabo</p>
+                      <p className="text-gray-400 text-xs">Nel Ngabo</p>
                     </div>
                   )}
 
                   {/* Audio Link */}
                   {selectedAudioData.link && (
-                    <div className="pt-2">
+                    <div className="pt-1">
                       <Button
                         asChild
-                        className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-8 py-6 text-base w-full transition-all duration-200 hover:scale-105"
+                        className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-6 py-4 text-sm w-full transition-all duration-200 hover:scale-105"
                       >
                         <a
                           href={selectedAudioData.link}
@@ -161,9 +161,9 @@ const AudioMusicSection = () => {
                           rel="noopener noreferrer"
                           className="flex items-center justify-center gap-2"
                         >
-                          <Play className="h-5 w-5" fill="currentColor" />
+                          <Play className="h-4 w-4" fill="currentColor" />
                           <span>Listen Now</span>
-                          <ExternalLink className="h-4 w-4" />
+                          <ExternalLink className="h-3.5 w-3.5" />
                         </a>
                       </Button>
                     </div>
