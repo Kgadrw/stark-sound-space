@@ -102,7 +102,16 @@ const About = () => {
                       onClick={() => navigate(`/album/${encodeURIComponent(album.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
                       className="flex items-start gap-3 sm:gap-4 pb-3 md:pb-4 border-b border-white/10 last:border-0 md:cursor-default cursor-pointer active:opacity-70 transition-opacity md:transition-none"
                     >
-                      <div className="text-white/50 text-xs sm:text-sm font-mono w-10 sm:w-12 flex-shrink-0">{album.year}</div>
+                      <div className="w-10 sm:w-12 flex-shrink-0 flex flex-col gap-2">
+                        <div className="text-white/50 text-xs sm:text-sm font-mono">{album.year}</div>
+                        {album.image && (
+                          <img 
+                            src={album.image} 
+                            alt={album.title}
+                            className="w-full aspect-square object-cover rounded"
+                          />
+                        )}
+                      </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-white font-semibold mb-1 text-sm sm:text-base">{album.title}</h3>
                         <p className="text-white/60 text-xs sm:text-sm elms-sans line-clamp-2">{album.summary}</p>
