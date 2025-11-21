@@ -190,7 +190,7 @@ const MusicSection = () => {
                     <Button
                       onClick={() => navigate(`/album/${encodeURIComponent(album.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
                       variant="outline"
-                      className="border-white/20 bg-black/40 backdrop-blur-sm text-white hover:bg-[#1DB954]/20 hover:border-[#1DB954]/40 transition"
+                      className="!border-white/20 !bg-black/40 backdrop-blur-sm !text-white hover:!bg-[#1DB954]/20 hover:!border-[#1DB954]/40 hover:!text-white transition"
                     >
                       View Album
                     </Button>

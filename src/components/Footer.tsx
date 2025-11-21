@@ -107,7 +107,7 @@ const Footer = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="flex space-x-6 items-center justify-center"
+            className="flex space-x-4 md:space-x-6 items-center justify-center"
           >
             {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
               <motion.a
@@ -119,10 +119,10 @@ const Footer = () => {
                 transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
                 whileHover={{ scale: 1.2, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
+                className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
                 aria-label={label}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4 h-4 md:w-5 md:h-5" />
               </motion.a>
             ))}
             
@@ -135,10 +135,10 @@ const Footer = () => {
               transition={{ delay: 0.3 + socialLinks.length * 0.1, type: "spring" }}
               whileHover={{ scale: 1.2, rotate: 5 }}
               whileTap={{ scale: 0.9 }}
-              className="w-10 h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
+              className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
               aria-label="Email"
             >
-              <Mail className="w-5 h-5" />
+              <Mail className="w-4 h-4 md:w-5 md:h-5" />
             </motion.a>
           </motion.div>
 
