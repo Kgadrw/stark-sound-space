@@ -234,12 +234,12 @@ export const HeroEditor = ({
     <div className="space-y-8">
       <Card className="border-white/10 bg-black/40 text-white">
         <CardHeader className="flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
           <CardTitle className="text-white">Hero Basics</CardTitle>
           <CardDescription className="text-white/60">Update the artist name and background YouTube video.</CardDescription>
             </div>
-            <Button size="sm" onClick={persistHeroData} disabled={savingHero}>
+            <Button size="sm" onClick={persistHeroData} disabled={savingHero} className="w-full sm:w-auto">
               {savingHero ? "Saving..." : "Save Changes"}
             </Button>
           </div>
@@ -477,17 +477,17 @@ export const HeroEditor = ({
 
       <Card className="border-white/10 bg-black/40 text-white">
         <CardHeader className="flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <CardTitle className="text-white">Streaming Platforms</CardTitle>
               <CardDescription className="text-white/60">Add streaming platform links displayed in the hero sidebar.</CardDescription>
             </div>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={addStreamingPlatform}>
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant="outline" onClick={addStreamingPlatform} className="flex-1 sm:flex-none">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Platform
               </Button>
-              <Button size="sm" onClick={persistHeroData}>
+              <Button size="sm" onClick={persistHeroData} className="flex-1 sm:flex-none">
                 Save Changes
               </Button>
             </div>
@@ -536,17 +536,17 @@ export const HeroEditor = ({
 
       <Card className="border-white/10 bg-black/40 text-white">
         <CardHeader className="flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <CardTitle className="text-white">Social Links</CardTitle>
               <CardDescription className="text-white/60">Add social media links displayed in the footer.</CardDescription>
             </div>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={addSocialLink}>
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant="outline" onClick={addSocialLink} className="flex-1 sm:flex-none">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Link
               </Button>
-              <Button size="sm" onClick={persistHeroData}>
+              <Button size="sm" onClick={persistHeroData} className="flex-1 sm:flex-none">
                 Save Changes
               </Button>
             </div>
@@ -572,12 +572,12 @@ export const HeroEditor = ({
 
       <Card className="border-white/10 bg-black/40 text-white">
         <CardHeader className="flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <CardTitle className="text-white">Website Color Theme</CardTitle>
               <CardDescription className="text-white/60">Customize the website background color with solid or gradient colors.</CardDescription>
             </div>
-            <Button size="sm" onClick={persistHeroData}>
+            <Button size="sm" onClick={persistHeroData} className="w-full sm:w-auto">
               Save Changes
             </Button>
           </div>
@@ -611,7 +611,7 @@ export const HeroEditor = ({
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white">Color Schemes</label>
                 <p className="text-xs text-white/50">Click a color swatch to apply it</p>
-                <div className="grid grid-cols-5 sm:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
                   {solidColorSchemes.map((scheme) => (
                     <button
                       key={scheme.name}
@@ -640,7 +640,7 @@ export const HeroEditor = ({
               
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white">Custom Color</label>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <input
                     type="color"
                     value={hero.colorSettings?.solidColor || "#000000"}
@@ -650,7 +650,7 @@ export const HeroEditor = ({
                         solidColor: e.target.value 
                       } 
                     })}
-                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer"
+                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer flex-shrink-0"
                   />
                   <Input
                     value={hero.colorSettings?.solidColor || "#000000"}
@@ -661,7 +661,7 @@ export const HeroEditor = ({
                       } 
                     })}
                     placeholder="#000000"
-                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 flex-1"
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 w-full sm:flex-1"
                   />
                 </div>
               </div>
@@ -674,7 +674,7 @@ export const HeroEditor = ({
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white">Gradient Schemes</label>
                 <p className="text-xs text-white/50">Click a gradient to apply it</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {gradientColorSchemes.map((scheme) => (
                     <button
                       key={scheme.name}
@@ -710,7 +710,7 @@ export const HeroEditor = ({
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white">Start Color</label>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <input
                     type="color"
                     value={hero.colorSettings?.gradientColors?.startColor || "#000000"}
@@ -723,7 +723,7 @@ export const HeroEditor = ({
                         }
                       } 
                     })}
-                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer"
+                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer flex-shrink-0"
                   />
                   <Input
                     value={hero.colorSettings?.gradientColors?.startColor || "#000000"}
@@ -737,14 +737,14 @@ export const HeroEditor = ({
                       } 
                     })}
                     placeholder="#000000"
-                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 flex-1"
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 w-full sm:flex-1"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white">End Color</label>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <input
                     type="color"
                     value={hero.colorSettings?.gradientColors?.endColor || "#000000"}
@@ -757,7 +757,7 @@ export const HeroEditor = ({
                         }
                       } 
                     })}
-                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer"
+                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer flex-shrink-0"
                   />
                   <Input
                     value={hero.colorSettings?.gradientColors?.endColor || "#000000"}
@@ -771,7 +771,7 @@ export const HeroEditor = ({
                       } 
                     })}
                     placeholder="#000000"
-                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 flex-1"
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 w-full sm:flex-1"
                   />
                 </div>
               </div>
@@ -843,7 +843,7 @@ export const HeroEditor = ({
               {/* Text Color Schemes */}
               <div className="space-y-2">
                 <p className="text-xs text-white/50">Color Schemes</p>
-                <div className="grid grid-cols-5 sm:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
                   {[
                     { name: "White", color: "#ffffff" },
                     { name: "Light Gray", color: "#e5e5e5" },
@@ -893,7 +893,7 @@ export const HeroEditor = ({
               {/* Custom Text Color Picker */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white">Custom Color</label>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <input
                     type="color"
                     value={hero.colorSettings?.titleTextColor || "#ffffff"}
@@ -903,7 +903,7 @@ export const HeroEditor = ({
                         titleTextColor: e.target.value 
                       } 
                     })}
-                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer"
+                    className="w-20 h-20 rounded-lg border border-white/20 cursor-pointer flex-shrink-0"
                   />
                   <Input
                     value={hero.colorSettings?.titleTextColor || "#ffffff"}
@@ -914,7 +914,7 @@ export const HeroEditor = ({
                       } 
                     })}
                     placeholder="#ffffff"
-                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 flex-1"
+                    className="bg-black/40 text-white placeholder:text-white/40 border-white/20 w-full sm:flex-1"
                   />
                 </div>
               </div>
@@ -1111,12 +1111,12 @@ export const AlbumsEditor = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight text-white">Albums</h2>
           <p className="text-sm text-white/50">Manage artwork, summaries, and tracklists.</p>
         </div>
-        <Button onClick={addAlbum}>
+        <Button onClick={addAlbum} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           New Album
         </Button>
@@ -1124,10 +1124,10 @@ export const AlbumsEditor = ({
       <div className="space-y-5">
         {albums.map((album) => (
           <Card key={album.id} className="border-white/10 bg-black/40 text-white">
-            <CardHeader className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+            <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-4">
                 {album.image && (
-                  <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border border-white/20 bg-black/40">
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-lg overflow-hidden border border-white/20 bg-black/40">
                     <img 
                       src={album.image} 
                       alt={album.title}
@@ -1138,17 +1138,18 @@ export const AlbumsEditor = ({
                     />
                   </div>
                 )}
-                <div>
-                  <CardTitle className="text-white">{album.title}</CardTitle>
+                <div className="min-w-0 flex-1">
+                  <CardTitle className="text-white truncate">{album.title}</CardTitle>
                   <CardDescription className="text-white/60">{album.year}</CardDescription>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => handleSaveAlbum(album.id)}
                   disabled={savingAlbumId === album.id}
+                  className="flex-1 sm:flex-none"
                 >
                   {savingAlbumId === album.id ? "Saving..." : "Save"}
                 </Button>
@@ -1157,6 +1158,7 @@ export const AlbumsEditor = ({
                   size="sm"
                   onClick={() => removeAlbum(album.id)}
                   disabled={deletingAlbumId === album.id}
+                  className="flex-1 sm:flex-none"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   {deletingAlbumId === album.id ? "Removing..." : "Delete"}
@@ -1246,7 +1248,7 @@ export const AlbumsEditor = ({
                   className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
                 />
               </div>
-              <div className="lg:col-span-3 grid gap-6 lg:grid-cols-2">
+              <div className="lg:col-span-3 grid gap-6 grid-cols-1 lg:grid-cols-2">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-white">Tracklist (one per line)</label>
                   <Textarea
@@ -1257,7 +1259,7 @@ export const AlbumsEditor = ({
                   />
                   <div className="space-y-2 rounded-lg border border-white/20 bg-black/30 p-3">
                     <label className="text-sm font-medium text-white">Add Single Track</label>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <Input
                         value={newTracks[album.id] ?? ""}
                         onChange={(event) =>
@@ -1267,7 +1269,7 @@ export const AlbumsEditor = ({
                           }))
                         }
                         placeholder="Enter track title"
-                        className="bg-black/40 text-white placeholder:text-white/40 border-white/20"
+                        className="bg-black/40 text-white placeholder:text-white/40 border-white/20 flex-1"
                       />
                       <Button
                         type="button"
@@ -1279,6 +1281,7 @@ export const AlbumsEditor = ({
                           updateAlbum(album.id, { tracks });
                           setNewTracks((prev) => ({ ...prev, [album.id]: "" }));
                         }}
+                        className="w-full sm:w-auto"
                       >
                         Add Track
                       </Button>
@@ -1286,9 +1289,9 @@ export const AlbumsEditor = ({
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <label className="text-sm font-medium text-white">Listening Links</label>
-                    <Button size="sm" variant="outline" onClick={() => addAlbumLink(album.id)}>
+                    <Button size="sm" variant="outline" onClick={() => addAlbumLink(album.id)} className="w-full sm:w-auto">
                       <Plus className="mr-2 h-4 w-4" />
                       Add Link
                     </Button>
@@ -1427,12 +1430,12 @@ export const VideosEditor = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight text-white">Videos</h2>
           <p className="text-sm text-white/50">Embed YouTube videos with descriptions and lyrics.</p>
         </div>
-        <Button onClick={addVideo} size="lg" className="bg-white text-black hover:bg-white/90">
+        <Button onClick={addVideo} size="lg" className="bg-white text-black hover:bg-white/90 w-full sm:w-auto">
           <Plus className="mr-2 h-5 w-5" />
           Add New Video
         </Button>
@@ -1455,10 +1458,10 @@ export const VideosEditor = ({
           const thumbnailUrl = getYouTubeThumbnailUrl(video.videoId);
           return (
             <Card key={video.id} className="border-white/10 bg-black/40 text-white">
-              <CardHeader className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-                <div className="flex items-center gap-4">
+              <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-4 min-w-0 flex-1">
                   {thumbnailUrl && (
-                    <div className="relative w-32 h-20 flex-shrink-0 rounded-lg overflow-hidden border border-white/20 bg-black/40">
+                    <div className="relative w-24 h-16 sm:w-32 sm:h-20 flex-shrink-0 rounded-lg overflow-hidden border border-white/20 bg-black/40">
                       <img 
                         src={thumbnailUrl} 
                         alt={video.title}
@@ -1466,16 +1469,17 @@ export const VideosEditor = ({
                       />
                     </div>
                   )}
-                  <div>
-                    <CardTitle className="text-white">{video.title}</CardTitle>
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-white truncate">{video.title}</CardTitle>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => handleSaveVideo(video.id)}
                   disabled={savingVideoId === video.id}
+                  className="flex-1 sm:flex-none"
                 >
                   {savingVideoId === video.id ? "Saving..." : "Save"}
                 </Button>
@@ -1484,13 +1488,14 @@ export const VideosEditor = ({
                   size="sm"
                   onClick={() => removeVideo(video.id)}
                   disabled={deletingVideoId === video.id}
+                  className="flex-1 sm:flex-none"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   {deletingVideoId === video.id ? "Removing..." : "Delete"}
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="grid gap-4 lg:grid-cols-2">
+            <CardContent className="grid gap-4 grid-cols-1 lg:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white">Title</label>
                 <Input value={video.title} onChange={(event) => updateVideo(video.id, { title: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
@@ -1638,12 +1643,12 @@ export const ToursEditor = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight text-white">Tours</h2>
           <p className="text-sm text-white/50">Add tour stops with ticket links.</p>
         </div>
-        <Button onClick={addTour}>
+        <Button onClick={addTour} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           Add Tour Date
         </Button>
@@ -1651,7 +1656,7 @@ export const ToursEditor = ({
       <div className="space-y-4">
         {tours.map((tour) => (
           <Card key={tour.id} className="border-white/10 bg-black/40 text-white">
-            <CardContent className="grid gap-4 py-6 lg:grid-cols-4">
+            <CardContent className="grid gap-4 py-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white">Date</label>
                 <Input type="date" value={tour.date} onChange={(event) => updateTour(tour.id, { date: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
@@ -1668,12 +1673,13 @@ export const ToursEditor = ({
                 <label className="text-sm font-medium text-white">Ticket URL</label>
                 <Input value={tour.ticketUrl} onChange={(event) => updateTour(tour.id, { ticketUrl: event.target.value })} className="bg-black/40 text-white placeholder:text-white/40 border-white/20" />
               </div>
-              <div className="lg:col-span-4 flex justify-end gap-2">
+              <div className="sm:col-span-2 lg:col-span-4 flex flex-col sm:flex-row justify-end gap-2">
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => handleSaveTour(tour.id)}
                   disabled={savingTourId === tour.id}
+                  className="w-full sm:w-auto"
                 >
                   {savingTourId === tour.id ? "Saving..." : "Save"}
                 </Button>
@@ -1682,6 +1688,7 @@ export const ToursEditor = ({
                   size="sm"
                   onClick={() => removeTour(tour.id)}
                   disabled={deletingTourId === tour.id}
+                  className="w-full sm:w-auto"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   {deletingTourId === tour.id ? "Removing..." : "Remove"}
@@ -1800,12 +1807,12 @@ export const AboutEditor = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <p className="text-sm text-white/50 mb-1">About Page Content</p>
           <h2 className="text-2xl font-semibold text-white">Customize About Page</h2>
         </div>
-        <Button onClick={handleSave} disabled={saving} className="bg-white text-black hover:bg-white/90">
+        <Button onClick={handleSave} disabled={saving} className="bg-white text-black hover:bg-white/90 w-full sm:w-auto">
           {saving ? "Saving..." : "Save Changes"}
         </Button>
       </div>
@@ -1828,12 +1835,12 @@ export const AboutEditor = ({
 
       <Card className="bg-black/40 border-white/20">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <CardTitle className="text-white">Career Highlights</CardTitle>
               <CardDescription className="text-white/60">Key moments and achievements in the career</CardDescription>
             </div>
-            <Button onClick={addCareerHighlight} variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
+            <Button onClick={addCareerHighlight} variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10 w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Add Highlight
             </Button>
@@ -1884,12 +1891,12 @@ export const AboutEditor = ({
 
       <Card className="bg-black/40 border-white/20">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <CardTitle className="text-white">Achievements</CardTitle>
               <CardDescription className="text-white/60">Notable achievements and recognitions</CardDescription>
             </div>
-            <Button onClick={addAchievement} variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
+            <Button onClick={addAchievement} variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10 w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Add Achievement
             </Button>
@@ -1910,7 +1917,7 @@ export const AboutEditor = ({
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
-                <div className="grid gap-4 lg:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-white">Year</label>
                     <Input
@@ -1920,7 +1927,7 @@ export const AboutEditor = ({
                       placeholder="2024"
                     />
                   </div>
-                  <div className="space-y-2 lg:col-span-2">
+                  <div className="space-y-2 sm:col-span-2">
                     <label className="text-sm font-medium text-white">Title</label>
                     <Input
                       value={achievement.title}
@@ -1950,12 +1957,12 @@ export const AboutEditor = ({
 
       <Card className="bg-black/40 border-white/20">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <CardTitle className="text-white">Awards</CardTitle>
               <CardDescription className="text-white/60">Awards and recognitions received</CardDescription>
             </div>
-            <Button onClick={addAward} variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
+            <Button onClick={addAward} variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10 w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Add Award
             </Button>
