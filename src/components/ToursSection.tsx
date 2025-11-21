@@ -33,7 +33,7 @@ const ToursSection = () => {
       <section id="tours" className="py-24 bg-background relative overflow-hidden p-4">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12 text-center space-y-4">
           <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-white">TOURS</h2>
-          <p className="text-gray-400 text-lg">No tour dates announced. Add locations and ticket links in the admin dashboard.</p>
+          <p className="text-gray-400 text-lg">No tour dates announced. Stay tuned for upcoming events.</p>
         </div>
       </section>
     );
