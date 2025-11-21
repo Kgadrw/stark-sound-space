@@ -2243,12 +2243,12 @@ export const AudiosEditor = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <p className="text-sm text-white/50 mb-1">Audio Management</p>
           <h3 className="text-xl font-semibold text-white">Audio Items</h3>
         </div>
-        <Button onClick={addAudio} variant="secondary">
+        <Button onClick={addAudio} variant="secondary" className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           Add Audio
         </Button>
@@ -2267,10 +2267,10 @@ export const AudiosEditor = ({
       {audios.map((audio) => (
         <Card key={audio.id} className="border-white/10 bg-black/40">
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-4 min-w-0 flex-1">
                 {audio.image && (
-                  <div className="w-16 h-16 rounded-lg overflow-hidden border border-white/10">
+                  <div className="w-16 h-16 rounded-lg overflow-hidden border border-white/10 flex-shrink-0">
                     <img
                       src={audio.image}
                       alt={audio.title || "Audio"}
@@ -2281,17 +2281,18 @@ export const AudiosEditor = ({
                     />
                   </div>
                 )}
-                <div>
-                  <CardTitle className="text-white">{audio.title || "Untitled Audio"}</CardTitle>
-                  <CardDescription className="text-white/60">{audio.link || "No link"}</CardDescription>
+                <div className="min-w-0 flex-1">
+                  <CardTitle className="text-white truncate">{audio.title || "Untitled Audio"}</CardTitle>
+                  <CardDescription className="text-white/60 truncate">{audio.link || "No link"}</CardDescription>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => handleSaveAudio(audio.id)}
                   disabled={savingAudioId === audio.id}
+                  className="flex-1 sm:flex-none"
                 >
                   {savingAudioId === audio.id ? "Saving..." : "Save"}
                 </Button>
@@ -2300,6 +2301,7 @@ export const AudiosEditor = ({
                   size="sm"
                   onClick={() => removeAudio(audio.id)}
                   disabled={deletingAudioId === audio.id}
+                  className="flex-1 sm:flex-none"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   {deletingAudioId === audio.id ? "Removing..." : "Delete"}
@@ -2307,14 +2309,14 @@ export const AudiosEditor = ({
               </div>
             </div>
           </CardHeader>
-          <CardContent className="grid gap-4 lg:grid-cols-2">
+          <CardContent className="grid gap-4 grid-cols-1 lg:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm font-medium text-white">Title (Optional)</label>
               <Input 
                 value={audio.title} 
                 onChange={(event) => updateAudio(audio.id, { title: event.target.value })} 
                 placeholder="Audio title"
-                className="bg-black/40 text-white placeholder:text-white/40 border-white/20" 
+                className="bg-black/40 text-white placeholder:text-white/40 border-white/20 w-full" 
               />
             </div>
             <div className="space-y-2">
@@ -2323,7 +2325,7 @@ export const AudiosEditor = ({
                 value={audio.link} 
                 onChange={(event) => updateAudio(audio.id, { link: event.target.value })} 
                 placeholder="https://"
-                className="bg-black/40 text-white placeholder:text-white/40 border-white/20" 
+                className="bg-black/40 text-white placeholder:text-white/40 border-white/20 w-full" 
               />
             </div>
             <div className="space-y-2 lg:col-span-2">
