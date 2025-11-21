@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Youtube, Search } from "lucide-react";
+import { Play, Youtube, Search, ExternalLink } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo, useRef, useEffect } from "react";
 
@@ -91,13 +92,38 @@ const VideosSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" />
       
       <div className="relative z-10 max-w-7xl mx-auto">
-        {/* Search Bar - Same design as Hero */}
+        {/* Search Bar and More Videos Button - Same design as Hero */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className="mb-8 md:mb-12 flex items-center gap-2 sm:gap-3 justify-end"
         >
+          {/* More Videos Button */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <Button
+              asChild
+              className="bg-[#FF0000] hover:bg-[#FF0000]/90 text-white font-bold rounded-full px-6 py-3 text-sm transition-all duration-200 hover:scale-105"
+            >
+              <a
+                href={(() => {
+                  const youtubePlatform = content.hero.streamingPlatforms?.find((platform) => platform.preset === "youtube");
+                  return youtubePlatform?.url || "https://www.youtube.com/@nelngabo9740";
+                })()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2"
+              >
+                <Youtube className="h-4 w-4" />
+                <span>More Videos</span>
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            </Button>
+          </motion.div>
           <motion.button
             type="button"
             onClick={() => setIsSearchOpen((prev) => !prev)}
@@ -195,12 +221,9 @@ const VideosSection = () => {
                   {/* Play overlay */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/40">
                     <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                      <Play className="w-10 h-10 text-white ml-1" fill="currentColor" />
+                      <Play className="w-10 h-10 text-[#FF0000] ml-1" fill="currentColor" />
                     </div>
                   </div>
-
-                  {/* Corner accent */}
-                  <div className="pointer-events-none absolute top-0 right-0 h-16 w-16 border-t-2 border-r-2 border-pink-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
 
                 {/* Video Title */}

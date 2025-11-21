@@ -40,14 +40,38 @@ const AudioMusic = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-8"
+            className="mb-8 flex items-start justify-between"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2">
-              Music
-            </h1>
-            <p className="text-gray-400 text-sm md:text-base">
-              All releases from Nel Ngabo
-            </p>
+            <div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2">
+                Music
+              </h1>
+              <p className="text-gray-400 text-sm md:text-base">
+                All releases from Nel Ngabo
+              </p>
+            </div>
+            {/* Listen More Button - Top Right */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <Button
+                asChild
+                className="bg-[#1DB954] hover:bg-[#1DB954]/90 text-white font-bold rounded-full px-6 py-3 text-sm transition-all duration-200 hover:scale-105"
+              >
+                <a
+                  href={spotifyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2"
+                >
+                  <Play className="h-4 w-4" fill="currentColor" />
+                  <span>Listen More</span>
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              </Button>
+            </motion.div>
           </motion.div>
 
           {isLoading ? (
@@ -112,29 +136,6 @@ const AudioMusic = () => {
                 ))}
               </div>
 
-              {/* Listen More Button */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="mt-12 flex justify-center"
-              >
-                <Button
-                  asChild
-                  className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-8 py-6 text-base transition-all duration-200 hover:scale-105"
-                >
-                  <a
-                    href={spotifyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2"
-                  >
-                    <Play className="h-5 w-5" fill="currentColor" />
-                    <span>Listen More</span>
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                </Button>
-              </motion.div>
             </>
           )}
         </div>
