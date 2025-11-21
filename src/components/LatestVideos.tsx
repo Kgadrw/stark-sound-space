@@ -98,12 +98,9 @@ const LatestVideos = () => {
                   {/* Play overlay */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/40">
                     <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                      <Play className="w-12 h-12 text-white ml-1" fill="currentColor" />
+                      <Play className="w-12 h-12 text-[#FF0000] ml-1" fill="currentColor" />
                     </div>
                   </div>
-
-                  {/* Corner accent */}
-                  <div className="pointer-events-none absolute top-0 right-0 h-20 w-20 border-t-2 border-r-2 border-pink-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
 
                 {/* Video Title */}
