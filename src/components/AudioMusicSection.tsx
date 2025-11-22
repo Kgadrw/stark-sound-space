@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, X, Play } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const AudioMusicSection = () => {
   const { content, isLoading } = useContent();
   const [selectedAudio, setSelectedAudio] = useState<string | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const colorSettings = content.hero.colorSettings;
   const backgroundStyle = colorSettings?.colorType === "solid"
     ? colorSettings.solidColor
@@ -25,6 +26,38 @@ const AudioMusicSection = () => {
   });
 
   const selectedAudioData = audios.find((audio) => audio.id === selectedAudio);
+
+  // Auto-scroll animation to show users they can scroll
+  useEffect(() => {
+    if (isLoading || audios.length <= 1 || !scrollContainerRef.current) return;
+
+    const container = scrollContainerRef.current;
+    const scrollWidth = container.scrollWidth;
+    const clientWidth = container.clientWidth;
+
+    // Only auto-scroll if content overflows
+    if (scrollWidth <= clientWidth) return;
+
+    // Wait a bit before starting the animation
+    const startDelay = setTimeout(() => {
+      // Scroll to the right smoothly
+      const scrollAmount = Math.min(200, scrollWidth - clientWidth);
+      container.scrollTo({
+        left: scrollAmount,
+        behavior: 'smooth'
+      });
+
+      // After showing the scroll, scroll back to start
+      setTimeout(() => {
+        container.scrollTo({
+          left: 0,
+          behavior: 'smooth'
+        });
+      }, 2000);
+    }, 1500);
+
+    return () => clearTimeout(startDelay);
+  }, [audios.length, isLoading]);
 
   if (isLoading) {
     return (
@@ -64,7 +97,10 @@ const AudioMusicSection = () => {
           </motion.h2>
 
           {/* Audio Image Horizontal Scroll */}
-          <div className="overflow-x-auto scrollbar-hide">
+          <div 
+            ref={scrollContainerRef}
+            className="overflow-x-auto scrollbar-hide scroll-smooth"
+          >
             <div className="flex gap-6 md:gap-8 pb-4">
               {audios.map((audio, index) => (
                 <motion.div
@@ -114,21 +150,21 @@ const AudioMusicSection = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-xl max-w-[280px] sm:max-w-xs w-full max-h-[70vh] overflow-hidden shadow-2xl border border-white/10">
+              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-xl max-w-[280px] sm:max-w-xs md:max-w-sm w-full max-h-[80vh] overflow-y-auto shadow-2xl border border-white/10 flex flex-col">
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedAudio(null)}
-                  className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-black/50 hover:bg-black/70 transition-colors backdrop-blur-sm"
+                  className="absolute top-3 right-3 z-10 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors backdrop-blur-sm"
                   aria-label="Close"
                 >
-                  <X className="h-3.5 w-3.5 text-white" />
+                  <X className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </button>
 
                 {/* Audio Image */}
-                <div className="relative w-full aspect-square">
+                <div className="relative w-full aspect-square flex-shrink-0">
                   <img
                     src={selectedAudioData.image}
                     alt={selectedAudioData.title || "Audio"}
@@ -138,32 +174,32 @@ const AudioMusicSection = () => {
                 </div>
 
                 {/* Audio Info */}
-                <div className="p-3 space-y-2 bg-gradient-to-b from-transparent to-black">
+                <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 bg-gradient-to-b from-transparent to-black flex-shrink-0">
                   {selectedAudioData.title && (
                     <div>
-                      <h2 className="text-base md:text-lg font-bold text-white mb-1 line-clamp-2">
+                      <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 break-words">
                         {selectedAudioData.title}
                       </h2>
-                      <p className="text-gray-400 text-[10px] sm:text-xs">Nel Ngabo</p>
+                      <p className="text-gray-400 text-xs sm:text-sm">Nel Ngabo</p>
                     </div>
                   )}
 
                   {/* Audio Link */}
                   {selectedAudioData.link && (
-                    <div className="pt-1">
+                    <div className="pt-2">
                       <Button
                         asChild
-                        className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-4 py-3 text-xs w-full transition-all duration-200 hover:scale-105"
+                        className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-4 sm:px-6 py-3 text-xs sm:text-sm w-full transition-all duration-200 hover:scale-105"
                       >
                         <a
                           href={selectedAudioData.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-1.5"
+                          className="flex items-center justify-center gap-1.5 sm:gap-2"
                         >
-                          <Play className="h-3.5 w-3.5" fill="currentColor" />
+                          <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="currentColor" />
                           <span>Listen Now</span>
-                          <ExternalLink className="h-3 w-3" />
+                          <ExternalLink className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                         </a>
                       </Button>
                     </div>

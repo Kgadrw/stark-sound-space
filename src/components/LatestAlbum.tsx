@@ -109,7 +109,7 @@ const LatestAlbum = () => {
               </motion.p>
 
               {/* Album Title */}
-              <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-[0.1em] orbitron">
+              <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-[0.1em]">
                 {latestAlbum.title}
               </h2>
 

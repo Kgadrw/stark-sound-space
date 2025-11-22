@@ -132,7 +132,7 @@ const MusicSection = () => {
                 >
                   {/* Album Title */}
                   <div>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white uppercase tracking-[0.1em] orbitron mb-4">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white uppercase tracking-[0.1em] mb-4">
                       {album.title}
                     </h2>
                     

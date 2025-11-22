@@ -160,10 +160,10 @@ const AudioMusic = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-2xl max-w-md w-full max-h-[90vh] overflow-hidden shadow-2xl border border-white/10">
+              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-2xl max-w-xs sm:max-w-sm md:max-w-md w-full max-h-[80vh] overflow-y-auto shadow-2xl border border-white/10 flex flex-col">
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedAudio(null)}
@@ -174,7 +174,7 @@ const AudioMusic = () => {
                 </button>
 
                 {/* Audio Image */}
-                <div className="relative w-full aspect-square">
+                <div className="relative w-full aspect-square flex-shrink-0">
                   <img
                     src={selectedAudioData.image}
                     alt={selectedAudioData.title || "Audio"}
@@ -184,13 +184,13 @@ const AudioMusic = () => {
                 </div>
 
                 {/* Audio Info */}
-                <div className="p-6 space-y-4 bg-gradient-to-b from-transparent to-black">
+                <div className="p-4 sm:p-6 md:p-8 space-y-4 bg-gradient-to-b from-transparent to-black flex-shrink-0">
                   {selectedAudioData.title && (
                     <div>
-                      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1 break-words">
                         {selectedAudioData.title}
                       </h2>
-                      <p className="text-gray-400 text-sm">Nel Ngabo</p>
+                      <p className="text-gray-400 text-sm sm:text-base">Nel Ngabo</p>
                     </div>
                   )}
 
@@ -199,7 +199,7 @@ const AudioMusic = () => {
                     <div className="pt-2">
                       <Button
                         asChild
-                        className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-8 py-6 text-base w-full transition-all duration-200 hover:scale-105"
+                        className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-6 sm:px-8 py-4 sm:py-6 text-sm sm:text-base w-full transition-all duration-200 hover:scale-105"
                       >
                         <a
                           href={selectedAudioData.link}
@@ -207,9 +207,9 @@ const AudioMusic = () => {
                           rel="noopener noreferrer"
                           className="flex items-center justify-center gap-2"
                         >
-                          <Play className="h-5 w-5" fill="currentColor" />
+                          <Play className="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" />
                           <span>Listen Now</span>
-                          <ExternalLink className="h-4 w-4" />
+                          <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         </a>
                       </Button>
                     </div>

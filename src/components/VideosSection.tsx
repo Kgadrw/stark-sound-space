@@ -199,38 +199,42 @@ const VideosSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="group"
+                className="group flex flex-col"
               >
-                {/* Thumbnail */}
-                <div 
-                  className="relative aspect-video overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl transition-all duration-500 group-hover:border-white/30 cursor-pointer mb-4"
-                  onClick={() => navigate(`/video/${encodeURIComponent(video.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
-                >
-                  {thumbnailUrl ? (
-                    <img
-                      src={thumbnailUrl}
-                      alt={video.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-black/60">
-                      <Youtube className="h-16 w-16 text-white/30" />
-                    </div>
-                  )}
-                  
-                  {/* Play overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/40">
-                    <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                      <Play className="w-10 h-10 text-[#FF0000] ml-1" fill="currentColor" />
-                    </div>
+                {/* Video Card Container with White Border */}
+                <div className="rounded-lg border-2 border-white bg-black p-0 overflow-hidden">
+                  {/* Thumbnail */}
+                  <div 
+                    className="relative aspect-video overflow-hidden cursor-pointer"
+                    onClick={() => navigate(`/video/${encodeURIComponent(video.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
+                  >
+                    {thumbnailUrl ? (
+                      <img
+                        src={thumbnailUrl}
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-black/60">
+                        <Youtube className="h-16 w-16 text-white/30" />
+                      </div>
+                    )}
                   </div>
-                </div>
 
-                {/* Video Title */}
-                <div className="mb-3">
-                  <h3 className="text-lg md:text-xl font-semibold text-white uppercase tracking-wide elms-sans">
-                    {video.title}
-                  </h3>
+                  {/* Video Title - Centered */}
+                  <div className="px-4 py-4 text-center">
+                    <h3 className="text-sm md:text-base font-medium text-white uppercase tracking-wide mb-4">
+                      {video.title}
+                    </h3>
+                    
+                    {/* WATCH NOW Button */}
+                    <button
+                      onClick={() => navigate(`/video/${encodeURIComponent(video.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
+                      className="w-full bg-white text-black uppercase font-semibold py-3 px-6 rounded-md hover:bg-[#FF0000] hover:text-white transition-colors duration-300 text-sm tracking-wide"
+                    >
+                      WATCH NOW
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             );
