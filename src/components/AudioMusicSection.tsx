@@ -1,15 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, X, Play } from "lucide-react";
+import { useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useContent } from "@/context/ContentContext";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const AudioMusicSection = () => {
   const { content, isLoading } = useContent();
-  const [selectedAudio, setSelectedAudio] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const colorSettings = content.hero.colorSettings;
   const backgroundStyle = colorSettings?.colorType === "solid"
@@ -24,8 +21,6 @@ const AudioMusicSection = () => {
     const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
     return dateB - dateA; // Descending order (newest first)
   });
-
-  const selectedAudioData = audios.find((audio) => audio.id === selectedAudio);
 
   // Auto-scroll animation to show users they can scroll
   useEffect(() => {
@@ -109,7 +104,11 @@ const AudioMusicSection = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4, delay: index * 0.05 }}
                   className="group cursor-pointer flex-shrink-0"
-                  onClick={() => setSelectedAudio(audio.id)}
+                  onClick={() => {
+                    if (audio.link) {
+                      window.open(audio.link, '_blank', 'noopener,noreferrer');
+                    }
+                  }}
                 >
                   <div className="relative w-48 md:w-56 lg:w-64 aspect-square overflow-hidden rounded-lg border border-white/10 bg-black/80 backdrop-blur-xl transition-all duration-300 group-hover:border-white/30 group-hover:scale-105">
                     <img
@@ -130,86 +129,6 @@ const AudioMusicSection = () => {
           </div>
         </div>
       </section>
-
-      {/* Modal for Audio Link - Spotify Style */}
-      <AnimatePresence>
-        {selectedAudioData && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedAudio(null)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-            />
-            
-            {/* Modal */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-xl max-w-[280px] sm:max-w-xs md:max-w-sm w-full max-h-[80vh] overflow-y-auto shadow-2xl border border-white/10 flex flex-col">
-                {/* Close Button */}
-                <button
-                  onClick={() => setSelectedAudio(null)}
-                  className="absolute top-3 right-3 z-10 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors backdrop-blur-sm"
-                  aria-label="Close"
-                >
-                  <X className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-                </button>
-
-                {/* Audio Image */}
-                <div className="relative w-full aspect-square flex-shrink-0">
-                  <img
-                    src={selectedAudioData.image}
-                    alt={selectedAudioData.title || "Audio"}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-                </div>
-
-                {/* Audio Info */}
-                <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 bg-gradient-to-b from-transparent to-black flex-shrink-0">
-                  {selectedAudioData.title && (
-                    <div>
-                      <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 break-words">
-                        {selectedAudioData.title}
-                      </h2>
-                      <p className="text-gray-400 text-xs sm:text-sm">Nel Ngabo</p>
-                    </div>
-                  )}
-
-                  {/* Audio Link */}
-                  {selectedAudioData.link && (
-                    <div className="pt-2">
-                      <Button
-                        asChild
-                        className="bg-white hover:bg-white/90 text-black font-bold rounded-full px-4 sm:px-6 py-3 text-xs sm:text-sm w-full transition-all duration-200 hover:scale-105"
-                      >
-                        <a
-                          href={selectedAudioData.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-1.5 sm:gap-2"
-                        >
-                          <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="currentColor" />
-                          <span>Listen Now</span>
-                          <ExternalLink className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                        </a>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </>
   );
 };
