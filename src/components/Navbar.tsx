@@ -125,7 +125,6 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
               );
             }
 
-            const isVideos = label === "Videos";
             return (
               <NavLink
                 key={label}
@@ -135,7 +134,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                   [
                     "px-4 py-2 text-sm uppercase tracking-[0.2em] transition",
                     isActive ? "text-white" : "text-white/60",
-                    isVideos ? "hover:text-red-500" : "hover:text-white",
+                    "hover:text-white",
                   ].join(" ")
                 }
               >
@@ -275,7 +274,6 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                   );
                 }
 
-                const isVideos = label === "Videos";
                 return (
                   <motion.div
                     key={label}
@@ -291,7 +289,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                         [
                           "uppercase transition relative",
                           isActive ? "text-white underline decoration-white decoration-2 underline-offset-8" : "text-white/60",
-                          isVideos ? "hover:text-red-500" : "hover:text-white",
+                          "hover:text-white",
                         ].join(" ")
                       }
                     >
