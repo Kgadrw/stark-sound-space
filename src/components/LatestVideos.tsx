@@ -79,7 +79,7 @@ const LatestVideos = () => {
                 className="group flex flex-col"
               >
                 {/* Video Card Container with White Border */}
-                <div className="rounded-lg border-2 border-white bg-black p-0 overflow-hidden">
+                <div className="rounded-lg border-2  bg-black p-0 overflow-hidden">
                   {/* Thumbnail */}
                   <div 
                     className="relative aspect-video overflow-hidden cursor-pointer"
