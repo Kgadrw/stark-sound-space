@@ -69,97 +69,91 @@ const Footer = () => {
   return (
     <>
       <style>{chewyStyle}</style>
-    <motion.footer
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-        className="bg-black text-white py-12 relative"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="flex items-center justify-center"
-          >
-            <img 
-              src="/kinamusic.png" 
-              alt="KINA MUSIC" 
-              className="h-12 md:h-16 w-auto"
-            />
-          </motion.div>
+      <motion.footer
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="bg-black text-white py-8 relative"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Icons and Copyright - Centered together */}
+          <div className="flex flex-col items-center justify-center gap-6">
+            {/* KINA MUSIC Logo */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.05 }}
+              className="flex items-center justify-center mb-1"
+            >
+              <img 
+                src="/kinamusic.png" 
+                alt="KINA MUSIC" 
+                className="h-10 md:h-12 lg:h-14 w-auto"
+              />
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-3xl font-normal text-white"
-          >
-            NEL NGABO
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="flex space-x-4 md:space-x-6 items-center justify-center"
-          >
-            {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
+            {/* Social Icons */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="flex space-x-3 items-center"
+            >
+              {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
+                <motion.a
+                  key={id || index}
+                  href={href}
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 + index * 0.05, type: "spring" }}
+                  whileHover={{ scale: 1.2, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-10 h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
+                  aria-label={label}
+                >
+                  <Icon className="w-5 h-5" />
+                </motion.a>
+              ))}
+              
+              {/* Email Icon */}
               <motion.a
-                key={id || index}
-                href={href}
+                href="mailto:nelngabo1@gmail.com"
                 initial={{ opacity: 0, scale: 0 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
+                transition={{ delay: 0.1 + socialLinks.length * 0.05, type: "spring" }}
                 whileHover={{ scale: 1.2, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
-                className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
-                aria-label={label}
+                className="w-10 h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
+                aria-label="Email"
               >
-                <Icon className="w-4 h-4 md:w-5 md:h-5" />
+                <Mail className="w-5 h-5" />
               </motion.a>
-            ))}
-            
-            {/* Email Icon */}
-            <motion.a
-              href="mailto:nelngabo1@gmail.com"
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 + socialLinks.length * 0.1, type: "spring" }}
-              whileHover={{ scale: 1.2, rotate: 5 }}
-              whileTap={{ scale: 0.9 }}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
-              aria-label="Email"
-            >
-              <Mail className="w-4 h-4 md:w-5 md:h-5" />
-            </motion.a>
-          </motion.div>
+            </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.8 }}
-            className="text-sm text-gray-400"
-          >
-            © {new Date().getFullYear()} NEL NGABO. ALL RIGHTS RESERVED.
-          </motion.p>
+            {/* Copyright */}
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-xs text-gray-400 whitespace-nowrap"
+            >
+              © 2025 NEL NGABO. ALL RIGHTS RESERVED.
+            </motion.p>
+          </div>
         </div>
-      </div>
         
         {/* Powered by kgad - Bottom Right */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.9 }}
+          transition={{ delay: 0.3 }}
           className="absolute bottom-4 right-4 sm:right-6"
         >
           <a
@@ -172,7 +166,7 @@ const Footer = () => {
             <span className="chewy-regular text-white/60 group-hover:text-white transition-colors">kgad</span>
           </a>
         </motion.div>
-    </motion.footer>
+      </motion.footer>
     </>
   );
 };

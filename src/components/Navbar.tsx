@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Home, Music4, User, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, Clapperboard, type LucideIcon } from "lucide-react";
+import { Home, Music4, User, MapPin, Menu, X, Instagram, Twitter, Youtube, Sparkles, Clapperboard, Play, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useContent } from "@/context/ContentContext";
 
@@ -45,6 +45,7 @@ const waveAnimation = `
 const Navbar = ({ variant = "frontend" }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const { content } = useContent();
   const navigate = useNavigate();
   const navLinks = variant === "admin" ? adminNavLinks : frontendNavLinks;
@@ -67,7 +68,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
         initial={hasAnimated ? false : { y: -100, opacity: 0 }}
         animate={hasAnimated ? false : { y: 0, opacity: 1 }}
         transition={hasAnimated ? {} : { duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b border-white/10 bg-black px-6 py-4 text-white"
+        className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between bg-black px-6 py-4 text-white"
         style={{
           background: content.hero.colorSettings?.colorType === "solid"
             ? content.hero.colorSettings.solidColor
@@ -161,32 +162,34 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
         {/* Latest Release (Desktop only, frontend variant) */}
         {variant === "frontend" && (
           <div className="hidden lg:flex items-center gap-4">
-            <div className="flex items-center gap-2">
+            <Button
+              onClick={() => {
+                setIsPlaying(true);
+                if (latestAlbumLink.startsWith('http')) {
+                  window.open(latestAlbumLink, '_blank', 'noopener,noreferrer');
+                } else {
+                  navigate(latestAlbumLink);
+                }
+              }}
+              className="bg-transparent text-white hover:bg-white/10 rounded-full px-4 py-2 text-xs font-medium transition-all duration-200 uppercase tracking-[0.2em] flex items-center gap-2"
+            >
+              {/* Music Waves */}
               <div className="flex items-end gap-[2px]">
                 {waveHeights.map((height, index) => (
                   <span
                     key={index}
-                    className="w-[3px] rounded-full bg-gradient-to-t from-pink-500 via-purple-500 to-sky-500"
+                    className="w-[3px] rounded-full bg-white"
                     style={{
                       height: `${height * 0.6}px`,
-                      animation: "wavePulse 1.4s ease-in-out infinite",
+                      animation: isPlaying ? "wavePulse 1.4s ease-in-out infinite" : "none",
                       animationDelay: `${index * 60}ms`,
                     }}
                   />
                 ))}
               </div>
-              <div className="text-[0.65rem] font-semibold tracking-[0.3em] text-white">
-                {latestAlbumName}
-              </div>
-            </div>
-            <Button variant="secondary" asChild className="uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-transform text-xs px-3 py-1.5">
-              <a 
-                href={latestAlbumLink.startsWith('http') ? latestAlbumLink : `https://${latestAlbumLink}`}
-                target={latestAlbumLink.startsWith('http') ? '_blank' : undefined}
-                rel={latestAlbumLink.startsWith('http') ? 'noopener noreferrer' : undefined}
-              >
-                Listen
-              </a>
+              {/* Play Button */}
+              <Play className="h-3 w-3 fill-white" />
+              <span>{latestAlbumName}</span>
             </Button>
           </div>
         )}

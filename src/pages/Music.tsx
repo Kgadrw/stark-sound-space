@@ -14,7 +14,7 @@ const Music = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-background pt-16" style={{ background: backgroundStyle }}>
+      <div className="min-h-screen bg-background" style={{ background: backgroundStyle }}>
         <MusicSection />
       </div>
     </>
