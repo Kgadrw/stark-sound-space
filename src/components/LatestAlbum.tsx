@@ -78,7 +78,7 @@ const LatestAlbum = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               onClick={handlePrevious}
-              className="text-white hover:text-white/80 transition-colors p-2 z-10"
+              className="text-white p-2 z-10"
               aria-label="Previous album"
             >
               <ChevronLeft className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12" />
@@ -115,7 +115,7 @@ const LatestAlbum = () => {
                     <img
                       src={currentAlbum.image}
                       alt={currentAlbum.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover"
                     />
                     {/* Parental Advisory Label */}
                     <div className="absolute bottom-2 right-2 bg-black px-2 py-1">
@@ -164,7 +164,7 @@ const LatestAlbum = () => {
                         <Button
                           key={link.id || linkIndex}
                           asChild
-                          className="bg-transparent text-white hover:bg-white rounded-full px-4 py-2 text-sm font-medium transition-all duration-200"
+                          className="bg-transparent text-white border border-white rounded-full px-4 py-2 text-sm font-medium transition-all duration-200"
                         >
                           <a
                             href={link.url}
@@ -183,7 +183,7 @@ const LatestAlbum = () => {
                   {/* View Album Button */}
                   <Button
                     onClick={() => navigate(`/album/${encodeURIComponent(currentAlbum.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
-                    className="bg-transparent text-white hover:bg-white rounded-full px-6 py-2 text-sm font-medium transition-all duration-200"
+                    className="bg-transparent text-white border border-white rounded-full px-6 py-2 text-sm font-medium transition-all duration-200"
                   >
                     View Album
                   </Button>
@@ -199,7 +199,7 @@ const LatestAlbum = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               onClick={handleNext}
-              className="text-white hover:text-white/80 transition-colors p-2 z-10"
+              className="text-white p-2 z-10"
               aria-label="Next album"
             >
               <ChevronRight className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12" />

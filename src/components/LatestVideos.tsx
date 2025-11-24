@@ -97,7 +97,7 @@ const LatestVideos = () => {
             >
               <a
                 href="/videos"
-                className="bg-transparent text-white hover:bg-white/10 rounded-full px-6 py-2 text-sm font-medium transition-all duration-200 inline-block"
+                className="bg-transparent text-white border border-white hover:bg-white/10 rounded-full px-6 py-2 text-sm font-medium transition-all duration-200 inline-block"
               >
                 VIEW ALL
               </a>

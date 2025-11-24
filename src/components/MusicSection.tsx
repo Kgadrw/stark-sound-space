@@ -124,14 +124,14 @@ const MusicSection = () => {
           >
             <button
               onClick={handlePrevious}
-              className="text-white hover:text-white/80 transition-colors p-2"
+              className="text-white p-2"
               aria-label="Previous album"
             >
               <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8" />
             </button>
             <button
               onClick={handleNext}
-              className="text-white hover:text-white/80 transition-colors p-2"
+              className="text-white p-2"
               aria-label="Next album"
             >
               <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
@@ -159,7 +159,7 @@ const MusicSection = () => {
               <img
                 src={currentAlbum.image}
                 alt={currentAlbum.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover"
               />
               {/* Parental Advisory Label */}
               <div className="absolute bottom-2 right-2 bg-black px-2 py-1">
