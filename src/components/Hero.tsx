@@ -1,64 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
-import { Play, Pause, Music3, Music4, Disc3, Youtube, Radio, Search, Phone, Mail, Instagram, Twitter, Music2, Facebook, Globe, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, Music3, Music4, Disc3, Youtube, Radio, Phone, Mail, Instagram, Twitter, Music2, Facebook, Globe, Volume2, VolumeX } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import type { HeroCta, HeroNavLink, IconPreset } from "@/types/content";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
-import { adminApi } from "@/lib/api";
-import YouTubePlayer from "@/components/YouTubePlayer";
 import NotificationBanner from "@/components/NotificationBanner";
-
-
-type PlatformSearchItem = {
-  id: string;
-  label: string;
-  category: string;
-  keywords: string[];
-  description?: string;
-  targetId?: string;
-  elementId?: string;
-  externalUrl?: string;
-  routeUrl?: string; // For routing to specific pages like /video/:id, /album/:id
-};
-
-const BASE_SEARCH_ITEMS: PlatformSearchItem[] = [
-  {
-    id: "section-music",
-    label: "Music Catalog",
-    category: "Section",
-    targetId: "music",
-    routeUrl: "/music",
-    description: "Explore every album and track released so far.",
-    keywords: ["music", "albums", "tracks", "discography"],
-  },
-  {
-    id: "section-videos",
-    label: "Videos",
-    category: "Section",
-    routeUrl: "/videos",
-    description: "Watch music videos and performances.",
-    keywords: ["videos", "music videos", "performances", "youtube"],
-  },
-  {
-    id: "section-about",
-    label: "About",
-    category: "Section",
-    routeUrl: "/about",
-    description: "Learn more about the artist and their journey.",
-    keywords: ["about", "artist", "biography", "info"],
-  },
-  {
-    id: "section-tours",
-    label: "Upcoming Tours",
-    category: "Section",
-    routeUrl: "/tours",
-    description: "See the full schedule and get tickets.",
-    keywords: ["tour", "tickets", "schedule", "live"],
-  },
-];
 
 const iconMap: Record<IconPreset, LucideIcon> = {
   spotify: Music4,
@@ -93,27 +42,11 @@ const detectIconFromUrl = (url: string): IconPreset => {
   return "website";
 };
 
-type YouTubeVideo = {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-  channelTitle: string;
-  publishedAt: string;
-};
-
 const Hero = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [dynamicSearchItems, setDynamicSearchItems] = useState<PlatformSearchItem[]>([]);
-  const [youtubeVideos, setYoutubeVideos] = useState<YouTubeVideo[]>([]);
-  const [isLoadingYouTube, setIsLoadingYouTube] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [showVideoControls, setShowVideoControls] = useState(true);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const videoIframeRef = useRef<HTMLIFrameElement>(null);
   const { content } = useContent();
   const navigate = useNavigate();
@@ -164,202 +97,6 @@ const Hero = () => {
 
   const handleHeroNav = (nav: HeroNavLink) => handleTargetAction(nav.targetType, nav.targetValue);
   const handleHeroCta = (cta: HeroCta) => handleTargetAction(cta.targetType, cta.targetValue);
-
-  // Create content-based search items from context
-  const contentSearchItems = useMemo(() => {
-    const items: PlatformSearchItem[] = [];
-
-    // Add videos
-    content.videos.forEach((video) => {
-      items.push({
-        id: `video-${video.id}`,
-        label: video.title,
-        category: "Video",
-        description: video.description || "",
-        keywords: [video.title, ...(video.description ? video.description.split(" ") : [])],
-        routeUrl: `/video/${video.id}`,
-      });
-    });
-
-    // Add albums
-    content.albums.forEach((album) => {
-      const keywords = [
-        album.title,
-        album.year,
-        ...(album.tracks || []),
-        ...(album.summary ? album.summary.split(" ") : []),
-        ...(album.description ? album.description.split(" ") : []),
-      ].filter(Boolean);
-      
-      items.push({
-        id: `album-${album.id}`,
-        label: album.title,
-        category: "Album",
-        description: `${album.year} · ${(album.tracks || []).length} tracks${album.summary ? ` · ${album.summary}` : ""}`,
-        keywords,
-        routeUrl: `/album/${album.id}`,
-      });
-    });
-
-    // Add tours
-    content.tours.forEach((tour) => {
-      items.push({
-        id: `tour-${tour.id}`,
-        label: `${tour.city} - ${tour.venue}`,
-        category: "Tour",
-        description: `${tour.date} · ${tour.city}`,
-        keywords: [tour.city, tour.venue, tour.date],
-        routeUrl: "/tours",
-      });
-    });
-
-    // Add about page if there's content
-    if (content.about.biography || content.about.careerHighlights.length > 0) {
-      items.push({
-        id: "about-page",
-        label: "About",
-        category: "Page",
-        description: "Learn about the artist",
-        keywords: ["about", "artist", "biography", ...content.about.careerHighlights],
-        routeUrl: "/about",
-      });
-    }
-
-    return items;
-  }, [content]);
-
-  useEffect(() => {
-    const collectDynamicItems = () => {
-      const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-search-item]"));
-      const items: PlatformSearchItem[] = elements.map((element, index) => {
-        const keywords =
-          element.dataset.searchKeywords?.split("|").map((keyword) => keyword.trim()).filter(Boolean) ?? [];
-        return {
-          id: element.dataset.searchId ?? element.id ?? `dynamic-${index}`,
-          label: element.dataset.searchLabel ?? "Untitled",
-          category: element.dataset.searchCategory ?? "Content",
-          description: element.dataset.searchDescription,
-          keywords,
-          targetId: element.dataset.searchTarget,
-          elementId: element.dataset.searchTargetElement ?? element.id,
-          externalUrl: element.dataset.externalUrl,
-        };
-      });
-      setDynamicSearchItems(items);
-    };
-
-    collectDynamicItems();
-  }, []);
-
-  const searchIndex = useMemo(() => {
-    const project = (item: PlatformSearchItem) => ({
-      ...item,
-      searchText: `${item.label} ${item.category} ${item.description ?? ""} ${item.keywords.join(" ")}`.toLowerCase(),
-    });
-    return [
-      ...BASE_SEARCH_ITEMS.map(project), 
-      ...contentSearchItems.map(project),
-      ...dynamicSearchItems.map(project)
-    ];
-  }, [dynamicSearchItems, contentSearchItems]);
-
-  const filteredSuggestions = useMemo(() => {
-    if (!searchQuery.trim()) return searchIndex.slice(0, 6);
-    const query = searchQuery.toLowerCase();
-    return searchIndex.filter((item) => item.searchText.includes(query)).slice(0, 8);
-  }, [searchQuery, searchIndex]);
-
-  // Fetch YouTube results when query changes
-  useEffect(() => {
-    const trimmedQuery = searchQuery.trim();
-    if (!trimmedQuery || filteredSuggestions.length > 0) {
-      setYoutubeVideos([]);
-      return;
-    }
-
-    const searchYouTube = async () => {
-      setIsLoadingYouTube(true);
-      try {
-        const response = await adminApi.searchYouTube(trimmedQuery);
-        setYoutubeVideos(response.videos || []);
-      } catch (error) {
-        // Don't log sensitive error details
-        if (process.env.NODE_ENV === 'development') {
-          console.error("YouTube search error");
-        }
-        setYoutubeVideos([]);
-      } finally {
-        setIsLoadingYouTube(false);
-      }
-    };
-
-    // Debounce YouTube search
-    const timeoutId = setTimeout(() => {
-      searchYouTube();
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery, filteredSuggestions.length]);
-
-  const handleNavigate = (item: typeof searchIndex[number]) => {
-    if (item.externalUrl) {
-      window.open(item.externalUrl, "_blank", "noopener,noreferrer");
-      return;
-    }
-    if (item.routeUrl) {
-      navigate(item.routeUrl);
-      setSearchQuery("");
-      setIsSearchOpen(false);
-      return;
-    }
-    if (item.targetId) {
-      // Check if targetId is a route (starts with /)
-      if (item.targetId.startsWith("/")) {
-        navigate(item.targetId);
-        setSearchQuery("");
-        setIsSearchOpen(false);
-        return;
-      }
-      document.getElementById(item.targetId)?.scrollIntoView({ behavior: "smooth" });
-    }
-    if (item.elementId) {
-      document.getElementById(item.elementId)?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-    setSearchQuery("");
-    setIsSearchOpen(false);
-  };
-
-  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const trimmedQuery = searchQuery.trim();
-    if (!trimmedQuery) return;
-
-    const topMatch = filteredSuggestions[0];
-    if (topMatch) {
-      handleNavigate(topMatch);
-      setSearchQuery("");
-      setIsSearchOpen(false);
-    } else if (youtubeVideos.length > 0) {
-      // Play first YouTube result
-      setSelectedVideo({ id: youtubeVideos[0].id, title: youtubeVideos[0].title });
-      setSearchQuery("");
-      setIsSearchOpen(false);
-    } else {
-      // Fallback to YouTube search page
-      const youtubeSearchQuery = `nel ngabo ${trimmedQuery}`;
-      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeSearchQuery)}`, "_blank", "noopener,noreferrer");
-    setSearchQuery("");
-    setIsSearchOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isSearchOpen) {
-      searchInputRef.current?.focus();
-    } else {
-      searchInputRef.current?.blur();
-    }
-  }, [isSearchOpen]);
 
   // Attempt to ensure video autoplay on mobile after iframe loads and set HD quality
   const handleVideoIframeLoad = () => {
@@ -572,176 +309,7 @@ const Hero = () => {
         linkText={notificationLinkText}
         isVisible={isNotificationVisible && !!notificationText.trim()}
       />
-    <section className="fixed inset-0 h-screen w-full overflow-hidden border-0 bg-black z-[1]">
-      
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className={`absolute right-4 sm:right-6 ${hasNotification ? 'top-28 sm:top-32' : 'top-20'} z-[200] flex items-center gap-2 sm:gap-3 transition-all duration-300`}
-      >
-        <motion.button
-          type="button"
-          onClick={() => setIsSearchOpen((prev) => !prev)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className={`relative z-[200] flex h-10 w-10 items-center justify-center bg-black/80 backdrop-blur-sm text-white shadow-lg transition hover:bg-white/10 ${
-            isSearchOpen ? "bg-white/10" : ""
-          }`}
-          aria-label="Toggle search"
-        >
-          <Search className="h-4 w-4" strokeWidth={2.5} />
-        </motion.button>
-        <AnimatePresence>
-        {isSearchOpen && (
-            <motion.div
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: "auto" }}
-              exit={{ opacity: 0, width: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative z-[200]"
-            >
-            <form
-              onSubmit={handleSearch}
-                className="relative z-[200] flex items-center bg-black/80 px-4 py-2 text-white backdrop-blur-xl shadow-lg"
-            >
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Search anything..."
-                  className="relative z-[200] w-36 sm:w-52 bg-transparent text-xs uppercase tracking-[0.3em] text-white placeholder:text-white/30 focus:outline-none"
-                onBlur={(event) => {
-                  // delay closing to allow suggestion click
-                  setTimeout(() => {
-                    const nextTarget = event.relatedTarget as HTMLElement | null;
-                    if (!nextTarget?.classList.contains("search-suggestion")) {
-                      setIsSearchOpen(false);
-                    }
-                  }, 120);
-                }}
-              />
-            </form>
-              <AnimatePresence>
-            {filteredSuggestions.length > 0 ? (
-                  <motion.ul
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute z-[200] top-full mt-2 w-full divide-y divide-white/10 bg-black/95 text-white shadow-2xl"
-                  >
-                    {filteredSuggestions.map((item, index) => (
-                      <motion.li
-                        key={item.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                    <button
-                      type="button"
-                          className="search-suggestion relative z-[200] block w-full px-4 py-3 text-left transition hover:bg-white/10"
-                      onClick={() => {
-                        handleNavigate(item);
-                        setSearchQuery("");
-                        setIsSearchOpen(false);
-                      }}
-                    >
-                      <p className="text-[0.55rem] uppercase tracking-[0.35em] text-white/50">{item.category}</p>
-                      <p className="text-sm font-semibold tracking-wide text-white">{item.label}</p>
-                      {item.description && (
-                        <p className="text-[0.65rem] text-white/60">{item.description}</p>
-                      )}
-                    </button>
-                      </motion.li>
-                ))}
-                  </motion.ul>
-            ) : searchQuery.trim() && (
-              youtubeVideos.length > 0 ? (
-                <motion.ul
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute z-[200] top-full mt-2 w-full max-h-96 overflow-y-auto divide-y divide-white/10 border-2 border-white bg-black/95 text-white shadow-2xl"
-                >
-                  <li className="px-4 py-2 text-[0.55rem] uppercase tracking-[0.35em] text-white/50 border-b border-white/10">
-                    YouTube Results
-                  </li>
-                  {youtubeVideos.map((video, index) => (
-                    <motion.li
-                      key={video.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                    >
-                      <button
-                        type="button"
-                        className="search-suggestion relative z-[200] block w-full px-4 py-3 text-left transition hover:bg-white/10"
-                        onClick={() => {
-                          setSelectedVideo({ id: video.id, title: video.title });
-                          setSearchQuery("");
-                          setIsSearchOpen(false);
-                        }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={video.thumbnail}
-                            alt={video.title}
-                            className="w-16 h-12 object-cover rounded flex-shrink-0"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold tracking-wide text-white truncate">{video.title}</p>
-                            <p className="text-[0.65rem] text-white/60 truncate">{video.channelTitle}</p>
-                          </div>
-                          <Youtube className="h-4 w-4 text-white/40 flex-shrink-0" />
-                        </div>
-                      </button>
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              ) : isLoadingYouTube ? (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute z-[200] top-full mt-2 w-full border-2 border-white bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
-                >
-                  <p>Searching YouTube...</p>
-                </motion.div>
-              ) : (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute z-[200] top-full mt-2 w-full border-2 border-white bg-black/95 px-4 py-3 text-xs uppercase tracking-[0.25em] text-white/60 shadow-2xl"
-                    >
-                  <p>No matching content found.</p>
-                  <button
-                    type="button"
-                    className="mt-2 underline"
-                    onClick={() => {
-                      const youtubeSearchQuery = `nel ngabo ${searchQuery}`;
-                      window.open(
-                        `https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeSearchQuery)}`,
-                        "_blank",
-                        "noopener,noreferrer"
-                      );
-                      setIsSearchOpen(false);
-                      setSearchQuery("");
-                    }}
-                  >
-                    Search YouTube for Nel Ngabo music
-                  </button>
-                    </motion.div>
-              )
-            )}
-              </AnimatePresence>
-            </motion.div>
-        )}
-        </AnimatePresence>
-      </motion.div>
+    <section className="relative h-[50vh] lg:h-screen w-full overflow-hidden border-0 bg-black z-[1]">
       <div className="absolute inset-0 overflow-hidden">
         {/* Fallback background image */}
       <div
@@ -764,7 +332,7 @@ const Hero = () => {
             title="Background Video"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-black/30 z-10 pointer-events-none" />
       </div>
       <div className="relative z-20 h-full flex flex-col justify-end pb-28 sm:pb-20 md:pb-12 lg:pb-16 px-4 sm:px-6 gap-4 sm:gap-5 md:gap-6">
         <div className="flex flex-col lg:flex-row items-center lg:items-end justify-center lg:justify-between gap-4 sm:gap-5 md:gap-6 lg:gap-8 w-full">
@@ -841,14 +409,6 @@ const Hero = () => {
         </motion.div>
         </div>
       </div>
-      {selectedVideo && (
-        <YouTubePlayer
-          videoId={selectedVideo.id}
-          title={selectedVideo.title}
-          isOpen={!!selectedVideo}
-          onClose={() => setSelectedVideo(null)}
-        />
-      )}
     </section>
     </>
   );

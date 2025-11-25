@@ -20,7 +20,7 @@ const Index = () => {
     <>
       <Navbar />
       <Hero />
-      <div className="relative z-10 bg-black mt-[100vh]" style={{ background: backgroundStyle }}>
+      <div className="relative z-10 bg-black" style={{ background: backgroundStyle }}>
         <LatestAlbum />
         <AudioMusicSection />
         <LatestVideos />

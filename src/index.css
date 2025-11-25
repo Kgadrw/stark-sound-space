@@ -100,6 +100,15 @@ All colors MUST be HSL.
     font-family: "Elms Sans", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
+    /* Improve touch interactions on mobile */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Improve touch targets for mobile */
+  button, a, [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .font-default {

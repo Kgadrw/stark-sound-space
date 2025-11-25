@@ -32,7 +32,7 @@ const LatestTours = () => {
 
   if (isLoading) {
     return (
-      <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden" style={{ background: backgroundStyle }}>
+      <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden" style={{ background: backgroundStyle }}>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="mb-12 text-center">
@@ -53,7 +53,7 @@ const LatestTours = () => {
   }
 
   return (
-    <section className="relative bg-black py-24 px-4 sm:px-6 overflow-hidden" style={{ background: backgroundStyle }}>
+    <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden" style={{ background: backgroundStyle }}>
       <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
       
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -63,15 +63,15 @@ const LatestTours = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-12 text-center"
+          className="mb-8 sm:mb-12 text-center"
         >
-          <h2 className="text-4xl md:text-5xl font-normal tracking-[0.1em] text-white uppercase">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal tracking-[0.1em] text-white uppercase">
             Tours
           </h2>
         </motion.div>
 
         {/* Tours List */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {latestTours.map((tour, index) => (
             <motion.div
               key={tour.id}
@@ -79,30 +79,30 @@ const LatestTours = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group flex flex-col md:flex-row md:items-center justify-between p-6 bg-black/40 border-2 border-white/10 hover:border-white/30 transition-all duration-500 relative overflow-hidden"
+              className="group flex flex-col md:flex-row md:items-center justify-between p-4 sm:p-6 bg-black/40 border-2 border-white/10 hover:border-white/30 transition-all duration-500 relative overflow-hidden"
             >
               {/* Hover sweep effect */}
               <div className="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-700 opacity-5" />
               
               <div className="flex-1 space-y-2 mb-4 md:mb-0 relative z-10">
-                <div className="flex items-center gap-3 text-white/60">
-                  <Calendar className="w-4 h-4" />
-                  <span className="text-sm font-medium group-hover:tracking-wider transition-all duration-300">
+                <div className="flex items-center gap-2 sm:gap-3 text-white/60">
+                  <Calendar className="w-4 h-4 flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-medium group-hover:tracking-wider transition-all duration-300">
                     {formatTourDate(tour.date)}
                   </span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-normal text-white group-hover:translate-x-2 transition-transform duration-300">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-normal text-white group-hover:translate-x-2 transition-transform duration-300">
                   {tour.city}
                 </h3>
-                <div className="flex items-center gap-3 text-white/60">
-                  <MapPin className="w-4 h-4" />
-                  <span className="text-sm">{tour.venue}</span>
+                <div className="flex items-center gap-2 sm:gap-3 text-white/60">
+                  <MapPin className="w-4 h-4 flex-shrink-0" />
+                  <span className="text-xs sm:text-sm">{tour.venue}</span>
                 </div>
               </div>
               
               <Button 
                 asChild 
-                className="w-full md:w-auto relative z-10 group-hover:scale-105 transition-transform duration-300 border-white/20 text-white hover:bg-white/10 hover:border-white/40"
+                className="w-full md:w-auto relative z-10 group-hover:scale-105 transition-transform duration-300 border-white/20 text-white hover:bg-white/10 hover:border-white/40 touch-manipulation min-h-[44px] text-xs sm:text-sm"
                 variant="outline"
               >
                 <a href={tour.ticketUrl} target="_blank" rel="noopener noreferrer">

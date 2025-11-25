@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
@@ -12,6 +12,8 @@ const LatestAlbum = () => {
   const { content, isLoading } = useContent();
   const navigate = useNavigate();
   const [currentAlbumIndex, setCurrentAlbumIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const colorSettings = content.hero.colorSettings;
   const backgroundStyle = colorSettings?.colorType === "solid"
     ? colorSettings.solidColor
@@ -30,19 +32,46 @@ const LatestAlbum = () => {
 
   const handlePrevious = () => {
     if (sortedAlbums.length > 0) {
+      setIsPaused(true);
       setCurrentAlbumIndex((prev) => (prev === 0 ? sortedAlbums.length - 1 : prev - 1));
+      // Resume auto-slide after 3 seconds
+      setTimeout(() => setIsPaused(false), 3000);
     }
   };
 
   const handleNext = () => {
     if (sortedAlbums.length > 0) {
+      setIsPaused(true);
       setCurrentAlbumIndex((prev) => (prev === sortedAlbums.length - 1 ? 0 : prev + 1));
+      // Resume auto-slide after 3 seconds
+      setTimeout(() => setIsPaused(false), 3000);
     }
   };
 
+  // Auto-slide functionality
+  useEffect(() => {
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    // Only set up auto-slide if there's more than one album and not paused/loading
+    if (sortedAlbums.length > 1 && !isLoading && !isPaused) {
+      intervalRef.current = setInterval(() => {
+        setCurrentAlbumIndex((prev) => (prev === sortedAlbums.length - 1 ? 0 : prev + 1));
+      }, 5000); // Change slide every 5 seconds
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [sortedAlbums.length, isLoading, isPaused]);
+
   if (isLoading) {
     return (
-      <section className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6" style={{ background: backgroundStyle }}>
+      <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12" style={{ background: backgroundStyle }}>
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <Skeleton className="aspect-square w-full rounded-lg bg-white/10" />
@@ -67,10 +96,14 @@ const LatestAlbum = () => {
   const subtitle = titleParts[1]?.replace(/[()]/g, '') || '';
 
   return (
-    <section className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-12" style={{ background: backgroundStyle }}>
+    <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12" style={{ background: backgroundStyle }}>
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Album Content */}
-        <div className="relative flex items-center justify-center gap-4 lg:gap-8">
+        <div 
+          className="relative flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-8"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
           {/* Left Navigation Arrow */}
           {sortedAlbums.length > 1 && (
             <motion.button
@@ -78,10 +111,10 @@ const LatestAlbum = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               onClick={handlePrevious}
-              className="text-white p-2 z-10"
+              className="text-white p-3 sm:p-4 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center z-10 lg:absolute lg:left-0"
               aria-label="Previous album"
             >
-              <ChevronLeft className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12" />
+              <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10" />
             </motion.button>
           )}
 
@@ -99,17 +132,17 @@ const LatestAlbum = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}
-                className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center"
+                className="flex flex-col lg:grid lg:grid-cols-2 gap-2 sm:gap-4 lg:gap-6 items-center"
               >
                 {/* Album Cover */}
                 <motion.div
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 }}
-                  className="relative aspect-square w-full max-w-lg mx-auto"
+                  className="relative aspect-square w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto order-1 lg:order-1"
                 >
                   <div
-                    className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-pointer group"
+                    className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-pointer group touch-manipulation"
                     onClick={() => navigate(`/album/${encodeURIComponent(currentAlbum.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
                   >
                     <img
@@ -117,12 +150,6 @@ const LatestAlbum = () => {
                       alt={currentAlbum.title}
                       className="w-full h-full object-cover"
                     />
-                    {/* Parental Advisory Label */}
-                    <div className="absolute bottom-2 right-2 bg-black px-2 py-1">
-                      <p className="text-white text-[8px] sm:text-[10px] font-bold uppercase tracking-wider leading-tight">
-                        PARENTAL ADVISORY<br />EXPLICIT CONTENT
-                      </p>
-                    </div>
                   </div>
                 </motion.div>
 
@@ -131,20 +158,20 @@ const LatestAlbum = () => {
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  className="space-y-6 lg:space-y-8"
+                  className="space-y-4 sm:space-y-6 lg:space-y-8 w-full order-2 lg:order-2"
                 >
                   {/* Album Title */}
-                  <div className="space-y-2">
-                    <h2 className="text-white font-bold text-3xl sm:text-4xl lg:text-5xl xl:text-6xl uppercase tracking-tight leading-tight" style={{ fontFamily: 'sans-serif' }}>
+                  <div className="space-y-1 sm:space-y-2">
+                    <h2 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl uppercase tracking-tight leading-tight" style={{ fontFamily: 'sans-serif' }}>
                       {mainTitle || currentAlbum.title}
                     </h2>
                     {subtitle && (
-                      <h3 className="text-white font-bold text-2xl sm:text-3xl lg:text-4xl xl:text-5xl uppercase tracking-tight leading-tight" style={{ fontFamily: 'sans-serif' }}>
+                      <h3 className="text-white font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl uppercase tracking-tight leading-tight" style={{ fontFamily: 'sans-serif' }}>
                         ({subtitle})
                       </h3>
                     )}
                     {currentAlbum.year && (
-                      <p className="text-white/60 text-sm sm:text-base uppercase tracking-wider mt-2">
+                      <p className="text-white/60 text-xs sm:text-sm md:text-base uppercase tracking-wider mt-2">
                         {currentAlbum.year}
                       </p>
                     )}
@@ -159,12 +186,12 @@ const LatestAlbum = () => {
 
                   {/* Streaming Platform Links */}
                   {currentAlbum.links && currentAlbum.links.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-2">
                       {currentAlbum.links.map((link, linkIndex) => (
                         <Button
                           key={link.id || linkIndex}
                           asChild
-                          className="bg-transparent text-white border border-white rounded-full px-4 py-2 text-sm font-medium transition-all duration-200"
+                          className="bg-transparent text-white border border-white rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all duration-200 touch-manipulation min-h-[44px]"
                         >
                           <a
                             href={link.url}
@@ -183,7 +210,7 @@ const LatestAlbum = () => {
                   {/* View Album Button */}
                   <Button
                     onClick={() => navigate(`/album/${encodeURIComponent(currentAlbum.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
-                    className="bg-transparent text-white border border-white rounded-full px-6 py-2 text-sm font-medium transition-all duration-200"
+                    className="bg-transparent text-white border border-white rounded-full px-4 sm:px-6 py-3 sm:py-2 text-xs sm:text-sm font-medium transition-all duration-200 touch-manipulation min-h-[44px] w-full sm:w-auto"
                   >
                     View Album
                   </Button>
@@ -199,10 +226,10 @@ const LatestAlbum = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               onClick={handleNext}
-              className="text-white p-2 z-10"
+              className="text-white p-3 sm:p-4 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center z-10 lg:absolute lg:right-0"
               aria-label="Next album"
             >
-              <ChevronRight className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12" />
+              <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10" />
             </motion.button>
           )}
         </div>

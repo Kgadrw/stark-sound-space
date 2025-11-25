@@ -74,98 +74,89 @@ const Footer = () => {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="bg-black text-white py-8 relative"
+        className="bg-black text-white relative"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Icons and Copyright - Centered together */}
-          <div className="flex flex-col items-center justify-center gap-6">
-            {/* KINA MUSIC Logo */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.05 }}
-              className="flex items-center justify-center mb-1"
-            >
-              <img 
-                src="/kinamusic.png" 
-                alt="KINA MUSIC" 
-                className="h-10 md:h-12 lg:h-14 w-auto"
-              />
-            </motion.div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
+          {/* Logo in Center */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="flex justify-center mb-6 sm:mb-8"
+          >
+            <img 
+              src="/kinamusic.png" 
+              alt="KINA MUSIC" 
+              className="h-10 sm:h-12 lg:h-14 w-auto"
+            />
+          </motion.div>
 
-            {/* Social Icons */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="flex space-x-3 items-center"
-            >
-              {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
-                <motion.a
-                  key={id || index}
-                  href={href}
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 + index * 0.05, type: "spring" }}
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="w-10 h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
-                  aria-label={label}
-                >
-                  <Icon className="w-5 h-5" />
-                </motion.a>
-              ))}
-              
-              {/* Email Icon */}
+          {/* Copyright and Links - Single Line */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-center mb-6 sm:mb-8"
+          >
+            <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-white/60">
+              <span>© 2025 NEL NGABO</span>
+              <span className="text-white/40">|</span>
+              <span>ALL RIGHTS RESERVED</span>
+              <span className="text-white/40">|</span>
+              <a
+                href="https://linktr.ee/gadkalisa?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGn0PLsFLZd2YSLpgDw_dOAn18oaBArs7i4qZjbp8TsHDNhIw4mxMo_ffRcGFY_aem_jjk3dfEQVikEqOTBnZsaGQ&brid=NIusz0WLIVMiYQakpSSWLA"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white/80 transition-colors"
+              >
+                <span className="chewy-regular">powered by kgad</span>
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Social Icons at Bottom */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="flex flex-wrap justify-center gap-3 sm:gap-4"
+          >
+            {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
               <motion.a
-                href="mailto:nelngabo1@gmail.com"
+                key={id || index}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, scale: 0 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.1 + socialLinks.length * 0.05, type: "spring" }}
-                whileHover={{ scale: 1.2, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center"
-                aria-label="Email"
+                transition={{ delay: 0.3 + index * 0.05, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.15, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-10 sm:w-11 sm:h-11 lg:w-9 lg:h-9 rounded-full border border-white/20 hover:border-white hover:bg-white/10 backdrop-blur-sm transition-all duration-300 flex items-center justify-center touch-manipulation group"
+                aria-label={label}
               >
-                <Mail className="w-5 h-5" />
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-4 lg:h-4 text-white/80 group-hover:text-white transition-colors" />
               </motion.a>
-            </motion.div>
-
-            {/* Copyright */}
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+            ))}
+            <motion.a
+              href="mailto:nelngabo1@gmail.com"
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-xs text-gray-400 whitespace-nowrap"
+              transition={{ delay: 0.3 + socialLinks.length * 0.05, type: "spring", stiffness: 200 }}
+              whileHover={{ scale: 1.15, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-10 h-10 sm:w-11 sm:h-11 lg:w-9 lg:h-9 rounded-full border border-white/20 hover:border-white hover:bg-white/10 backdrop-blur-sm transition-all duration-300 flex items-center justify-center touch-manipulation group"
+              aria-label="Email"
             >
-              © 2025 NEL NGABO. ALL RIGHTS RESERVED.
-            </motion.p>
-          </div>
+              <Mail className="w-4 h-4 sm:w-5 sm:h-5 lg:w-4 lg:h-4 text-white/80 group-hover:text-white transition-colors" />
+            </motion.a>
+          </motion.div>
         </div>
-        
-        {/* Powered by kgad - Bottom Right */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="absolute bottom-4 right-4 sm:right-6"
-        >
-          <a
-            href="https://linktr.ee/gadkalisa?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGn0PLsFLZd2YSLpgDw_dOAn18oaBArs7i4qZjbp8TsHDNhIw4mxMo_ffRcGFY_aem_jjk3dfEQVikEqOTBnZsaGQ&brid=NIusz0WLIVMiYQakpSSWLA"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-white/40 flex items-center gap-1 group"
-          >
-            <span>powered by</span>
-            <span className="chewy-regular text-white/60 group-hover:text-white transition-colors">kgad</span>
-          </a>
-        </motion.div>
       </motion.footer>
     </>
   );
