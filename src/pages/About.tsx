@@ -42,17 +42,6 @@ const About = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
         
         <div className="relative z-10 max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 md:mb-16"
-          >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold tracking-[0.2em] md:tracking-[0.3em] text-white uppercase">
-              ABOUT
-            </h1>
-          </motion.div>
-
           <div className="grid lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12">
             {/* Left Column - Main Content */}
             <motion.div

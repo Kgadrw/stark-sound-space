@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 const AudioMusicSection = () => {
   const { content, isLoading } = useContent();
   const [currentAudioIndex, setCurrentAudioIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
   const colorSettings = content.hero.colorSettings;
   const backgroundStyle = colorSettings?.colorType === "solid"
     ? colorSettings.solidColor
@@ -38,6 +40,35 @@ const AudioMusicSection = () => {
     }
   };
 
+  // Touch handlers for swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50; // Minimum distance for a swipe
+    
+    if (Math.abs(distance) > minSwipeDistance) {
+      if (distance > 0) {
+        // Swipe left - next
+        handleNext();
+      } else {
+        // Swipe right - previous
+        handlePrevious();
+      }
+    }
+    
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
   if (isLoading) {
     return (
       <section id="audio-music" className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12" style={{ background: backgroundStyle }}>
@@ -60,14 +91,22 @@ const AudioMusicSection = () => {
 
   // Split title into main title and subtitle if it contains parentheses
   const titleParts = currentAudio.title.split(/(\([^)]+\))/);
-  const mainTitle = titleParts[0].trim();
+  let mainTitle = titleParts[0].trim();
   const subtitle = titleParts[1]?.replace(/[()]/g, '') || '';
+  
+  // Remove "by Nelngabo" or "by NEL NGABO" from title
+  mainTitle = mainTitle.replace(/\s*by\s+nel\s*ngabo/gi, '').trim();
 
   return (
     <section id="audio-music" className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12" style={{ background: backgroundStyle }}>
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Mobile: Stack vertically, Desktop: Side by side */}
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-16 items-center">
+        <div 
+          className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-16 items-center"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Left Side - Text Content */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -93,11 +132,11 @@ const AudioMusicSection = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="space-y-1 sm:space-y-2 px-4 sm:px-6 lg:px-8"
             >
-              <h2 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl uppercase tracking-tight leading-tight" style={{ fontFamily: 'sans-serif' }}>
+              <h2 className="text-white font-thin text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl uppercase tracking-[0.3em] leading-tight" style={{ fontFamily: 'sans-serif' }}>
                 {mainTitle || currentAudio.title || 'Untitled'}
               </h2>
               {subtitle && (
-                <h3 className="text-white font-bold text-xl sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl uppercase tracking-tight leading-tight" style={{ fontFamily: 'sans-serif' }}>
+                <h3 className="text-white font-thin text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl uppercase tracking-[0.3em] leading-tight" style={{ fontFamily: 'sans-serif' }}>
                   ({subtitle})
                 </h3>
               )}

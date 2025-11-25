@@ -14,6 +14,8 @@ const LatestAlbum = () => {
   const [currentAlbumIndex, setCurrentAlbumIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
   const colorSettings = content.hero.colorSettings;
   const backgroundStyle = colorSettings?.colorType === "solid"
     ? colorSettings.solidColor
@@ -46,6 +48,35 @@ const LatestAlbum = () => {
       // Resume auto-slide after 3 seconds
       setTimeout(() => setIsPaused(false), 3000);
     }
+  };
+
+  // Touch handlers for swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50; // Minimum distance for a swipe
+    
+    if (Math.abs(distance) > minSwipeDistance) {
+      if (distance > 0) {
+        // Swipe left - next
+        handleNext();
+      } else {
+        // Swipe right - previous
+        handlePrevious();
+      }
+    }
+    
+    touchStartX.current = null;
+    touchEndX.current = null;
   };
 
   // Auto-slide functionality
@@ -103,6 +134,9 @@ const LatestAlbum = () => {
           className="relative flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-8"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           {/* Left Navigation Arrow */}
           {sortedAlbums.length > 1 && (
