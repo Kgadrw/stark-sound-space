@@ -105,23 +105,23 @@ const Hero = () => {
       const attemptPlay = (delay: number) => {
         setTimeout(() => {
           try {
-            // Set HD quality - use 'highres' for highest available quality, 'hd1080' as fallback
-            videoIframeRef.current?.contentWindow?.postMessage(
-              JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['highres'] }),
-              '*'
-            );
-            // Fallback to hd1080 if highres is not available
-            setTimeout(() => {
-              videoIframeRef.current?.contentWindow?.postMessage(
-                JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
+            if (videoIframeRef.current?.contentWindow) {
+              // Mute first (required for autoplay)
+              videoIframeRef.current.contentWindow.postMessage(
+                JSON.stringify({ event: 'command', func: 'mute', args: '' }),
                 '*'
               );
-            }, 100);
-            // Try to trigger play via YouTube iframe API
-            videoIframeRef.current?.contentWindow?.postMessage(
-              JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
-              '*'
-            );
+              // Set HD quality
+              videoIframeRef.current.contentWindow.postMessage(
+                JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['highres'] }),
+                '*'
+              );
+              // Play video
+              videoIframeRef.current.contentWindow.postMessage(
+                JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
+                '*'
+              );
+            }
           } catch (e) {
             // Silent fail
           }
@@ -129,6 +129,8 @@ const Hero = () => {
       };
       
       // Try multiple times with increasing delays for better mobile compatibility
+      attemptPlay(100);
+      attemptPlay(300);
       attemptPlay(500);
       attemptPlay(1000);
       attemptPlay(2000);
@@ -143,18 +145,16 @@ const Hero = () => {
     const handleUserInteraction = () => {
       if (videoIframeRef.current?.contentWindow) {
         try {
-          // Set HD quality - use 'highres' for highest available quality
+          // Mute first (required for autoplay)
+          videoIframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'mute', args: '' }),
+            '*'
+          );
+          // Set HD quality
           videoIframeRef.current.contentWindow.postMessage(
             JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['highres'] }),
             '*'
           );
-          // Fallback to hd1080
-          setTimeout(() => {
-            videoIframeRef.current?.contentWindow?.postMessage(
-              JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }),
-              '*'
-            );
-          }, 100);
           // Play video
           videoIframeRef.current.contentWindow.postMessage(
             JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
@@ -176,6 +176,45 @@ const Hero = () => {
     return () => {
       document.removeEventListener('touchstart', handleUserInteraction);
       document.removeEventListener('click', handleUserInteraction);
+    };
+  }, [heroVideoUrl]);
+
+  // Additional effect to continuously try to play the video
+  useEffect(() => {
+    if (!heroVideoUrl || !videoIframeRef.current?.contentWindow) return;
+
+    const tryPlay = () => {
+      try {
+        if (videoIframeRef.current?.contentWindow) {
+          videoIframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'mute', args: '' }),
+            '*'
+          );
+          videoIframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
+            '*'
+          );
+        }
+      } catch (e) {
+        // Silent fail
+      }
+    };
+
+    // Try to play immediately
+    tryPlay();
+    
+    // Retry every 2 seconds for the first 10 seconds
+    const interval = setInterval(() => {
+      tryPlay();
+    }, 2000);
+
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
     };
   }, [heroVideoUrl]);
 
