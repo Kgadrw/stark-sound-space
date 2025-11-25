@@ -572,7 +572,7 @@ const Hero = () => {
         linkText={notificationLinkText}
         isVisible={isNotificationVisible && !!notificationText.trim()}
       />
-    <section className="relative h-[50vh] lg:h-screen w-full overflow-hidden border-0 bg-black z-[1]">
+    <section className="relative h-[50vh] lg:h-screen w-full overflow-hidden border-0 bg-black/[0.3]">
       <div className="absolute inset-0 overflow-hidden">
         {/* Fallback background image */}
       <div
@@ -595,7 +595,7 @@ const Hero = () => {
             title="Background Video"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/0 to-transparent z-0 pointer-events-none" />
       </div>
       <div className="relative z-20 h-full flex flex-col justify-end pb-12 lg:pb-16 px-4 sm:px-6">
         <motion.div
