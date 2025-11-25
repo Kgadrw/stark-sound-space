@@ -235,7 +235,6 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
       searchText: `${item.label} ${item.category} ${item.description ?? ""} ${item.keywords.join(" ")}`.toLowerCase(),
     });
     return [
-      ...BASE_SEARCH_ITEMS.map(project), 
       ...contentSearchItems.map(project),
       ...dynamicSearchItems.map(project)
     ];
