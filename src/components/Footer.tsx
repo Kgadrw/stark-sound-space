@@ -78,19 +78,19 @@ const Footer = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
           {/* Logo in Center */}
-          <motion.div
+            <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
             transition={{ delay: 0.1 }}
             className="flex justify-center mb-6 sm:mb-8"
-          >
-            <img 
-              src="/kinamusic.png" 
-              alt="KINA MUSIC" 
+            >
+              <img 
+                src="/kinamusic.png" 
+                alt="KINA MUSIC" 
               className="h-10 sm:h-12 lg:h-14 w-auto"
-            />
-          </motion.div>
+              />
+            </motion.div>
 
           {/* Copyright and Links - Single Line */}
           <motion.div
@@ -117,17 +117,17 @@ const Footer = () => {
           </motion.div>
 
           {/* Social Icons at Bottom */}
-          <motion.div
+            <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
             transition={{ delay: 0.3 }}
             className="flex flex-wrap justify-center gap-3 sm:gap-4"
-          >
-            {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
-              <motion.a
-                key={id || index}
-                href={href}
+            >
+              {socialLinks.map(({ id, href, icon: Icon, label }, index) => (
+                <motion.a
+                  key={id || index}
+                  href={href}
                 target="_blank"
                 rel="noopener noreferrer"
                 initial={{ opacity: 0, scale: 0 }}
