@@ -65,42 +65,6 @@ type YouTubeVideo = {
   publishedAt: string;
 };
 
-const BASE_SEARCH_ITEMS: PlatformSearchItem[] = [
-  {
-    id: "section-music",
-    label: "Music Catalog",
-    category: "Section",
-    targetId: "music",
-    routeUrl: "/music",
-    description: "Explore every album and track released so far.",
-    keywords: ["music", "albums", "tracks", "discography"],
-  },
-  {
-    id: "section-videos",
-    label: "Videos",
-    category: "Section",
-    routeUrl: "/videos",
-    description: "Watch music videos and performances.",
-    keywords: ["videos", "music videos", "performances", "youtube"],
-  },
-  {
-    id: "section-about",
-    label: "About",
-    category: "Section",
-    routeUrl: "/about",
-    description: "Learn more about the artist and their journey.",
-    keywords: ["about", "artist", "biography", "info"],
-  },
-  {
-    id: "section-tours",
-    label: "Upcoming Tours",
-    category: "Section",
-    routeUrl: "/tours",
-    description: "See the full schedule and get tickets.",
-    keywords: ["tour", "tickets", "schedule", "live"],
-  },
-];
-
 const Navbar = ({ variant = "frontend" }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
