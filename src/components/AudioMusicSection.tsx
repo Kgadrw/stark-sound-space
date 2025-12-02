@@ -1,23 +1,19 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Play } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 
 const AudioMusicSection = () => {
   const { content, isLoading } = useContent();
-  const [currentAudioIndex, setCurrentAudioIndex] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
   
   // Sort audios by createdAt (newest first)
   const audios = [...content.audios].sort((a, b) => {
@@ -26,19 +22,114 @@ const AudioMusicSection = () => {
     return dateB - dateA; // Descending order (newest first)
   });
 
-  const currentAudio = audios[currentAudioIndex];
+  // Calculate number of pages based on items and viewport
+  const cardWidth = 300; // sm:w-[300px]
+  const gap = 24; // gap-6 = 24px
+  const cardWithGap = cardWidth + gap;
+  
+  const calculatePages = () => {
+    if (!scrollContainerRef.current || audios.length === 0) return 1;
+    const containerWidth = scrollContainerRef.current.clientWidth;
+    const itemsPerPage = Math.max(1, Math.floor(containerWidth / cardWithGap));
+    return Math.ceil(audios.length / itemsPerPage);
+  };
 
-  const handlePrevious = () => {
-    if (audios.length > 0) {
-      setCurrentAudioIndex((prev) => (prev === 0 ? audios.length - 1 : prev - 1));
+  const [totalPages, setTotalPages] = useState(1);
+
+  // Update total pages when container size changes
+  useEffect(() => {
+    const updatePages = () => {
+      if (scrollContainerRef.current) {
+        const pages = calculatePages();
+        setTotalPages(pages);
+      }
+    };
+    
+    // Small delay to ensure container is rendered
+    const timeoutId = setTimeout(updatePages, 100);
+    window.addEventListener('resize', updatePages);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', updatePages);
+    };
+  }, [audios.length]);
+
+  // Update current page based on scroll position
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container || totalPages <= 1) return;
+
+    const updateCurrentPage = () => {
+      if (!container) return;
+      const scrollLeft = container.scrollLeft;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      const scrollPercentage = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+      const page = Math.round(scrollPercentage * (totalPages - 1));
+      setCurrentPage(Math.min(Math.max(0, page), totalPages - 1));
+    };
+
+    container.addEventListener('scroll', updateCurrentPage);
+    updateCurrentPage(); // Initial update
+    
+    return () => container.removeEventListener('scroll', updateCurrentPage);
+  }, [totalPages]);
+
+  const scroll = (direction: 'left' | 'right' | number) => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = cardWithGap; // Width of one card + gap
+      const currentScroll = scrollContainerRef.current.scrollLeft;
+      const maxScroll = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
+      let targetScroll;
+      
+      if (typeof direction === 'number') {
+        // Jump to specific page
+        if (totalPages > 1 && maxScroll > 0) {
+          targetScroll = (direction / (totalPages - 1)) * maxScroll;
+        } else {
+          targetScroll = 0;
+        }
+      } else if (direction === 'left') {
+        targetScroll = currentScroll - scrollAmount;
+        // If at the start, loop to the end
+        if (targetScroll < 0) {
+          targetScroll = maxScroll;
+        }
+      } else {
+        targetScroll = currentScroll + scrollAmount;
+        // If at the end, loop to the start
+        if (targetScroll >= maxScroll) {
+          targetScroll = 0;
+        }
+      }
+      
+      scrollContainerRef.current.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+      });
     }
   };
 
-  const handleNext = () => {
-    if (audios.length > 0) {
-      setCurrentAudioIndex((prev) => (prev === audios.length - 1 ? 0 : prev + 1));
+  // Auto-slide functionality
+  useEffect(() => {
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
-  };
+
+    // Only set up auto-slide if there's more than one audio and not paused/loading
+    if (audios.length > 1 && !isLoading && !isPaused) {
+      intervalRef.current = setInterval(() => {
+        scroll('right');
+      }, 5000); // Change slide every 5 seconds
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [audios.length, isLoading, isPaused]);
 
   // Touch handlers for swipe
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -50,18 +141,16 @@ const AudioMusicSection = () => {
   };
 
   const handleTouchEnd = () => {
-    if (!touchStartX.current || !touchEndX.current) return;
+    if (!touchStartX.current || !touchEndX.current || !scrollContainerRef.current) return;
     
     const distance = touchStartX.current - touchEndX.current;
-    const minSwipeDistance = 50; // Minimum distance for a swipe
+    const minSwipeDistance = 50;
     
     if (Math.abs(distance) > minSwipeDistance) {
       if (distance > 0) {
-        // Swipe left - next
-        handleNext();
+        scroll('right');
       } else {
-        // Swipe right - previous
-        handlePrevious();
+        scroll('left');
       }
     }
     
@@ -71,15 +160,14 @@ const AudioMusicSection = () => {
 
   if (isLoading) {
     return (
-      <section id="audio-music" className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12" style={{ background: backgroundStyle }}>
-        <div className="relative z-10 w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-          <div className="space-y-6">
-            <Skeleton className="h-8 w-32 bg-white/10" />
-            <Skeleton className="h-16 w-64 bg-white/10" />
-            <Skeleton className="h-6 w-48 bg-white/10" />
-            <Skeleton className="h-12 w-24 bg-white/10" />
+      <section id="audio-music" className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
+        <div className="relative z-10 w-full max-w-7xl mx-auto">
+          <Skeleton className="h-8 w-32 bg-white/10 mb-8" />
+          <div className="flex gap-4 overflow-hidden">
+            {[...Array(6)].map((_, i) => (
+              <Skeleton key={i} className="w-[280px] flex-shrink-0 aspect-square rounded-lg bg-white/10" />
+            ))}
           </div>
-          <Skeleton className="aspect-square w-full rounded-lg bg-white/10" />
         </div>
       </section>
     );
@@ -89,8 +177,36 @@ const AudioMusicSection = () => {
     return null;
   }
 
+  return (
+    <section id="audio-music" className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
+      <div className="relative z-10 w-full max-w-7xl mx-auto">
+        {/* Section Title */}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl uppercase tracking-wider mb-8 sm:mb-12"
+          style={{ fontFamily: 'sans-serif' }}
+        >
+          MUSIC
+        </motion.h2>
+
+        {/* Scrollable Container */}
+        <div className="relative">
+          {/* Horizontal Scroll Container */}
+          <div
+            ref={scrollContainerRef}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {audios.map((audio, index) => {
   // Split title into main title and subtitle if it contains parentheses
-  const titleParts = currentAudio.title.split(/(\([^)]+\))/);
+              const titleParts = audio.title.split(/(\([^)]+\))/);
   let mainTitle = titleParts[0].trim();
   const subtitle = titleParts[1]?.replace(/[()]/g, '') || '';
   
@@ -98,140 +214,75 @@ const AudioMusicSection = () => {
   mainTitle = mainTitle.replace(/\s*by\s+nel\s*ngabo/gi, '').trim();
 
   return (
-    <section id="audio-music" className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12" style={{ background: backgroundStyle }}>
-      <div className="relative z-10 w-full max-w-7xl mx-auto">
-        {/* Mobile: Stack vertically, Desktop: Side by side */}
-        <div 
-          className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-16 items-center"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          {/* Left Side - Text Content */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="w-full space-y-4 sm:space-y-6 lg:space-y-12 order-2 lg:order-1"
-          >
-            {/* MUSIC Label */}
-            <motion.h1
+                  key={audio.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-white font-bold text-xl sm:text-2xl lg:text-4xl uppercase tracking-wider"
-              style={{ fontFamily: 'sans-serif' }}
-            >
-              MUSIC
-            </motion.h1>
-
-            {/* Song Title */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="space-y-1 sm:space-y-2 px-4 sm:px-6 lg:px-8"
-            >
-              <h2 className="text-white font-thin text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl uppercase tracking-[0.3em] leading-tight" style={{ fontFamily: 'sans-serif' }}>
-                {mainTitle || currentAudio.title || 'Untitled'}
-              </h2>
-              {subtitle && (
-                <h3 className="text-white font-thin text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl uppercase tracking-[0.3em] leading-tight" style={{ fontFamily: 'sans-serif' }}>
-                  ({subtitle})
-                </h3>
-              )}
-            </motion.div>
-
-            {/* Listen Now Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.4 }}
-              className="px-4 sm:px-6 lg:px-8 mt-4 sm:mt-6"
-            >
-              {currentAudio.link ? (
-                <Button
-                  asChild
-                  className="bg-white text-black hover:bg-white/90 rounded-full px-6 sm:px-8 py-3 sm:py-3 text-sm sm:text-base font-semibold transition-all duration-200 touch-manipulation min-h-[44px] flex items-center gap-2 w-full sm:w-auto"
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="flex-shrink-0 w-[280px] sm:w-[300px]"
                 >
-                  <a
-                    href={currentAudio.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <Play className="h-4 w-4 sm:h-5 sm:w-5 fill-current" />
-                    <span>Listen Now</span>
-                  </a>
-                </Button>
-              ) : (
-                <Button
+                  {/* Album Cover */}
+                  <div className="relative aspect-square w-full mb-4 group">
+                    <div
+                      className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-pointer border-2 border-white"
                   onClick={() => {
-                    if (currentAudio.link) {
-                      window.open(currentAudio.link, '_blank', 'noopener,noreferrer');
-                    }
-                  }}
-                  className="bg-white text-black hover:bg-white/90 rounded-full px-6 sm:px-8 py-3 sm:py-3 text-sm sm:text-base font-semibold transition-all duration-200 touch-manipulation min-h-[44px] flex items-center gap-2 w-full sm:w-auto"
-                >
-                  <Play className="h-4 w-4 sm:h-5 sm:w-5 fill-current" />
-                  <span>Listen Now</span>
-                </Button>
-              )}
-            </motion.div>
-
-            {/* Navigation Arrows */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex items-center gap-3 sm:gap-4"
-            >
-              <button
-                onClick={handlePrevious}
-                className="text-white p-3 sm:p-4 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
-                aria-label="Previous audio"
-              >
-                <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8" />
-              </button>
-              <button
-                onClick={handleNext}
-                className="text-white p-3 sm:p-4 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
-                aria-label="Next audio"
-              >
-                <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
-              </button>
-            </motion.div>
-          </motion.div>
-
-          {/* Right Side - Audio Cover */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative aspect-square w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto order-1 lg:order-2"
-          >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentAudio.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.4 }}
-              className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-pointer group touch-manipulation"
-              onClick={() => {
-                if (currentAudio.link) {
-                  window.open(currentAudio.link, '_blank', 'noopener,noreferrer');
+                        if (audio.link) {
+                          window.open(audio.link, '_blank', 'noopener,noreferrer');
                 }
               }}
             >
               <img
-                src={currentAudio.image}
-                alt={currentAudio.title || "Audio"}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
+                        src={audio.image}
+                        alt={audio.title || "Audio"}
+                        className="w-full h-full object-cover"
+                      />
+                      
+                      {/* Play Button - Bottom Right */}
+                      <div className="absolute bottom-3 right-3 z-10">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (audio.link) {
+                              window.open(audio.link, '_blank', 'noopener,noreferrer');
+                            }
+                          }}
+                          className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-black/90 transition-all duration-200 touch-manipulation shadow-lg"
+                          aria-label="Play audio"
+                        >
+                          <Play className="h-5 w-5 text-white fill-white ml-0.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Title Below Cover */}
+                  <div className="px-1">
+                    <h3 className="text-white/90 font-medium text-sm sm:text-base uppercase tracking-wide line-clamp-1">
+                      {mainTitle || audio.title || 'Untitled'}
+                    </h3>
+                  </div>
             </motion.div>
-          </AnimatePresence>
-        </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Pagination Dots */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-6">
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => scroll(index)}
+                  className={`transition-all duration-300 rounded-full touch-manipulation ${
+                    currentPage === index
+                      ? 'w-2.5 h-2.5 bg-white'
+                      : 'w-2 h-2 bg-white/40 hover:bg-white/60'
+                  }`}
+                  aria-label={`Go to page ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

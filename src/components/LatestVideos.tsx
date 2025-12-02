@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, ChevronLeft, ChevronRight } from "lucide-react";
+import { Play } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,6 +13,8 @@ const LatestVideos = () => {
   const { content, isLoading } = useContent();
   const navigate = useNavigate();
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const colorSettings = content.hero.colorSettings;
   const backgroundStyle = colorSettings?.colorType === "solid"
     ? colorSettings.solidColor
@@ -35,15 +37,42 @@ const LatestVideos = () => {
 
   const handlePrevious = () => {
     if (latestVideos.length > 0) {
+      setIsPaused(true);
       setCurrentVideoIndex((prev) => (prev === 0 ? latestVideos.length - 1 : prev - 1));
+      // Resume auto-slide after 3 seconds
+      setTimeout(() => setIsPaused(false), 3000);
     }
   };
 
   const handleNext = () => {
     if (latestVideos.length > 0) {
+      setIsPaused(true);
       setCurrentVideoIndex((prev) => (prev === latestVideos.length - 1 ? 0 : prev + 1));
+      // Resume auto-slide after 3 seconds
+      setTimeout(() => setIsPaused(false), 3000);
     }
   };
+
+  // Auto-slide functionality
+  useEffect(() => {
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    // Only set up auto-slide if there's more than one video and not paused/loading
+    if (latestVideos.length > 1 && !isLoading && !isPaused) {
+      intervalRef.current = setInterval(() => {
+        setCurrentVideoIndex((prev) => (prev === latestVideos.length - 1 ? 0 : prev + 1));
+      }, 5000); // Change slide every 5 seconds
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [latestVideos.length, isLoading, isPaused]);
 
   if (isLoading) {
     return (
@@ -106,25 +135,17 @@ const LatestVideos = () => {
         </motion.div>
 
         {/* Video Player Section */}
-        <div className="relative flex items-center justify-center gap-2 sm:gap-4 lg:gap-8">
-          {/* Left Navigation Arrow */}
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            onClick={handlePrevious}
-            className="text-white p-2 sm:p-3 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center z-10"
-            aria-label="Previous video"
-          >
-            <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10" />
-          </motion.button>
-
+        <div 
+          className="relative flex items-center justify-center"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
           {/* Video Player */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative w-full max-w-[95vw] sm:max-w-4xl aspect-video rounded-lg overflow-hidden group cursor-pointer touch-manipulation"
+            className="relative w-full max-w-full sm:max-w-4xl aspect-video rounded-lg overflow-hidden group cursor-pointer touch-manipulation"
             onClick={() => navigate(`/video/${encodeURIComponent(currentVideo.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
           >
             <AnimatePresence mode="wait">
@@ -161,18 +182,6 @@ const LatestVideos = () => {
               </motion.div>
             </AnimatePresence>
           </motion.div>
-
-          {/* Right Navigation Arrow */}
-          <motion.button
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            onClick={handleNext}
-            className="text-white p-2 sm:p-3 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center z-10"
-            aria-label="Next video"
-          >
-            <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10" />
-          </motion.button>
         </div>
 
         {/* Video Title */}
