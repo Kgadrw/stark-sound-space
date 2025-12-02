@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play } from "lucide-react";
+import { Play, ChevronLeft, ChevronRight } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,6 +14,7 @@ const LatestVideos = () => {
   const navigate = useNavigate();
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const colorSettings = content.hero.colorSettings;
   const backgroundStyle = colorSettings?.colorType === "solid"
@@ -53,15 +54,27 @@ const LatestVideos = () => {
     }
   };
 
-  // Auto-slide functionality
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640); // sm breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Auto-slide functionality (desktop only)
   useEffect(() => {
     // Clear any existing interval
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
 
-    // Only set up auto-slide if there's more than one video and not paused/loading
-    if (latestVideos.length > 1 && !isLoading && !isPaused) {
+    // Only set up auto-slide on desktop if there's more than one video and not paused/loading
+    if (!isMobile && latestVideos.length > 1 && !isLoading && !isPaused) {
       intervalRef.current = setInterval(() => {
         setCurrentVideoIndex((prev) => (prev === latestVideos.length - 1 ? 0 : prev + 1));
       }, 5000); // Change slide every 5 seconds
@@ -72,7 +85,7 @@ const LatestVideos = () => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [latestVideos.length, isLoading, isPaused]);
+  }, [latestVideos.length, isLoading, isPaused, isMobile]);
 
   if (isLoading) {
     return (
@@ -136,10 +149,24 @@ const LatestVideos = () => {
 
         {/* Video Player Section */}
         <div 
-          className="relative flex items-center justify-center"
+          className="relative flex items-center justify-center gap-2 sm:gap-4 lg:gap-8"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
+          {/* Left Navigation Arrow - Desktop Only */}
+          {latestVideos.length > 1 && (
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              onClick={handlePrevious}
+              className="hidden sm:flex text-white p-2 sm:p-3 touch-manipulation min-w-[44px] min-h-[44px] items-center justify-center z-10"
+              aria-label="Previous video"
+            >
+              <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10" />
+            </motion.button>
+          )}
+
           {/* Video Player */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -182,6 +209,20 @@ const LatestVideos = () => {
               </motion.div>
             </AnimatePresence>
           </motion.div>
+
+          {/* Right Navigation Arrow - Desktop Only */}
+          {latestVideos.length > 1 && (
+            <motion.button
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              onClick={handleNext}
+              className="hidden sm:flex text-white p-2 sm:p-3 touch-manipulation min-w-[44px] min-h-[44px] items-center justify-center z-10"
+              aria-label="Next video"
+            >
+              <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10" />
+            </motion.button>
+          )}
         </div>
 
         {/* Video Title */}

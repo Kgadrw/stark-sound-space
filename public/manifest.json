@@ -1,0 +1,28 @@
+{
+  "name": "Nel Ngabo - Official Music Website",
+  "short_name": "Nel Ngabo",
+  "description": "Official website of Nel Ngabo - Rwandan music artist. Stream latest albums, watch official videos, and discover tour dates.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/nelngabo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/nelngabo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["music", "entertainment"],
+  "lang": "en",
+  "dir": "ltr"
+}
+
