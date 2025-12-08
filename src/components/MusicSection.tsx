@@ -10,12 +10,6 @@ import { useNavigate } from "react-router-dom";
 const MusicSection = () => {
   const { content, isLoading } = useContent();
   const navigate = useNavigate();
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
   
   // Sort albums by createdAt (newest first)
   const albums = [...content.albums].sort((a, b) => {
@@ -26,7 +20,7 @@ const MusicSection = () => {
 
   if (isLoading) {
     return (
-      <section id="music" className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12" style={{ background: backgroundStyle }}>
+      <section id="music" className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <Skeleton className="h-12 w-48 bg-white/10 mb-8" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
@@ -41,7 +35,7 @@ const MusicSection = () => {
 
   if (!albums.length) {
     return (
-      <section id="music" className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12" style={{ background: backgroundStyle }}>
+      <section id="music" className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -57,7 +51,7 @@ const MusicSection = () => {
   }
 
   return (
-    <section id="music" className="min-h-screen bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16" style={{ background: backgroundStyle }}>
+    <section id="music" className="min-h-screen relative overflow-hidden px-4 sm:px-6 lg:px-12 pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16">
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Albums Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">

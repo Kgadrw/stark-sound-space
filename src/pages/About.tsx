@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import { useContent } from "@/context/ContentContext";
 import { useNavigate } from "react-router-dom";
@@ -27,19 +28,21 @@ const About = () => {
     }
   `;
 
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
-
   return (
     <>
       <style>{elmsSansStyle}</style>
       <Navbar />
-      <section id="about" className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24" style={{ background: backgroundStyle }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
+      <section 
+        id="about" 
+        className="min-h-screen bg-black relative overflow-hidden pt-20 pb-2 px-4 sm:px-6 md:pt-24 md:pb-4"
+        style={{
+          backgroundImage: 'url(/background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50 z-0"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12">
@@ -228,6 +231,7 @@ const About = () => {
             </motion.div>
           </div>
         </div>
+        <Footer />
       </section>
     </>
   );

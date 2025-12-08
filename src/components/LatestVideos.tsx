@@ -16,12 +16,6 @@ const LatestVideos = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
 
   // Sort videos by createdAt (newest first) and get the latest ones
   const latestVideos = useMemo(() => {
@@ -89,7 +83,16 @@ const LatestVideos = () => {
 
   if (isLoading) {
     return (
-      <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12" style={{ background: backgroundStyle }}>
+      <section 
+        className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12"
+        style={{
+          backgroundImage: 'url(/background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
             <Skeleton className="h-12 w-32 bg-white/10" />
@@ -107,7 +110,16 @@ const LatestVideos = () => {
   }
 
   return (
-    <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-2 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12" style={{ background: backgroundStyle }}>
+    <section 
+      className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-2 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12"
+      style={{
+        backgroundImage: 'url(/background.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <div className="absolute inset-0 bg-black/50"></div>
       <div className="relative z-10 w-full max-w-7xl mx-auto space-y-6 sm:space-y-8">
         {/* Header with VIDEOS and VIEW ALL */}
         <motion.div

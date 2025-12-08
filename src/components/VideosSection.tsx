@@ -11,12 +11,6 @@ const VideosSection = () => {
   const { content, isLoading } = useContent();
   const videos = content.videos;
   const navigate = useNavigate();
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
 
   // Sort videos by createdAt (newest first)
   const sortedVideos = [...videos].sort((a, b) => {
@@ -27,7 +21,7 @@ const VideosSection = () => {
 
   if (isLoading) {
     return (
-      <section id="videos" className="min-h-screen bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16" style={{ background: backgroundStyle }}>
+      <section id="videos" className="min-h-screen relative overflow-hidden px-4 sm:px-6 lg:px-12 pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16">
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
             {[...Array(8)].map((_, i) => (
@@ -41,7 +35,7 @@ const VideosSection = () => {
 
   if (!videos.length) {
     return (
-      <section id="videos" className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12" style={{ background: backgroundStyle }}>
+      <section id="videos" className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -57,7 +51,7 @@ const VideosSection = () => {
   }
 
   return (
-    <section id="videos" className="min-h-screen bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16" style={{ background: backgroundStyle }}>
+    <section id="videos" className="min-h-screen relative overflow-hidden px-4 sm:px-6 lg:px-12 pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16">
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Videos Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">

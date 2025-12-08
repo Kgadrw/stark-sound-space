@@ -5,6 +5,7 @@ import { useContent } from "@/context/ContentContext";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const AudioMusic = () => {
   const { content, isLoading } = useContent();
@@ -18,12 +19,6 @@ const AudioMusic = () => {
   });
 
   const selectedAudioData = audios.find((audio) => audio.id === selectedAudio);
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
 
   // Get Spotify link from streaming platforms
   const streamingPlatforms = content.hero.streamingPlatforms ?? [];
@@ -33,8 +28,17 @@ const AudioMusic = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black pt-24 pb-24 px-4 sm:px-6 lg:px-8" style={{ background: backgroundStyle }}>
-        <div className="max-w-7xl mx-auto">
+      <div 
+        className="min-h-screen bg-black relative overflow-hidden pt-24 pb-24 px-4 sm:px-6 lg:px-8"
+        style={{
+          backgroundImage: 'url(/background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="relative z-10 max-w-7xl mx-auto pb-24">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -220,6 +224,7 @@ const AudioMusic = () => {
           </>
         )}
       </AnimatePresence>
+      <Footer />
     </>
   );
 };

@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { useContent } from "@/context/ContentContext";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink, Music2 } from "lucide-react";
@@ -17,13 +18,6 @@ const AlbumDetail = () => {
     const slug = encodeURIComponent(a.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
     return decodeURIComponent(id || '') === slug || id === slug;
   });
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
-
   useEffect(() => {
     if (!album && content.albums.length > 0) {
       // Album not found, redirect to music page
@@ -42,7 +36,16 @@ const AlbumDetail = () => {
     return (
       <>
         <Navbar />
-        <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24" style={{ background: backgroundStyle }}>
+        <section 
+          className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24"
+          style={{
+            backgroundImage: 'url(/background.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50"></div>
           <div className="relative z-10 max-w-7xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -56,6 +59,7 @@ const AlbumDetail = () => {
               </Button>
             </motion.div>
           </div>
+          <Footer />
         </section>
       </>
     );
@@ -74,8 +78,16 @@ const AlbumDetail = () => {
     <>
       <style>{orbitronStyle}</style>
       <Navbar />
-      <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24" style={{ background: backgroundStyle }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
+      <section 
+        className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24"
+        style={{
+          backgroundImage: 'url(/background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50 z-0"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Back Button */}
@@ -204,6 +216,7 @@ const AlbumDetail = () => {
             </motion.div>
           </div>
         </div>
+        <Footer />
       </section>
     </>
   );

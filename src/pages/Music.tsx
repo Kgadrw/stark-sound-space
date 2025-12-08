@@ -1,21 +1,26 @@
 import MusicSection from "@/components/MusicSection";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { useContent } from "@/context/ContentContext";
 
 const Music = () => {
-  const { content } = useContent();
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
-
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-background" style={{ background: backgroundStyle }}>
-        <MusicSection />
+      <div 
+        className="min-h-screen bg-black relative overflow-hidden"
+        style={{
+          backgroundImage: 'url(/background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="relative z-10">
+          <MusicSection />
+          <Footer />
+        </div>
       </div>
     </>
   );

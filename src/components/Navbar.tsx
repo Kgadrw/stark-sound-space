@@ -78,6 +78,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [dynamicSearchItems, setDynamicSearchItems] = useState<PlatformSearchItem[]>([]);
@@ -85,6 +86,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
   const [isLoadingYouTube, setIsLoadingYouTube] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const lastScrollY = useRef(0);
   const { content } = useContent();
   const navigate = useNavigate();
   const navLinks = variant === "admin" ? adminNavLinks : frontendNavLinks;
@@ -107,9 +109,23 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
       setIsScrolled(scrollPosition > 50);
+      
+      // Hide navbar when scrolling up, show when scrolling down or at top
+      if (scrollPosition < 10) {
+        // Always show at the top
+        setIsVisible(true);
+      } else if (scrollPosition > lastScrollY.current) {
+        // Scrolling down - hide navbar
+        setIsVisible(false);
+      } else if (scrollPosition < lastScrollY.current) {
+        // Scrolling up - show navbar
+        setIsVisible(true);
+      }
+      
+      lastScrollY.current = scrollPosition;
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     // Check initial scroll position
     handleScroll();
 
@@ -312,15 +328,20 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
     <>
       <motion.nav
         initial={hasAnimated ? false : { y: -100, opacity: 0 }}
-        animate={hasAnimated ? false : { y: 0, opacity: 1 }}
-        transition={hasAnimated ? {} : { duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between px-6 py-4 text-white transition-all duration-300 bg-black"
+        animate={hasAnimated ? (isVisible ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }) : { y: 0, opacity: 1 }}
+        transition={hasAnimated ? { duration: 0.3, ease: "easeInOut" } : { duration: 0.5 }}
+        className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between px-6 py-4 text-white transition-all duration-300 bg-black relative"
         style={{
+          backgroundImage: 'url(/background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
           backdropFilter: isScrolled ? "blur(10px)" : "none",
         }}
       >
+        <div className="absolute inset-0 bg-black/70"></div>
         {/* Logo/Brand */}
-        <div className="flex items-center space-x-2">
+        <div className="relative z-10 flex items-center space-x-2">
           <button
             onClick={() => navigate("/")}
             className="relative cursor-pointer hover:opacity-80 transition-opacity"
@@ -335,7 +356,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-2">
+        <nav className="relative z-10 hidden md:flex items-center gap-2">
           {navLinks.map(({ to, label, icon: Icon }) => {
             const isHashLink = to.includes('#');
             const handleClick = (e: React.MouseEvent) => {
@@ -395,7 +416,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(true)}
-          className="flex items-center gap-2 text-white md:hidden touch-manipulation min-w-[44px] min-h-[44px] justify-center"
+          className="relative z-10 flex items-center gap-2 text-white md:hidden touch-manipulation min-w-[44px] min-h-[44px] justify-center"
           aria-label="Open menu"
         >
           <Menu className="h-6 w-6" />
@@ -403,7 +424,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
 
         {/* Streaming Platforms (Desktop only, frontend variant) */}
         {variant === "frontend" && visibleStreamingPlatforms.length > 0 && (
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="relative z-10 hidden lg:flex items-center gap-3">
             {visibleStreamingPlatforms.map((platform, index) => {
               const Icon = resolveIcon(platform.preset);
               const isSpotify = platform.preset === "spotify";
@@ -449,7 +470,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
 
         {/* Search Bar */}
         {variant === "frontend" && (
-          <div className="hidden md:flex items-center gap-2 relative">
+          <div className="relative z-10 hidden md:flex items-center gap-2">
             <motion.button
               type="button"
               onClick={() => setIsSearchOpen((prev) => !prev)}

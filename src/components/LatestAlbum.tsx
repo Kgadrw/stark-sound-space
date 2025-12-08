@@ -16,12 +16,6 @@ const LatestAlbum = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
   
   // Sort albums by createdAt (newest first)
   const sortedAlbums = [...content.albums].sort((a, b) => {
@@ -102,7 +96,16 @@ const LatestAlbum = () => {
 
   if (isLoading) {
     return (
-      <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12" style={{ background: backgroundStyle }}>
+      <section 
+        className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12"
+        style={{
+          backgroundImage: 'url(/background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <Skeleton className="aspect-square w-full rounded-lg bg-white/10" />
@@ -127,7 +130,16 @@ const LatestAlbum = () => {
   const subtitle = titleParts[1]?.replace(/[()]/g, '') || '';
 
   return (
-    <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12" style={{ background: backgroundStyle }}>
+    <section 
+      className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12"
+      style={{
+        backgroundImage: 'url(/background.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <div className="absolute inset-0 bg-black/50"></div>
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Album Content */}
         <div 

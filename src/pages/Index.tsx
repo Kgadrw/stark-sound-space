@@ -8,24 +8,27 @@ import Footer from "@/components/Footer";
 import { useContent } from "@/context/ContentContext";
 
 const Index = () => {
-  const { content } = useContent();
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
-
   return (
     <>
       <Navbar />
       <Hero />
-      <div className="relative z-10 bg-black" style={{ background: backgroundStyle }}>
-        <LatestAlbum />
-        <AudioMusicSection />
-        <LatestVideos />
-        <LatestTours />
-        <Footer />
+      <div 
+        className="relative z-10 bg-black"
+        style={{
+          backgroundImage: 'url(/background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="relative z-10">
+          <LatestAlbum />
+          <AudioMusicSection />
+          <LatestVideos />
+          <LatestTours />
+          <Footer />
+        </div>
       </div>
     </>
   );

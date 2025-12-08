@@ -4,20 +4,23 @@ import Navbar from "@/components/Navbar";
 import { useContent } from "@/context/ContentContext";
 
 const Tours = () => {
-  const { content } = useContent();
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
-
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-background pt-16" style={{ background: backgroundStyle }}>
-        <ToursSection />
-        <Footer />
+      <div 
+        className="min-h-screen bg-black relative overflow-hidden pt-16"
+        style={{
+          backgroundImage: 'url(/background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="relative z-10">
+          <ToursSection />
+          <Footer />
+        </div>
       </div>
     </>
   );
