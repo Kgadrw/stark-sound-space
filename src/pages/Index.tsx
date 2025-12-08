@@ -12,23 +12,12 @@ const Index = () => {
     <>
       <Navbar />
       <Hero />
-      <div 
-        className="relative z-10 bg-black"
-        style={{
-          backgroundImage: 'url(/background.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="relative z-10">
-          <LatestAlbum />
-          <AudioMusicSection />
-          <LatestVideos />
-          <LatestTours />
-          <Footer />
-        </div>
+      <div className="relative z-10 bg-black">
+        <LatestAlbum />
+        <AudioMusicSection />
+        <LatestVideos />
+        <LatestTours />
+        <Footer />
       </div>
     </>
   );

@@ -32,18 +32,7 @@ const About = () => {
     <>
       <style>{elmsSansStyle}</style>
       <Navbar />
-      <section 
-        id="about" 
-        className="min-h-screen bg-black relative overflow-hidden pt-20 pb-2 px-4 sm:px-6 md:pt-24 md:pb-4"
-        style={{
-          backgroundImage: 'url(/background.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/50 z-0"></div>
-        
+      <section id="about" className="min-h-screen bg-black relative overflow-hidden pt-20 pb-2 px-4 sm:px-6 md:pt-24 md:pb-4">
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12">
             {/* Left Column - Main Content */}

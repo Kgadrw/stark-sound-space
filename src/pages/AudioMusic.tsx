@@ -28,16 +28,7 @@ const AudioMusic = () => {
   return (
     <>
       <Navbar />
-      <div 
-        className="min-h-screen bg-black relative overflow-hidden pt-24 pb-24 px-4 sm:px-6 lg:px-8"
-        style={{
-          backgroundImage: 'url(/background.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/50"></div>
+      <div className="min-h-screen bg-black relative overflow-hidden pt-24 pb-24 px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 max-w-7xl mx-auto pb-24">
           {/* Header */}
           <motion.div

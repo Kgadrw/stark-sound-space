@@ -160,17 +160,7 @@ const AudioMusicSection = () => {
 
   if (isLoading) {
     return (
-      <section 
-        id="audio-music" 
-        className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16"
-        style={{
-          backgroundImage: 'url(/background.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/50"></div>
+      <section id="audio-music" className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <Skeleton className="h-8 w-32 bg-white/10 mb-8" />
           <div className="flex gap-4 overflow-hidden">
@@ -188,17 +178,7 @@ const AudioMusicSection = () => {
   }
 
   return (
-    <section 
-      id="audio-music" 
-      className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16"
-      style={{
-        backgroundImage: 'url(/background.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      <div className="absolute inset-0 bg-black/50"></div>
+    <section id="audio-music" className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Section Title */}
         <motion.h2

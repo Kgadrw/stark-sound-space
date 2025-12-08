@@ -13,16 +13,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div 
-      className="flex min-h-screen items-center justify-center bg-black relative overflow-hidden"
-      style={{
-        backgroundImage: 'url(/background.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      <div className="absolute inset-0 bg-black/50"></div>
+    <div className="flex min-h-screen items-center justify-center bg-black relative overflow-hidden">
       <div className="relative z-10 text-center">
         <h1 className="mb-4 text-4xl font-bold text-white">404</h1>
         <p className="mb-4 text-xl text-white/70">Oops! Page not found</p>

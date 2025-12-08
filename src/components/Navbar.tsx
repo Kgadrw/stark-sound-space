@@ -330,16 +330,11 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
         initial={hasAnimated ? false : { y: -100, opacity: 0 }}
         animate={hasAnimated ? (isVisible ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }) : { y: 0, opacity: 1 }}
         transition={hasAnimated ? { duration: 0.3, ease: "easeInOut" } : { duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between px-6 py-4 text-white transition-all duration-300 bg-black relative"
+        className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between px-6 py-4 text-white transition-all duration-300 bg-black"
         style={{
-          backgroundImage: 'url(/background.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
           backdropFilter: isScrolled ? "blur(10px)" : "none",
         }}
       >
-        <div className="absolute inset-0 bg-black/70"></div>
         {/* Logo/Brand */}
         <div className="relative z-10 flex items-center space-x-2">
           <button

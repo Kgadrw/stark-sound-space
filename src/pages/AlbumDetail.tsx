@@ -36,16 +36,7 @@ const AlbumDetail = () => {
     return (
       <>
         <Navbar />
-        <section 
-          className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24"
-          style={{
-            backgroundImage: 'url(/background.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        >
-          <div className="absolute inset-0 bg-black/50"></div>
+        <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24">
           <div className="relative z-10 max-w-7xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -78,17 +69,7 @@ const AlbumDetail = () => {
     <>
       <style>{orbitronStyle}</style>
       <Navbar />
-      <section 
-        className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24"
-        style={{
-          backgroundImage: 'url(/background.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/50 z-0"></div>
-        
+      <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24">
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Back Button */}
           <motion.div
