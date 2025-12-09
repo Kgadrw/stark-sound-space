@@ -6,6 +6,20 @@ import { Play } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const glowAnimation = `
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.6), 0 0 45px rgba(255, 0, 0, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 25px rgba(255, 0, 0, 1), 0 0 50px rgba(255, 0, 0, 0.8), 0 0 75px rgba(255, 0, 0, 0.6);
+    }
+  }
+  .glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+`;
+
 const AudioMusicSection = () => {
   const { content, isLoading } = useContent();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -161,6 +175,10 @@ const AudioMusicSection = () => {
   if (isLoading) {
     return (
       <section id="audio-music" className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
+        {/* Left dotted line */}
+        <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
+        {/* Right dotted line */}
+        <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <Skeleton className="h-8 w-32 bg-white/10 mb-8" />
           <div className="flex gap-4 overflow-hidden">
@@ -179,14 +197,17 @@ const AudioMusicSection = () => {
 
   return (
     <section id="audio-music" className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
+      {/* Left dotted line */}
+      <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
+      {/* Right dotted line */}
+      <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Section Title */}
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl uppercase tracking-wider mb-8 sm:mb-12"
-          style={{ fontFamily: 'sans-serif' }}
+          className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl uppercase tracking-wider mb-8 sm:mb-12 eagle-lake"
         >
           MUSIC
         </motion.h2>
@@ -224,7 +245,7 @@ const AudioMusicSection = () => {
                   {/* Album Cover */}
                   <div className="relative aspect-square w-full mb-4 group">
                     <div
-                      className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-pointer border-2 border-white"
+                      className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-pointer"
                   onClick={() => {
                         if (audio.link) {
                           window.open(audio.link, '_blank', 'noopener,noreferrer');
@@ -246,10 +267,10 @@ const AudioMusicSection = () => {
                               window.open(audio.link, '_blank', 'noopener,noreferrer');
                             }
                           }}
-                          className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-black/90 transition-all duration-200 touch-manipulation shadow-lg"
+                          className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-black/90 transition-all duration-200 touch-manipulation group glow-pulse"
                           aria-label="Play audio"
                         >
-                          <Play className="h-5 w-5 text-white fill-white ml-0.5" />
+                          <Play className="h-5 w-5 ml-0.5 transition-all duration-200 group-hover:scale-125" style={{ color: '#FF0000', fill: '#FF0000' }} />
                         </button>
                       </div>
                     </div>

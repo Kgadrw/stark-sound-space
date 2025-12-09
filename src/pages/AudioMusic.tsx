@@ -38,7 +38,7 @@ const AudioMusic = () => {
             className="mb-8 flex items-start justify-between"
           >
             <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 eagle-lake">
                 Music
               </h1>
               <p className="text-gray-400 text-sm md:text-base">

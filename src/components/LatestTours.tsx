@@ -34,6 +34,10 @@ const LatestTours = () => {
     return (
       <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden" style={{ background: backgroundStyle }}>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
+        {/* Left dotted line */}
+        <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-[5]"></div>
+        {/* Right dotted line */}
+        <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-[5]"></div>
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="mb-12 text-center">
             <Skeleton className="h-12 w-32 mx-auto bg-white/10" />
@@ -55,6 +59,10 @@ const LatestTours = () => {
   return (
     <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden" style={{ background: backgroundStyle }}>
       <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
+      {/* Left dotted line */}
+      <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-[5]"></div>
+      {/* Right dotted line */}
+      <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-[5]"></div>
       
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}

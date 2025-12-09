@@ -7,6 +7,20 @@ import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 
+const glowAnimation = `
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.9), 0 0 40px rgba(255, 0, 0, 0.7), 0 0 60px rgba(255, 0, 0, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(255, 0, 0, 1), 0 0 60px rgba(255, 0, 0, 0.9), 0 0 90px rgba(255, 0, 0, 0.7);
+    }
+  }
+  .glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+`;
+
 const VideosSection = () => {
   const { content, isLoading } = useContent();
   const videos = content.videos;
@@ -84,18 +98,18 @@ const VideosSection = () => {
                   {/* Play Button Overlay */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <motion.div
-                      whileHover={{ scale: 1.1 }}
+                      whileHover={{ scale: 1.2 }}
                       whileTap={{ scale: 0.95 }}
-                      className="bg-white rounded-full p-3 sm:p-4 shadow-lg"
+                      className="bg-white rounded-full p-3 sm:p-4 group glow-pulse"
                     >
-                      <Play className="h-6 w-6 sm:h-8 sm:w-8 text-black fill-black" />
+                      <Play className="h-6 w-6 sm:h-8 sm:w-8 transition-all duration-200 group-hover:scale-110" style={{ color: '#FF0000', fill: '#FF0000' }} />
                     </motion.div>
                   </div>
                 </div>
 
                 {/* Video Info */}
                 <div className="space-y-2">
-                  <h3 className="text-white font-bold text-base sm:text-lg uppercase tracking-tight leading-tight line-clamp-2" style={{ fontFamily: 'sans-serif' }}>
+                  <h3 className="text-white font-normal text-base sm:text-lg uppercase tracking-tight leading-tight line-clamp-2 eagle-lake">
                     {video.title}
                   </h3>
                   {video.description && (

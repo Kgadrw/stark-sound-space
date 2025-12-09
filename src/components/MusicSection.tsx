@@ -81,11 +81,11 @@ const MusicSection = () => {
 
                 {/* Album Info */}
                 <div className="space-y-2">
-                  <h3 className="text-white font-bold text-lg sm:text-xl uppercase tracking-tight leading-tight" style={{ fontFamily: 'sans-serif' }}>
+                  <h3 className="text-white font-bold text-lg sm:text-xl uppercase tracking-tight leading-tight eagle-lake">
                     {mainTitle || album.title}
                   </h3>
                   {subtitle && (
-                    <h4 className="text-white/80 font-bold text-base sm:text-lg uppercase tracking-tight leading-tight" style={{ fontFamily: 'sans-serif' }}>
+                    <h4 className="text-white/80 font-bold text-base sm:text-lg uppercase tracking-tight leading-tight eagle-lake">
                       ({subtitle})
                     </h4>
                   )}

@@ -13,9 +13,15 @@ const LatestAlbum = () => {
   const navigate = useNavigate();
   const [currentAlbumIndex, setCurrentAlbumIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isDiskPaused, setIsDiskPaused] = useState(false);
+  const [rotation, setRotation] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartAngle, setDragStartAngle] = useState(0);
+  const [dragStartRotation, setDragStartRotation] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
+  const diskRef = useRef<HTMLDivElement>(null);
   
   // Sort albums by createdAt (newest first)
   const sortedAlbums = [...content.albums].sort((a, b) => {
@@ -73,6 +79,68 @@ const LatestAlbum = () => {
     touchEndX.current = null;
   };
 
+  // Calculate angle from center point for disk rotation
+  const getAngle = (clientX: number, clientY: number, element: HTMLElement) => {
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const deltaX = clientX - centerX;
+    const deltaY = clientY - centerY;
+    return (Math.atan2(deltaY, deltaX) * 180) / Math.PI;
+  };
+
+  // Handle mouse down for dragging disk
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!diskRef.current) return;
+    setIsDragging(true);
+    setIsDiskPaused(true);
+    const angle = getAngle(e.clientX, e.clientY, diskRef.current);
+    setDragStartAngle(angle);
+    setDragStartRotation(rotation);
+  };
+
+  // Handle mouse move for dragging disk
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging || !diskRef.current) return;
+    const angle = getAngle(e.clientX, e.clientY, diskRef.current);
+    const deltaAngle = angle - dragStartAngle;
+    setRotation(dragStartRotation + deltaAngle);
+  };
+
+  // Handle mouse up
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    // Resume auto-spin after a delay
+    setTimeout(() => setIsDiskPaused(false), 2000);
+  };
+
+  // Handle touch events for mobile disk rotation
+  const handleDiskTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation(); // Prevent album swipe
+    if (!diskRef.current) return;
+    setIsDragging(true);
+    setIsDiskPaused(true);
+    const touch = e.touches[0];
+    const angle = getAngle(touch.clientX, touch.clientY, diskRef.current);
+    setDragStartAngle(angle);
+    setDragStartRotation(rotation);
+  };
+
+  const handleDiskTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation(); // Prevent album swipe
+    if (!isDragging || !diskRef.current) return;
+    const touch = e.touches[0];
+    const angle = getAngle(touch.clientX, touch.clientY, diskRef.current);
+    const deltaAngle = angle - dragStartAngle;
+    setRotation(dragStartRotation + deltaAngle);
+  };
+
+  const handleDiskTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation(); // Prevent album swipe
+    setIsDragging(false);
+    setTimeout(() => setIsDiskPaused(false), 2000);
+  };
+
   // Auto-slide functionality
   useEffect(() => {
     // Clear any existing interval
@@ -94,9 +162,24 @@ const LatestAlbum = () => {
     };
   }, [sortedAlbums.length, isLoading, isPaused]);
 
+  // Auto-rotate disk when not paused or dragging
+  useEffect(() => {
+    if (isDiskPaused || isDragging) return;
+    
+    const interval = setInterval(() => {
+      setRotation((prev) => (prev + 1) % 360);
+    }, 50); // Smooth rotation
+
+    return () => clearInterval(interval);
+  }, [isDiskPaused, isDragging]);
+
   if (isLoading) {
     return (
       <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
+        {/* Left dotted line */}
+        <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
+        {/* Right dotted line */}
+        <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <Skeleton className="aspect-square w-full rounded-lg bg-white/10" />
@@ -121,8 +204,13 @@ const LatestAlbum = () => {
   const subtitle = titleParts[1]?.replace(/[()]/g, '') || '';
 
   return (
+    <>
     <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12">
-      <div className="relative z-10 w-full max-w-7xl mx-auto">
+        {/* Left dotted line */}
+        <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
+        {/* Right dotted line */}
+        <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
+        <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Album Content */}
         <div 
           className="relative flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-8"
@@ -170,14 +258,37 @@ const LatestAlbum = () => {
                   className="relative aspect-square w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto order-1 lg:order-1"
                 >
                   <div
-                    className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-pointer group touch-manipulation"
-                    onClick={() => navigate(`/album/${encodeURIComponent(currentAlbum.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
+                    ref={diskRef}
+                    className="relative w-full h-full bg-white rounded-full overflow-hidden cursor-grab active:cursor-grabbing group touch-manipulation transition-transform duration-75"
+                    style={{
+                      transform: `rotate(${rotation}deg)`,
+                    }}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                    onTouchStart={handleDiskTouchStart}
+                    onTouchMove={handleDiskTouchMove}
+                    onTouchEnd={handleDiskTouchEnd}
+                    onMouseEnter={() => setIsDiskPaused(true)}
+                    onMouseLeave={() => {
+                      if (!isDragging) {
+                        setTimeout(() => setIsDiskPaused(false), 2000);
+                      }
+                    }}
+                    onClick={(e) => {
+                      if (!isDragging) {
+                        navigate(`/album/${encodeURIComponent(currentAlbum.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`);
+                      }
+                    }}
                   >
                     <img
                       src={currentAlbum.image}
                       alt={currentAlbum.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-full pointer-events-none"
                     />
+                    {/* Center circle like a vinyl record */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 sm:w-16 sm:h-16 bg-black rounded-full border-2 border-white/20 z-10 pointer-events-none"></div>
                   </div>
                 </motion.div>
 
@@ -190,11 +301,11 @@ const LatestAlbum = () => {
                 >
                   {/* Album Title */}
                   <div className="space-y-1 sm:space-y-2">
-                    <h2 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl uppercase tracking-tight leading-tight" style={{ fontFamily: 'sans-serif' }}>
+                    <h2 className="text-white font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl uppercase tracking-tight leading-tight eagle-lake">
                       {mainTitle || currentAlbum.title}
                     </h2>
                     {subtitle && (
-                      <h3 className="text-white font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl uppercase tracking-tight leading-tight" style={{ fontFamily: 'sans-serif' }}>
+                      <h3 className="text-white font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl uppercase tracking-tight leading-tight eagle-lake">
                         ({subtitle})
                       </h3>
                     )}
@@ -263,6 +374,7 @@ const LatestAlbum = () => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 

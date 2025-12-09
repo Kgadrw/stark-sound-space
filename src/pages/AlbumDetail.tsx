@@ -113,7 +113,7 @@ const AlbumDetail = () => {
             >
               {/* Album Name */}
               <div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white uppercase tracking-[0.1em] orbitron mb-4">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white uppercase tracking-[0.1em] eagle-lake mb-4">
                   {album.title}
                 </h1>
                 

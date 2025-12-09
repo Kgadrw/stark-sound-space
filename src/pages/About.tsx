@@ -45,7 +45,7 @@ const About = () => {
               {/* Biography */}
               {about.biography && (
                 <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6 md:p-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6">
+                  <h2 className="text-2xl sm:text-3xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6 eagle-lake">
                     Biography
                   </h2>
                   <div className="space-y-3 md:space-y-4 text-sm sm:text-base text-white/70 leading-relaxed elms-sans whitespace-pre-line">
@@ -57,7 +57,7 @@ const About = () => {
               {/* Career Highlights */}
               {about.careerHighlights && about.careerHighlights.length > 0 && (
                 <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6 md:p-8">
-                  <h2 className="text-xl sm:text-2xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6 eagle-lake">
                     Career Highlights
                   </h2>
                   <div className="space-y-4 md:space-y-6">
@@ -73,7 +73,7 @@ const About = () => {
 
               {/* Discography Summary */}
               <div className="border border-white/10 bg-black/80 backdrop-blur-xl rounded-lg p-4 sm:p-6 md:p-8">
-                <h2 className="text-xl sm:text-2xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-[0.1em] text-white uppercase mb-4 md:mb-6 eagle-lake">
                   Discography
                 </h2>
                 <div className="space-y-3 md:space-y-4">

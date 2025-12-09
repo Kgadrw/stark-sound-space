@@ -9,6 +9,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 
+const glowAnimation = `
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.9), 0 0 40px rgba(255, 0, 0, 0.7), 0 0 60px rgba(255, 0, 0, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(255, 0, 0, 1), 0 0 60px rgba(255, 0, 0, 0.9), 0 0 90px rgba(255, 0, 0, 0.7);
+    }
+  }
+  .glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+`;
+
 const LatestVideos = () => {
   const { content, isLoading } = useContent();
   const navigate = useNavigate();
@@ -84,6 +98,10 @@ const LatestVideos = () => {
   if (isLoading) {
     return (
       <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
+        {/* Left dotted line */}
+        <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
+        {/* Right dotted line */}
+        <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
             <Skeleton className="h-12 w-32 bg-white/10" />
@@ -102,6 +120,10 @@ const LatestVideos = () => {
 
   return (
     <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-2 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12">
+      {/* Left dotted line */}
+      <div className="absolute left-2 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
+      {/* Right dotted line */}
+      <div className="absolute right-2 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
       <div className="relative z-10 w-full max-w-7xl mx-auto space-y-6 sm:space-y-8">
         {/* Header with VIDEOS and VIEW ALL */}
         <motion.div
@@ -119,8 +141,7 @@ const LatestVideos = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl uppercase tracking-wider"
-              style={{ fontFamily: 'sans-serif' }}
+              className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl uppercase tracking-wider eagle-lake"
             >
               VIDEOS
             </motion.h1>
@@ -193,11 +214,11 @@ const LatestVideos = () => {
                 {/* Play Button Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <motion.div
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-white rounded-full p-3 sm:p-4 md:p-6 shadow-lg touch-manipulation"
+                    className="bg-white rounded-full p-3 sm:p-4 md:p-6 touch-manipulation group glow-pulse"
                   >
-                    <Play className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-black fill-black" />
+                    <Play className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 transition-all duration-200 group-hover:scale-110" style={{ color: '#FF0000', fill: '#FF0000' }} />
                   </motion.div>
                 </div>
               </motion.div>
@@ -226,7 +247,7 @@ const LatestVideos = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center"
         >
-          <h2 className="text-white font-bold text-lg sm:text-xl lg:text-2xl uppercase tracking-wide" style={{ fontFamily: 'sans-serif' }}>
+          <h2 className="text-white font-normal text-lg sm:text-xl lg:text-2xl uppercase tracking-wide eagle-lake">
             {currentVideo.title}
           </h2>
         </motion.div>
