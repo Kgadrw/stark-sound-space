@@ -99,9 +99,9 @@ const LatestVideos = () => {
     return (
       <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
         {/* Left dotted line */}
-        <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
+        <div className="hidden md:block absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
         {/* Right dotted line */}
-        <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
+        <div className="hidden md:block absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
             <Skeleton className="h-12 w-32 bg-white/10" />
@@ -121,9 +121,9 @@ const LatestVideos = () => {
   return (
     <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-2 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12">
       {/* Left dotted line */}
-      <div className="absolute left-2 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
+      <div className="hidden md:block absolute left-2 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
       {/* Right dotted line */}
-      <div className="absolute right-2 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
+      <div className="hidden md:block absolute right-2 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
       <div className="relative z-10 w-full max-w-7xl mx-auto space-y-6 sm:space-y-8">
         {/* Header with VIDEOS and VIEW ALL */}
         <motion.div

@@ -539,8 +539,8 @@ const Hero = () => {
         {/* Fallback background image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        />
+        style={{ backgroundImage: `url(${heroImage})` }}
+      />
         {/* YouTube background video */}
         {heroVideoUrl && getYouTubeEmbedUrl(heroVideoUrl) && (
           <iframe

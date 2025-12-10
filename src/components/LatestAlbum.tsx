@@ -177,9 +177,9 @@ const LatestAlbum = () => {
     return (
       <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
         {/* Left dotted line */}
-        <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
+        <div className="hidden md:block absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
         {/* Right dotted line */}
-        <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
+        <div className="hidden md:block absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <Skeleton className="aspect-square w-full rounded-lg bg-white/10" />
@@ -207,9 +207,9 @@ const LatestAlbum = () => {
     <>
     <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12">
         {/* Left dotted line */}
-        <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
+        <div className="hidden md:block absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
         {/* Right dotted line */}
-        <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
+        <div className="hidden md:block absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Album Content */}
         <div 
