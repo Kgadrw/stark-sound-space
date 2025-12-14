@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, X, Play } from "lucide-react";
+import { ExternalLink, X, Play, Plus } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,49 +28,27 @@ const AudioMusic = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-black relative overflow-hidden pt-24 pb-24 px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10 max-w-7xl mx-auto pb-24">
+      <div className="min-h-screen bg-black relative overflow-hidden pt-24 px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 max-w-7xl mx-auto">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-8 flex items-start justify-between"
+            className="mb-8 flex flex-col items-center text-center"
           >
             <div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 eagle-lake">
                 Music
               </h1>
               <p className="text-gray-400 text-sm md:text-base">
-                All releases from Nel Ngabo
+                latest music from nelngabo
               </p>
             </div>
-            {/* Listen More Button - Top Right */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <Button
-                asChild
-                className="bg-[#1DB954] hover:bg-[#1DB954]/90 text-white font-bold rounded-full px-6 py-3 text-sm transition-all duration-200 hover:scale-105"
-              >
-                <a
-                  href={spotifyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2"
-                >
-                  <Play className="h-4 w-4" fill="currentColor" />
-                  <span>Listen More</span>
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-              </Button>
-            </motion.div>
           </motion.div>
 
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-6">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
                 <div key={i} className="space-y-3">
                   <Skeleton className="w-full aspect-square rounded-lg bg-white/10" />
@@ -86,7 +64,7 @@ const AudioMusic = () => {
           ) : (
             <>
               {/* Audio Grid - Spotify/Audiomack Style */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-6">
                 {audios.map((audio, index) => (
                   <motion.div
                     key={audio.id}
@@ -105,15 +83,18 @@ const AudioMusic = () => {
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         
-                        {/* Play Button Overlay */}
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                          <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-lg"
+                        {/* Add to Playlist Button - Bottom Right */}
+                        <div className="absolute bottom-3 right-3 z-10">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Add to playlist functionality can be implemented here
+                            }}
+                            className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-black/90 transition-all duration-200 touch-manipulation group"
+                            aria-label="Add to playlist"
                           >
-                            <Play className="w-6 h-6 text-black ml-0.5" fill="currentColor" />
-                          </motion.div>
+                            <Plus className="h-5 w-5 text-white transition-all duration-200 group-hover:scale-125" style={{ strokeWidth: 3 }} />
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -133,6 +114,23 @@ const AudioMusic = () => {
 
             </>
           )}
+          
+          {/* Listen More Link - Bottom */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-12 text-center"
+          >
+            <a
+              href={spotifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white hover:text-white/80 transition-colors text-sm md:text-base"
+            >
+              Listen More
+            </a>
+          </motion.div>
         </div>
       </div>
 

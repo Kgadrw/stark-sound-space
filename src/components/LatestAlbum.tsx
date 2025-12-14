@@ -162,16 +162,16 @@ const LatestAlbum = () => {
     };
   }, [sortedAlbums.length, isLoading, isPaused]);
 
-  // Auto-rotate disk when not paused or dragging
-  useEffect(() => {
-    if (isDiskPaused || isDragging) return;
-    
-    const interval = setInterval(() => {
-      setRotation((prev) => (prev + 1) % 360);
-    }, 50); // Smooth rotation
+  // Auto-rotate disk when not paused or dragging - DISABLED
+  // useEffect(() => {
+  //   if (isDiskPaused || isDragging) return;
+  //   
+  //   const interval = setInterval(() => {
+  //     setRotation((prev) => (prev + 1) % 360);
+  //   }, 50); // Smooth rotation
 
-    return () => clearInterval(interval);
-  }, [isDiskPaused, isDragging]);
+  //   return () => clearInterval(interval);
+  // }, [isDiskPaused, isDragging]);
 
   if (isLoading) {
     return (
@@ -259,19 +259,19 @@ const LatestAlbum = () => {
                 >
                   <div
                     ref={diskRef}
-                    className="relative w-full h-full bg-white rounded-full overflow-hidden cursor-grab active:cursor-grabbing group touch-manipulation transition-transform duration-75"
+                    className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-grab active:cursor-grabbing group touch-manipulation transition-transform duration-75"
                     style={{
                       transform: `rotate(${rotation}deg)`,
                     }}
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseUp}
                     onTouchStart={handleDiskTouchStart}
                     onTouchMove={handleDiskTouchMove}
                     onTouchEnd={handleDiskTouchEnd}
                     onMouseEnter={() => setIsDiskPaused(true)}
                     onMouseLeave={() => {
+                      handleMouseUp();
                       if (!isDragging) {
                         setTimeout(() => setIsDiskPaused(false), 2000);
                       }
@@ -285,10 +285,8 @@ const LatestAlbum = () => {
                     <img
                       src={currentAlbum.image}
                       alt={currentAlbum.title}
-                      className="w-full h-full object-cover rounded-full pointer-events-none"
+                      className="w-full h-full object-cover rounded-lg pointer-events-none"
                     />
-                    {/* Center circle like a vinyl record */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 sm:w-16 sm:h-16 bg-black rounded-full border-2 border-white/20 z-10 pointer-events-none"></div>
                   </div>
                 </motion.div>
 

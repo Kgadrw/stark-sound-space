@@ -330,13 +330,13 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
         initial={hasAnimated ? false : { y: -100, opacity: 0 }}
         animate={hasAnimated ? (isVisible ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }) : { y: 0, opacity: 1 }}
         transition={hasAnimated ? { duration: 0.3, ease: "easeInOut" } : { duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between px-6 py-4 text-white transition-all duration-300 bg-black"
+        className="fixed top-0 left-0 right-0 z-50 flex h-auto items-center justify-between px-6 py-3 text-white transition-all duration-300 bg-black border-b-2 border-white/30"
         style={{
           backdropFilter: isScrolled ? "blur(10px)" : "none",
         }}
       >
-        {/* Logo/Brand */}
-        <div className="relative z-10 flex items-center space-x-2">
+        {/* Logo/Brand + Desktop Navigation */}
+        <div className="relative z-10 flex items-center gap-6">
           <button
             onClick={() => navigate("/")}
             className="relative cursor-pointer hover:opacity-80 transition-opacity"
@@ -348,10 +348,8 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
               className="h-8 md:h-10 w-auto"
             />
           </button>
-        </div>
-
-        {/* Desktop Navigation */}
-        <nav className="relative z-10 hidden md:flex items-center gap-2">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-0 border-l-2 border-white/20 pl-6">
           {navLinks.map(({ to, label, icon: Icon }) => {
             const isHashLink = to.includes('#');
             const handleClick = (e: React.MouseEvent) => {
@@ -377,7 +375,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                 <button
                   key={label}
                   onClick={handleClick}
-                  className="px-4 py-2 text-sm uppercase tracking-[0.2em] transition text-white/60 hover:text-white"
+                  className="px-3 py-2 text-sm uppercase tracking-[0.15em] transition text-white/70 hover:text-white font-semibold"
                 >
                   {label}
                 </button>
@@ -391,81 +389,86 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                 end={variant === "admin" && to === "/administrationneln"}
                 className={({ isActive }) =>
                   [
-                    "px-4 py-2 text-sm uppercase tracking-[0.2em] transition",
-                    isActive ? "text-white" : "text-white/60",
+                    "px-3 py-2 text-sm uppercase tracking-[0.15em] transition font-semibold",
+                    isActive ? "text-white" : "text-white/70",
                     "hover:text-white",
                   ].join(" ")
                 }
               >
                 {({ isActive }) => (
-                  <span className={isActive ? "underline decoration-white decoration-2 underline-offset-8" : ""}>
+                  <span className={isActive ? "font-bold" : ""}>
                     {label}
                   </span>
                 )}
               </NavLink>
             );
           })}
-        </nav>
+          </nav>
+        </div>
 
-        {/* Mobile Menu Button */}
+        {/* Menu Button - Top Right */}
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(true)}
-          className="relative z-10 flex items-center gap-2 text-white md:hidden touch-manipulation min-w-[44px] min-h-[44px] justify-center"
+          className="relative z-10 flex items-center gap-2 text-white touch-manipulation min-w-[44px] min-h-[44px] justify-center"
           aria-label="Open menu"
         >
-          <Menu className="h-6 w-6" />
+          <img 
+            src="/menu.png" 
+            alt="Menu" 
+            className="h-6 w-6 object-contain"
+          />
         </button>
 
-        {/* Streaming Platforms (Desktop only, frontend variant) */}
-        {variant === "frontend" && visibleStreamingPlatforms.length > 0 && (
-          <div className="relative z-10 hidden lg:flex items-center gap-3">
-            {visibleStreamingPlatforms.map((platform, index) => {
-              const Icon = resolveIcon(platform.preset);
-              const isSpotify = platform.preset === "spotify";
-              const isAppleMusic = platform.preset === "appleMusic";
-              const isYouTube = platform.preset === "youtube";
-              const isBoomplay = platform.preset === "boomplay";
-              
-              return (
-                <motion.a
-                  key={platform.id}
-                  href={platform.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.1 }}
-                  className="flex items-center gap-2 text-white/70 hover:text-white transition"
-                >
-                  {isSpotify ? (
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="#1DB954">
-                      <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
-                    </svg>
-                  ) : isAppleMusic ? (
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                    </svg>
-                  ) : isYouTube ? (
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="#FF0000">
-                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                    </svg>
-                  ) : isBoomplay ? (
-                    <img src="/Boom.png" alt="Boomplay" className="h-4 w-4 object-contain" />
-                  ) : (
-                    <Icon className="h-4 w-4" />
-                  )}
-                  <span className="text-xs uppercase tracking-[0.15em] whitespace-nowrap">{platform.label}</span>
-                </motion.a>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Search Bar */}
+        {/* Streaming Platforms + Search (Desktop only, frontend variant) */}
         {variant === "frontend" && (
-          <div className="relative z-10 hidden md:flex items-center gap-2">
+          <div className="relative z-10 hidden md:flex items-center gap-2 border-l-2 border-white/20 pl-6">
+            {/* Streaming Platforms */}
+            {visibleStreamingPlatforms.length > 0 && (
+              <div className="hidden lg:flex items-center gap-0">
+                {visibleStreamingPlatforms.map((platform, index) => {
+                  const Icon = resolveIcon(platform.preset);
+                  const isSpotify = platform.preset === "spotify";
+                  const isAppleMusic = platform.preset === "appleMusic";
+                  const isYouTube = platform.preset === "youtube";
+                  const isBoomplay = platform.preset === "boomplay";
+                  
+                  return (
+                    <motion.a
+                      key={platform.id}
+                      href={platform.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ scale: 1.1 }}
+                      className="flex items-center gap-1 px-2 text-white/70 hover:text-white transition"
+                    >
+                      {isSpotify ? (
+                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="#1DB954">
+                          <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+                        </svg>
+                      ) : isAppleMusic ? (
+                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                        </svg>
+                      ) : isYouTube ? (
+                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="#FF0000">
+                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                      ) : isBoomplay ? (
+                        <img src="/Boom.png" alt="Boomplay" className="h-4 w-4 object-contain" />
+                      ) : (
+                        <Icon className="h-4 w-4" />
+                      )}
+                      <span className="text-xs uppercase tracking-[0.15em] whitespace-nowrap">{platform.label}</span>
+                    </motion.a>
+                  );
+                })}
+              </div>
+            )}
+            {/* Search Bar */}
             <motion.button
               type="button"
               onClick={() => setIsSearchOpen((prev) => !prev)}
@@ -726,7 +729,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                       className={({ isActive }) =>
                         [
                           "uppercase transition relative touch-manipulation min-h-[44px] flex items-center",
-                          isActive ? "text-white underline decoration-white decoration-2 underline-offset-8" : "text-white/60",
+                          isActive ? "text-white font-bold" : "text-white/60",
                           "hover:text-white",
                         ].join(" ")
                       }
@@ -747,7 +750,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                     className="mt-auto space-y-4"
                   >
                     <p className="text-xs uppercase tracking-[0.4em] text-white/50">Streaming</p>
-                    <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-1">
                       {visibleStreamingPlatforms.map((platform, index) => {
                         const Icon = resolveIcon(platform.preset);
                         const isSpotify = platform.preset === "spotify";
@@ -767,7 +770,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                             transition={{ delay: 0.7 + index * 0.1, type: "spring" }}
                             whileHover={{ scale: 1.2, rotate: 5 }}
                             whileTap={{ scale: 0.9 }}
-                            className="flex items-center gap-2 text-white/70 hover:text-white transition"
+                            className="flex items-center gap-1 px-2 text-white/70 hover:text-white transition"
                           >
                             {isSpotify ? (
                               <svg className="h-6 w-6" viewBox="0 0 24 24" fill="#1DB954">
@@ -841,4 +844,3 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
 };
 
 export default Navbar;
-

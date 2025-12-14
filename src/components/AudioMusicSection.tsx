@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Play } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -258,7 +258,7 @@ const AudioMusicSection = () => {
                         className="w-full h-full object-cover"
                       />
                       
-                      {/* Play Button - Bottom Right */}
+                      {/* Add to Playlist Button - Bottom Right */}
                       <div className="absolute bottom-3 right-3 z-10">
                         <button
                           onClick={(e) => {
@@ -268,9 +268,9 @@ const AudioMusicSection = () => {
                             }
                           }}
                           className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-black/90 transition-all duration-200 touch-manipulation group glow-pulse"
-                          aria-label="Play audio"
+                          aria-label="Add to playlist"
                         >
-                          <Play className="h-5 w-5 ml-0.5 transition-all duration-200 group-hover:scale-125" style={{ color: '#FF0000', fill: '#FF0000' }} />
+                          <Plus className="h-5 w-5 transition-all duration-200 group-hover:scale-125 text-white" style={{ strokeWidth: 3 }} />
                         </button>
                       </div>
                     </div>

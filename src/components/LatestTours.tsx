@@ -13,12 +13,6 @@ const formatTourDate = (value: string) => {
 
 const LatestTours = () => {
   const { content, isLoading } = useContent();
-  const colorSettings = content.hero.colorSettings;
-  const backgroundStyle = colorSettings?.colorType === "solid"
-    ? colorSettings.solidColor
-    : colorSettings?.gradientColors
-    ? `linear-gradient(${colorSettings.gradientColors.direction}, ${colorSettings.gradientColors.startColor}, ${colorSettings.gradientColors.endColor})`
-    : "#000000";
 
   // Sort tours by date (newest first) and get the latest ones
   const latestTours = useMemo(() => {
@@ -32,8 +26,8 @@ const LatestTours = () => {
 
   if (isLoading) {
     return (
-      <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden" style={{ background: backgroundStyle }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
+      <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden">
+        <div className="absolute inset-0 bg-black/50 z-0"></div>
         {/* Left dotted line */}
         <div className="hidden md:block absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-[5]"></div>
         {/* Right dotted line */}
@@ -57,8 +51,8 @@ const LatestTours = () => {
   }
 
   return (
-    <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden" style={{ background: backgroundStyle }}>
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black z-0" style={{ background: backgroundStyle }} />
+    <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden">
+      <div className="absolute inset-0 bg-black/50 z-0"></div>
       {/* Left dotted line */}
       <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-[5]"></div>
       {/* Right dotted line */}

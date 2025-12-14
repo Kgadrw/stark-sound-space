@@ -534,7 +534,7 @@ const Hero = () => {
         linkText={notificationLinkText}
         isVisible={isNotificationVisible && !!notificationText.trim()}
       />
-    <section className="relative h-[40vh] lg:h-[70vh] w-full overflow-hidden border-0 bg-black/[0.3]">
+    <section className="relative h-[100vh] w-full overflow-hidden border-0 bg-black/[0.3]">
       <div className="absolute inset-0 overflow-hidden">
         {/* Fallback background image */}
       <div
