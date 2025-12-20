@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/context/SidebarContext";
 import CookieConsent from "@/components/CookieConsent";
 import ColorTheme from "@/components/ColorTheme";
+import Snow from "@/components/Snow";
 import Index from "./pages/Index";
 import Music from "./pages/Music";
 import AudioMusic from "./pages/AudioMusic";
@@ -35,6 +36,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
         <ColorTheme />
+        <Snow />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/music" element={<Music />} />

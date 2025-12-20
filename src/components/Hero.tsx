@@ -96,6 +96,18 @@ const Hero = () => {
   const isNotificationVisible = heroContent.isNotificationVisible ?? false;
   const hasNotification = isNotificationVisible && !!notificationText.trim();
   
+  // Get latest album info
+  const latestAlbumName = heroContent.latestAlbumName || "LATEST ALBUM";
+  const latestAlbumLink = heroContent.latestAlbumLink || "";
+  // Also try to get from the latest album in content
+  const sortedAlbums = [...content.albums].sort((a, b) => {
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return dateB - dateA;
+  });
+  const latestAlbum = sortedAlbums[0];
+  const listenUrl = latestAlbumLink || (latestAlbum?.links && latestAlbum.links.length > 0 ? latestAlbum.links[0].url : "");
+  
   // Constant CTA buttons - not editable by admin
   const primaryCta: HeroCta = {
     label: "Latest Album",
@@ -536,11 +548,6 @@ const Hero = () => {
       />
     <section className="relative h-[100vh] w-full overflow-hidden border-0 bg-black/[0.3]">
       <div className="absolute inset-0 overflow-hidden">
-        {/* Fallback background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroImage})` }}
-      />
         {/* YouTube background video */}
         {heroVideoUrl && getYouTubeEmbedUrl(heroVideoUrl) && (
           <iframe
@@ -566,6 +573,24 @@ const Hero = () => {
           onClose={() => setSelectedVideo(null)}
         />
       )}
+      
+       {/* Latest Release Bar at Bottom */}
+       {listenUrl && (
+         <div className="absolute bottom-0 left-0 right-0 z-40 flex items-center justify-center gap-4 px-6 py-4 sm:py-5 text-white bg-black border-t border-b border-white/20">
+           <span className="text-sm sm:text-base lg:text-lg xl:text-xl uppercase tracking-[0.15em]">Latest Release</span>
+           <span className="text-lg lg:text-xl xl:text-2xl font-bold uppercase tracking-[0.15em]">
+             {latestAlbumName}
+           </span>
+           <a
+             href={listenUrl}
+             target="_blank"
+             rel="noopener noreferrer"
+             className="px-4 py-2 text-sm sm:text-base font-bold uppercase tracking-[0.15em] border border-white rounded-full hover:bg-white hover:text-black transition-all duration-200"
+           >
+             Listen
+           </a>
+         </div>
+       )}
     </section>
     </>
   );

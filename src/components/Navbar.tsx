@@ -102,7 +102,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
             aria-label="Go to homepage"
           >
             <img 
-              src="/logo.png" 
+              src="/X-logo.png" 
               alt="NEL NGABO" 
               className="h-8 md:h-10 w-auto"
             />
@@ -214,7 +214,7 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
                 aria-label="Go to homepage"
               >
                 <img 
-                  src="/logo.png" 
+                  src="/X-logo.png" 
                   alt="NEL NGABO" 
                   className="h-8 w-auto"
                 />
