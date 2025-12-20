@@ -23,23 +23,6 @@ const Videos = () => {
       <Navbar />
       <div className="min-h-screen bg-black relative overflow-hidden pt-24 px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 max-w-7xl mx-auto">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 flex flex-col items-center text-center"
-          >
-            <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 eagle-lake">
-                Videos
-              </h1>
-              <p className="text-gray-400 text-sm md:text-base">
-                latest videos from nelngabo
-              </p>
-            </div>
-          </motion.div>
-
           {isLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-6">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
@@ -99,11 +82,6 @@ const Videos = () => {
                         <h3 className="text-white font-semibold text-sm md:text-base line-clamp-2 group-hover:text-white transition-colors">
                           {video.title || "Untitled"}
                         </h3>
-                        {video.views && (
-                          <p className="text-gray-400 text-xs md:text-sm line-clamp-1">
-                            {video.views} views
-                          </p>
-                        )}
                       </div>
                     </motion.div>
                   );

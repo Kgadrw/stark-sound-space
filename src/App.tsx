@@ -13,7 +13,6 @@ import Videos from "./pages/Videos";
 import VideoDetail from "./pages/VideoDetail";
 import About from "./pages/About";
 import Tours from "./pages/Tours";
-import AlbumDetail from "./pages/AlbumDetail";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import HeroAdmin from "./pages/admin/HeroAdmin";
@@ -42,7 +41,6 @@ const App = () => (
           <Route path="/audio-music" element={<AudioMusic />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/video/:id" element={<VideoDetail />} />
-          <Route path="/album/:id" element={<AlbumDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/tours" element={<Tours />} />
           <Route path="/administrationneln/login" element={<AdminLogin />} />

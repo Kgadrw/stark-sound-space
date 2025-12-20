@@ -67,8 +67,7 @@ const MusicSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group cursor-pointer"
-                onClick={() => navigate(`/album/${encodeURIComponent(album.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
+                className="group"
               >
                 {/* Album Cover */}
                 <div className="relative aspect-square w-full bg-white rounded-lg overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-105">

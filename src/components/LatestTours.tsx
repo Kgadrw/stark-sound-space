@@ -28,10 +28,6 @@ const LatestTours = () => {
     return (
       <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-black/50 z-0"></div>
-        {/* Left dotted line */}
-        <div className="hidden md:block absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-[5]"></div>
-        {/* Right dotted line */}
-        <div className="hidden md:block absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-[5]"></div>
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="mb-12 text-center">
             <Skeleton className="h-12 w-32 mx-auto bg-white/10" />
@@ -53,10 +49,6 @@ const LatestTours = () => {
   return (
     <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-black/50 z-0"></div>
-      {/* Left dotted line */}
-      <div className="absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-[5]"></div>
-      {/* Right dotted line */}
-      <div className="absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-[5]"></div>
       
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}

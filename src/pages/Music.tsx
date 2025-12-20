@@ -3,13 +3,11 @@ import { ExternalLink } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const Music = () => {
   const { content, isLoading } = useContent();
-  const navigate = useNavigate();
   
   // Sort albums by createdAt (newest first)
   const albums = [...content.albums].sort((a, b) => {
@@ -23,23 +21,6 @@ const Music = () => {
       <Navbar />
       <div className="min-h-screen bg-black relative overflow-hidden pt-24 px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 max-w-7xl mx-auto">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 flex flex-col items-center text-center"
-          >
-            <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 eagle-lake">
-                Albums
-              </h1>
-              <p className="text-gray-400 text-sm md:text-base">
-                latest albums from nelngabo
-              </p>
-            </div>
-          </motion.div>
-
           {isLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-6">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
@@ -64,14 +45,16 @@ const Music = () => {
                   const mainTitle = titleParts[0].trim();
                   const subtitle = titleParts[1]?.replace(/[()]/g, '') || '';
 
+                  // Get first streaming link for listen button
+                  const firstLink = album.links && album.links.length > 0 ? album.links[0] : null;
+
                   return (
                     <motion.div
                       key={album.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.4, delay: index * 0.05 }}
-                      className="group cursor-pointer"
-                      onClick={() => navigate(`/album/${encodeURIComponent(album.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
+                      className="group"
                     >
                       <div className="relative mb-3">
                         {/* Album Cover */}
@@ -85,19 +68,39 @@ const Music = () => {
                       </div>
 
                       {/* Title and Info */}
-                      <div className="space-y-1">
-                        <h3 className="text-white font-semibold text-sm md:text-base line-clamp-2 group-hover:text-white transition-colors">
-                          {mainTitle || album.title}
-                        </h3>
-                        {subtitle && (
-                          <p className="text-white/80 text-xs md:text-sm line-clamp-1">
-                            {subtitle}
-                          </p>
-                        )}
-                        {album.year && (
-                          <p className="text-gray-400 text-xs md:text-sm line-clamp-1">
-                            {album.year}
-                          </p>
+                      <div className="space-y-2">
+                        <div className="space-y-1">
+                          <h3 className="text-white font-semibold text-sm md:text-base line-clamp-2 group-hover:text-white transition-colors">
+                            {mainTitle || album.title}
+                          </h3>
+                          {subtitle && (
+                            <p className="text-white/80 text-xs md:text-sm line-clamp-1">
+                              {subtitle}
+                            </p>
+                          )}
+                          {album.year && (
+                            <p className="text-gray-400 text-xs md:text-sm line-clamp-1">
+                              {album.year}
+                            </p>
+                          )}
+                        </div>
+                        
+                        {/* Listen Album Button */}
+                        {firstLink && (
+                          <Button
+                            asChild
+                            className="bg-transparent text-white border border-white rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all duration-200 hover:bg-white/10 w-full touch-manipulation min-h-[44px]"
+                          >
+                            <a
+                              href={firstLink.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center justify-center gap-2"
+                            >
+                              <span>Listen Album</span>
+                              <ExternalLink className="h-3.5 w-3.5" />
+                            </a>
+                          </Button>
                         )}
                       </div>
                     </motion.div>

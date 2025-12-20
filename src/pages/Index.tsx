@@ -13,10 +13,6 @@ const Index = () => {
       <Navbar />
       <Hero />
       <div className="relative z-10 bg-black">
-        {/* Left dotted line - continuous from below hero to footer */}
-        <div className="hidden md:block absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-[1] pointer-events-none"></div>
-        {/* Right dotted line - continuous from below hero to footer */}
-        <div className="hidden md:block absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-[1] pointer-events-none"></div>
         <LatestAlbum />
         <AudioMusicSection />
         <LatestVideos />

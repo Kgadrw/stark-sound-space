@@ -13,15 +13,9 @@ const LatestAlbum = () => {
   const navigate = useNavigate();
   const [currentAlbumIndex, setCurrentAlbumIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [isDiskPaused, setIsDiskPaused] = useState(false);
-  const [rotation, setRotation] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStartAngle, setDragStartAngle] = useState(0);
-  const [dragStartRotation, setDragStartRotation] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
-  const diskRef = useRef<HTMLDivElement>(null);
   
   // Sort albums by createdAt (newest first)
   const sortedAlbums = [...content.albums].sort((a, b) => {
@@ -79,67 +73,6 @@ const LatestAlbum = () => {
     touchEndX.current = null;
   };
 
-  // Calculate angle from center point for disk rotation
-  const getAngle = (clientX: number, clientY: number, element: HTMLElement) => {
-    const rect = element.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const deltaX = clientX - centerX;
-    const deltaY = clientY - centerY;
-    return (Math.atan2(deltaY, deltaX) * 180) / Math.PI;
-  };
-
-  // Handle mouse down for dragging disk
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!diskRef.current) return;
-    setIsDragging(true);
-    setIsDiskPaused(true);
-    const angle = getAngle(e.clientX, e.clientY, diskRef.current);
-    setDragStartAngle(angle);
-    setDragStartRotation(rotation);
-  };
-
-  // Handle mouse move for dragging disk
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging || !diskRef.current) return;
-    const angle = getAngle(e.clientX, e.clientY, diskRef.current);
-    const deltaAngle = angle - dragStartAngle;
-    setRotation(dragStartRotation + deltaAngle);
-  };
-
-  // Handle mouse up
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    // Resume auto-spin after a delay
-    setTimeout(() => setIsDiskPaused(false), 2000);
-  };
-
-  // Handle touch events for mobile disk rotation
-  const handleDiskTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.stopPropagation(); // Prevent album swipe
-    if (!diskRef.current) return;
-    setIsDragging(true);
-    setIsDiskPaused(true);
-    const touch = e.touches[0];
-    const angle = getAngle(touch.clientX, touch.clientY, diskRef.current);
-    setDragStartAngle(angle);
-    setDragStartRotation(rotation);
-  };
-
-  const handleDiskTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.stopPropagation(); // Prevent album swipe
-    if (!isDragging || !diskRef.current) return;
-    const touch = e.touches[0];
-    const angle = getAngle(touch.clientX, touch.clientY, diskRef.current);
-    const deltaAngle = angle - dragStartAngle;
-    setRotation(dragStartRotation + deltaAngle);
-  };
-
-  const handleDiskTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.stopPropagation(); // Prevent album swipe
-    setIsDragging(false);
-    setTimeout(() => setIsDiskPaused(false), 2000);
-  };
 
   // Auto-slide functionality
   useEffect(() => {
@@ -162,24 +95,10 @@ const LatestAlbum = () => {
     };
   }, [sortedAlbums.length, isLoading, isPaused]);
 
-  // Auto-rotate disk when not paused or dragging - DISABLED
-  // useEffect(() => {
-  //   if (isDiskPaused || isDragging) return;
-  //   
-  //   const interval = setInterval(() => {
-  //     setRotation((prev) => (prev + 1) % 360);
-  //   }, 50); // Smooth rotation
-
-  //   return () => clearInterval(interval);
-  // }, [isDiskPaused, isDragging]);
 
   if (isLoading) {
     return (
       <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
-        {/* Left dotted line */}
-        <div className="hidden md:block absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
-        {/* Right dotted line */}
-        <div className="hidden md:block absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <Skeleton className="aspect-square w-full rounded-lg bg-white/10" />
@@ -206,10 +125,6 @@ const LatestAlbum = () => {
   return (
     <>
     <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12">
-        {/* Left dotted line */}
-        <div className="hidden md:block absolute left-4 sm:left-6 lg:left-12 top-0 bottom-0 w-px border-l-2 border-dotted border-gray-500/30 z-0"></div>
-        {/* Right dotted line */}
-        <div className="hidden md:block absolute right-4 sm:right-6 lg:right-12 top-0 bottom-0 w-px border-r-2 border-dotted border-gray-500/30 z-0"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Album Content */}
         <div 
@@ -244,10 +159,10 @@ const LatestAlbum = () => {
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentAlbum.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
                 className="flex flex-col lg:grid lg:grid-cols-2 gap-2 sm:gap-4 lg:gap-6 items-center"
               >
                 {/* Album Cover */}
@@ -258,28 +173,9 @@ const LatestAlbum = () => {
                   className="relative aspect-square w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto order-1 lg:order-1"
                 >
                   <div
-                    ref={diskRef}
-                    className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-grab active:cursor-grabbing group touch-manipulation transition-transform duration-75"
-                    style={{
-                      transform: `rotate(${rotation}deg)`,
-                    }}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    onTouchStart={handleDiskTouchStart}
-                    onTouchMove={handleDiskTouchMove}
-                    onTouchEnd={handleDiskTouchEnd}
-                    onMouseEnter={() => setIsDiskPaused(true)}
-                    onMouseLeave={() => {
-                      handleMouseUp();
-                      if (!isDragging) {
-                        setTimeout(() => setIsDiskPaused(false), 2000);
-                      }
-                    }}
-                    onClick={(e) => {
-                      if (!isDragging) {
-                        navigate(`/album/${encodeURIComponent(currentAlbum.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`);
-                      }
+                    className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-pointer group touch-manipulation"
+                    onClick={() => {
+                      navigate('/music');
                     }}
                   >
                     <img
@@ -346,7 +242,7 @@ const LatestAlbum = () => {
 
                   {/* View Album Button */}
                   <Button
-                    onClick={() => navigate(`/album/${encodeURIComponent(currentAlbum.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
+                    onClick={() => navigate('/music')}
                     className="bg-transparent text-white border border-white rounded-full px-4 sm:px-6 py-3 sm:py-2 text-xs sm:text-sm font-medium transition-all duration-200 touch-manipulation min-h-[44px] w-full sm:w-auto"
                   >
                     View Album
