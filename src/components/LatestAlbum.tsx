@@ -175,7 +175,7 @@ const LatestAlbum = () => {
                   <div
                     className="relative w-full h-full bg-white rounded-lg overflow-hidden cursor-pointer group touch-manipulation"
                     onClick={() => {
-                      navigate('/music');
+                      navigate('/audio-music');
                     }}
                   >
                     <img
@@ -242,7 +242,7 @@ const LatestAlbum = () => {
 
                   {/* View Album Button */}
                   <Button
-                    onClick={() => navigate('/music')}
+                    onClick={() => navigate('/audio-music')}
                     className="bg-transparent text-white border border-white rounded-full px-4 sm:px-6 py-3 sm:py-2 text-xs sm:text-sm font-medium transition-all duration-200 touch-manipulation min-h-[44px] w-full sm:w-auto"
                   >
                     View Album

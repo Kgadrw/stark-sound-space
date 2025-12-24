@@ -24,7 +24,7 @@ const Videos = () => {
       <div className="min-h-screen bg-black relative overflow-hidden pt-24 px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 max-w-7xl mx-auto">
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-12">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
                 <div key={i} className="space-y-3">
                   <Skeleton className="w-full aspect-video rounded-lg bg-white/10" />
@@ -40,7 +40,7 @@ const Videos = () => {
           ) : (
             <>
               {/* Videos Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-12">
                 {videos.map((video, index) => {
                   const thumbnailUrl = getYouTubeThumbnailUrl(video.videoId);
 

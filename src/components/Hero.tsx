@@ -29,7 +29,7 @@ const BASE_SEARCH_ITEMS: PlatformSearchItem[] = [
     label: "Music Catalog",
     category: "Section",
     targetId: "music",
-    routeUrl: "/music",
+    routeUrl: "/audio-music",
     description: "Explore every album and track released so far.",
     keywords: ["music", "albums", "tracks", "discography"],
   },
@@ -112,7 +112,7 @@ const Hero = () => {
   const primaryCta: HeroCta = {
     label: "Latest Album",
     targetType: "route",
-    targetValue: "/music",
+    targetValue: "/audio-music",
   };
   const secondaryCta = {
     label: "Watch Now",

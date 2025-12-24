@@ -19,7 +19,7 @@ type SidebarProps = {
 
 const frontendNavLinks: SidebarNavLink[] = [
   { label: "Home", to: "/", icon: Home },
-  { label: "Albums", to: "/music", icon: Music4 },
+  { label: "Albums", to: "/audio-music", icon: Music4 },
   { label: "Videos", to: "/videos", icon: Clapperboard },
   { label: "Tours", to: "/tours", icon: MapPin },
 ];
@@ -52,7 +52,7 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
   const { content } = useContent();
   const navLinks = variant === "admin" ? adminNavLinks : frontendNavLinks;
   const latestAlbumName = content.hero.latestAlbumName || "VIBRANIUM";
-  const latestAlbumLink = content.hero.latestAlbumLink || "/music";
+  const latestAlbumLink = content.hero.latestAlbumLink || "/audio-music";
 
   const handleLogout = () => {
     logout();
@@ -150,7 +150,7 @@ const Sidebar = ({ variant = "frontend" }: SidebarProps) => {
             </div>
             <Button variant="secondary" asChild className="w-full uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-transform">
               <a 
-                href={latestAlbumLink.startsWith('http') ? latestAlbumLink : latestAlbumLink ? `https://${latestAlbumLink}` : '/music'}
+                href={latestAlbumLink.startsWith('http') ? latestAlbumLink : latestAlbumLink ? `https://${latestAlbumLink}` : '/audio-music'}
                 target={latestAlbumLink && latestAlbumLink.startsWith('http') ? '_blank' : undefined}
                 rel={latestAlbumLink && latestAlbumLink.startsWith('http') ? 'noopener noreferrer' : undefined}
               >

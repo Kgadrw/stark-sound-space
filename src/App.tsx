@@ -8,7 +8,6 @@ import CookieConsent from "@/components/CookieConsent";
 import ColorTheme from "@/components/ColorTheme";
 import Snow from "@/components/Snow";
 import Index from "./pages/Index";
-import Music from "./pages/Music";
 import AudioMusic from "./pages/AudioMusic";
 import Videos from "./pages/Videos";
 import VideoDetail from "./pages/VideoDetail";
@@ -39,7 +38,6 @@ const App = () => (
         <Snow />
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/music" element={<Music />} />
           <Route path="/audio-music" element={<AudioMusic />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/video/:id" element={<VideoDetail />} />
