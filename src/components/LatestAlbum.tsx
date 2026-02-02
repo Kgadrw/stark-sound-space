@@ -237,9 +237,9 @@ const LatestAlbum = () => {
               </motion.div>
             </AnimatePresence>
 
-            {/* Navigation Icons - Bottom Right */}
+            {/* Navigation Icons - Bottom Right (Hidden on Mobile) */}
             {sortedAlbums.length > 1 && (
-              <div className="absolute bottom-0 right-0 flex items-center gap-2 z-10">
+              <div className="absolute bottom-0 right-0 hidden md:flex items-center gap-2 z-10">
                 <motion.button
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
