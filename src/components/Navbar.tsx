@@ -58,27 +58,44 @@ const Navbar = ({ variant = "frontend" }: NavbarProps) => {
       const scrollPosition = window.scrollY;
       setIsScrolled(scrollPosition > 50);
       
-      // Hide navbar when scrolling up, show when scrolling down or at top
-      if (scrollPosition < 10) {
-        // Always show at the top
+      // Check if we're on mobile (viewport width < 768px)
+      const isMobile = window.innerWidth < 768;
+      
+      // On mobile, always show navbar
+      if (isMobile) {
         setIsVisible(true);
-      } else if (scrollPosition > lastScrollY.current) {
-        // Scrolling down - hide navbar
-        setIsVisible(false);
-      } else if (scrollPosition < lastScrollY.current) {
-        // Scrolling up - show navbar
-        setIsVisible(true);
+      } else {
+        // Desktop: Hide navbar when scrolling down, show when scrolling up or at top
+        if (scrollPosition < 10) {
+          // Always show at the top
+          setIsVisible(true);
+        } else if (scrollPosition > lastScrollY.current) {
+          // Scrolling down - hide navbar
+          setIsVisible(false);
+        } else if (scrollPosition < lastScrollY.current) {
+          // Scrolling up - show navbar
+          setIsVisible(true);
+        }
       }
       
       lastScrollY.current = scrollPosition;
     };
 
+    const handleResize = () => {
+      // On mobile, always show navbar
+      if (window.innerWidth < 768) {
+        setIsVisible(true);
+      }
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
     // Check initial scroll position
     handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 

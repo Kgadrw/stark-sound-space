@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -135,26 +135,12 @@ const LatestAlbum = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Left Navigation Arrow */}
-          {sortedAlbums.length > 1 && (
-            <motion.button
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              onClick={handlePrevious}
-              className="text-white p-3 sm:p-4 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center z-10 lg:absolute lg:left-0"
-              aria-label="Previous album"
-            >
-              <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10" />
-            </motion.button>
-          )}
-
           {/* Album Content Grid */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="w-full max-w-6xl"
+            className="w-full max-w-6xl relative"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -250,21 +236,33 @@ const LatestAlbum = () => {
                 </motion.div>
               </motion.div>
             </AnimatePresence>
-          </motion.div>
 
-          {/* Right Navigation Arrow */}
-          {sortedAlbums.length > 1 && (
-            <motion.button
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              onClick={handleNext}
-              className="text-white p-3 sm:p-4 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center z-10 lg:absolute lg:right-0"
-              aria-label="Next album"
-            >
-              <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10" />
-            </motion.button>
-          )}
+            {/* Navigation Icons - Bottom Right */}
+            {sortedAlbums.length > 1 && (
+              <div className="absolute bottom-0 right-0 flex items-center gap-2 z-10">
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  onClick={handlePrevious}
+                  className="text-white p-2 sm:p-3 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-all duration-200"
+                  aria-label="Previous album"
+                >
+                  <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+                </motion.button>
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  onClick={handleNext}
+                  className="text-white p-2 sm:p-3 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-all duration-200"
+                  aria-label="Next album"
+                >
+                  <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+                </motion.button>
+              </div>
+            )}
+          </motion.div>
         </div>
       </div>
     </section>

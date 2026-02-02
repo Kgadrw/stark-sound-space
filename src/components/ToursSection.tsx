@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin } from "lucide-react";
+import { Calendar, MapPin, CalendarX } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -31,9 +31,12 @@ const ToursSection = () => {
   if (!tours.length) {
     return (
       <section id="tours" className="py-24 bg-background relative overflow-hidden p-4">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12 text-center space-y-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12 text-center space-y-6">
           <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-white">TOURS</h2>
-          <p className="text-gray-400 text-lg">No tour dates announced. Stay tuned for upcoming events.</p>
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <CalendarX className="w-16 h-16 md:w-20 md:h-20 text-white/30" />
+            <p className="text-gray-400 text-lg">No tour dates announced. Stay tuned for upcoming events.</p>
+          </div>
         </div>
       </section>
     );

@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus } from "lucide-react";
+import { Headphones, ArrowRight } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useNavigate } from "react-router-dom";
 
 const glowAnimation = `
   @keyframes glow-pulse {
@@ -22,6 +23,7 @@ const glowAnimation = `
 
 const AudioMusicSection = () => {
   const { content, isLoading } = useContent();
+  const navigate = useNavigate();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -121,6 +123,17 @@ const AudioMusicSection = () => {
         left: targetScroll,
         behavior: 'smooth'
       });
+      
+      // Update current page after smooth scroll
+      setTimeout(() => {
+        if (scrollContainerRef.current) {
+          const scrollLeft = scrollContainerRef.current.scrollLeft;
+          const maxScroll = scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
+          const scrollPercentage = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+          const page = Math.round(scrollPercentage * (totalPages - 1));
+          setCurrentPage(Math.min(Math.max(0, page), totalPages - 1));
+        }
+      }, 300);
     }
   };
 
@@ -195,14 +208,23 @@ const AudioMusicSection = () => {
     <section id="audio-music" className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Section Title */}
-        <motion.h2
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl uppercase tracking-wider mb-8 sm:mb-12 eagle-lake"
+          className="flex items-center justify-between mb-8 sm:mb-12"
         >
-          MUSIC
-        </motion.h2>
+          <h2 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl uppercase tracking-wider eagle-lake">
+            MUSIC
+          </h2>
+          <button
+            onClick={() => navigate('/audio-music')}
+            className="text-white/70 hover:text-white transition-all duration-200 flex items-center justify-center p-2 rounded-full hover:bg-white/10 group"
+            aria-label="View more music"
+          >
+            <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 transition-transform duration-200 group-hover:translate-x-1" />
+          </button>
+        </motion.div>
 
         {/* Scrollable Container */}
         <div className="relative">
@@ -214,8 +236,13 @@ const AudioMusicSection = () => {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide pb-4"
+            style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              scrollBehavior: 'smooth',
+              WebkitOverflowScrolling: 'touch'
+            }}
           >
             {audios.map((audio, index) => {
   // Split title into main title and subtitle if it contains parentheses
@@ -250,7 +277,7 @@ const AudioMusicSection = () => {
                         className="w-full h-full object-cover"
                       />
                       
-                      {/* Add to Playlist Button - Bottom Right */}
+                      {/* Listen Button - Bottom Right */}
                       <div className="absolute bottom-3 right-3 z-10">
                         <button
                           onClick={(e) => {
@@ -260,9 +287,9 @@ const AudioMusicSection = () => {
                             }
                           }}
                           className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-black/90 transition-all duration-200 touch-manipulation group glow-pulse"
-                          aria-label="Add to playlist"
+                          aria-label="Listen to audio"
                         >
-                          <Plus className="h-5 w-5 transition-all duration-200 group-hover:scale-125 text-white" style={{ strokeWidth: 3 }} />
+                          <Headphones className="h-5 w-5 transition-all duration-200 group-hover:scale-150 text-white" style={{ strokeWidth: 2 }} />
                         </button>
                       </div>
                     </div>
