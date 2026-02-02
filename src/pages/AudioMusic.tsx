@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 const AudioMusic = () => {
   const { content, isLoading } = useContent();
@@ -21,8 +22,34 @@ const AudioMusic = () => {
   const spotifyPlatform = streamingPlatforms.find((platform) => platform.preset === "spotify");
   const spotifyUrl = spotifyPlatform?.url || "https://open.spotify.com/artist/nelngabo";
 
+  // Generate structured data for audio tracks
+  const audioStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Nel Ngabo Audio Tracks",
+    "description": "Latest audio tracks and singles by Nel Ngabo",
+    "itemListElement": audios.map((audio, index) => ({
+      "@type": "MusicRecording",
+      "position": index + 1,
+      "name": audio.title,
+      "description": audio.description || `${audio.title} by Nel Ngabo`,
+      "image": audio.image,
+      "byArtist": {
+        "@type": "MusicGroup",
+        "name": "Nel Ngabo"
+      }
+    }))
+  };
+
   return (
     <>
+      <SEO
+        title="Latest Music & Audio Tracks"
+        description={`Listen to Nel Ngabo's latest audio tracks and singles. ${audios.length > 0 ? `Featuring ${audios[0].title} and more.` : ''} Stream on Spotify, Apple Music, and other platforms.`}
+        image={audios.length > 0 ? audios[0].image : "https://nelngabo.com/hero.jpeg"}
+        keywords="Nel Ngabo music, Nel Ngabo audio, Nel Ngabo tracks, Nel Ngabo singles, Rwandan music, African music, Nel Ngabo latest songs"
+        structuredData={audioStructuredData}
+      />
       <Navbar />
       <div className="min-h-screen bg-black relative overflow-hidden pt-24 px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 max-w-7xl mx-auto">
@@ -87,7 +114,7 @@ const AudioMusic = () => {
                             >
                               <Button
                                 asChild
-                                className="bg-white hover:bg-red-500 text-black hover:text-white font-bold rounded-full px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm w-full transition-colors duration-200"
+                                className="bg-white hover:bg-green-500 text-black hover:text-white font-bold rounded-full px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm w-full transition-colors duration-200"
                               >
                                 <a
                                   href={audio.link}

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 const Videos = () => {
   const { content, isLoading } = useContent();
@@ -20,8 +21,33 @@ const Videos = () => {
     return dateB - dateA; // Descending order (newest first)
   });
 
+  // Generate structured data for videos
+  const videosStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Nel Ngabo Music Videos",
+    "description": "Official music videos and visual content by Nel Ngabo",
+    "itemListElement": videos.map((video, index) => ({
+      "@type": "VideoObject",
+      "position": index + 1,
+      "name": video.title,
+      "description": video.description || `${video.title} by Nel Ngabo`,
+      "thumbnailUrl": getYouTubeThumbnailUrl(video.url),
+      "uploadDate": video.createdAt || new Date().toISOString(),
+      "contentUrl": video.url,
+      "embedUrl": video.url
+    }))
+  };
+
   return (
     <>
+      <SEO
+        title="Music Videos"
+        description={`Watch Nel Ngabo's official music videos, visualizers, and live performances. ${videos.length > 0 ? `Featuring ${videos[0].title} and more.` : ''}`}
+        image={videos.length > 0 ? getYouTubeThumbnailUrl(videos[0].url) : "https://nelngabo.com/hero.jpeg"}
+        keywords="Nel Ngabo videos, Nel Ngabo music videos, Nel Ngabo YouTube, Rwandan music videos, African music videos, Nel Ngabo official videos"
+        structuredData={videosStructuredData}
+      />
       <Navbar />
       <div className="min-h-screen bg-black relative overflow-hidden pt-24 px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 max-w-7xl mx-auto">
@@ -198,11 +224,9 @@ const Videos = () => {
                                 className="bg-red-600 hover:bg-red-700 text-white font-bold rounded-full px-4 md:px-6 py-2.5 md:py-3 text-sm md:text-base w-full transition-colors duration-200"
                               >
                                 <a
-                                  href={videoUrl}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    navigate(videoUrl);
-                                  }}
+                                  href={video.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
                                   className="flex items-center justify-center gap-1.5 relative h-full"
                                 >
                                   <motion.div

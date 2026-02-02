@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { useContent } from "@/context/ContentContext";
 import { useNavigate } from "react-router-dom";
@@ -28,8 +29,38 @@ const About = () => {
     }
   `;
 
+  // Generate structured data for About page
+  const aboutStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": artistName,
+    "jobTitle": "Musician",
+    "description": about.biography || `Rwandan music artist ${artistName}`,
+    "image": artistImage,
+    "url": "https://nelngabo.com/about",
+    "sameAs": [
+      "https://www.youtube.com/@nelngabo9740",
+      "https://www.instagram.com/nelngabo/",
+      "https://x.com/nelngabo_",
+      "https://www.tiktok.com/@nelngabo"
+    ],
+    "nationality": "Rwandan",
+    "knowsAbout": ["Music", "Afrobeat", "Afro-futuristic music", "African music"],
+    "worksFor": about.musicLabel ? {
+      "@type": "Organization",
+      "name": about.musicLabel
+    } : undefined
+  };
+
   return (
     <>
+      <SEO
+        title="About Nel Ngabo"
+        description={`Learn about ${artistName} - ${about.biography ? about.biography.substring(0, 150) + '...' : 'Rwandan music artist creating afro-futuristic rhythms with neon synth atmospheres.'}`}
+        image={artistImage}
+        keywords={`Nel Ngabo biography, ${artistName}, Nel Ngabo about, Rwandan artist, African music artist, Nel Ngabo career, Nel Ngabo music label`}
+        structuredData={aboutStructuredData}
+      />
       <style>{elmsSansStyle}</style>
       <Navbar />
       <section id="about" className="min-h-screen bg-black relative overflow-hidden pt-20 pb-2 px-4 sm:px-6 md:pt-24 md:pb-4">

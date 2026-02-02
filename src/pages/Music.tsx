@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 const Music = () => {
   const { content, isLoading } = useContent();
@@ -16,8 +17,35 @@ const Music = () => {
     return dateB - dateA; // Descending order (newest first)
   });
 
+  // Generate structured data for albums
+  const albumsStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Nel Ngabo Albums",
+    "description": "Complete discography of Nel Ngabo albums",
+    "itemListElement": albums.map((album, index) => ({
+      "@type": "MusicAlbum",
+      "position": index + 1,
+      "name": album.title,
+      "description": album.description || `${album.title} by Nel Ngabo`,
+      "image": album.image,
+      "datePublished": album.year || new Date(album.createdAt || Date.now()).getFullYear().toString(),
+      "byArtist": {
+        "@type": "MusicGroup",
+        "name": "Nel Ngabo"
+      }
+    }))
+  };
+
   return (
     <>
+      <SEO
+        title="Albums & Discography"
+        description={`Browse Nel Ngabo's complete discography including ${albums.length > 0 ? albums[0].title : 'latest albums'}. Stream on Spotify, Apple Music, YouTube, and SoundCloud.`}
+        image={albums.length > 0 ? albums[0].image : "https://nelngabo.com/hero.jpeg"}
+        keywords="Nel Ngabo albums, Nel Ngabo discography, Nel Ngabo music, Nel Ngabo songs, VIBRANIUM, Rwandan music albums, African music albums"
+        structuredData={albumsStructuredData}
+      />
       <Navbar />
       <div className="min-h-screen bg-black relative overflow-hidden pt-24 px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 max-w-7xl mx-auto">

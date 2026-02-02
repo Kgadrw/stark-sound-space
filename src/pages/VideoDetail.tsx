@@ -2,10 +2,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { useContent } from "@/context/ContentContext";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useEffect } from "react";
+import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 
 const VideoDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -70,8 +72,34 @@ const VideoDetail = () => {
     }
   `;
 
+  // Generate structured data for video
+  const videoStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": video.title,
+    "description": video.description || `${video.title} by Nel Ngabo`,
+    "thumbnailUrl": video.videoId ? getYouTubeThumbnailUrl(video.url) : "https://nelngabo.com/hero.jpeg",
+    "uploadDate": video.createdAt || new Date().toISOString(),
+    "contentUrl": video.url,
+    "embedUrl": embedUrl || video.url,
+    "duration": "PT0M0S", // Placeholder, could be enhanced with actual duration
+    "publisher": {
+      "@type": "MusicGroup",
+      "name": "Nel Ngabo"
+    }
+  };
+
   return (
     <>
+      <SEO
+        title={video.title}
+        description={video.description || `Watch ${video.title} by Nel Ngabo - Official music video`}
+        image={video.videoId ? getYouTubeThumbnailUrl(video.url) : "https://nelngabo.com/hero.jpeg"}
+        type="video.other"
+        keywords={`Nel Ngabo ${video.title}, Nel Ngabo video, ${video.title} music video, Rwandan music video`}
+        publishedTime={video.createdAt}
+        structuredData={videoStructuredData}
+      />
       <style>{orbitronStyle}</style>
       <Navbar />
       <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24">
