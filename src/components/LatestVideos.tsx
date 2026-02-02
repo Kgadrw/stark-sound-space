@@ -43,6 +43,8 @@ const LatestVideos = () => {
 
   const currentVideo = latestVideos[currentVideoIndex];
   const thumbnailUrl = currentVideo ? getYouTubeThumbnailUrl(currentVideo.videoId) : null;
+  // Get YouTube URL - use youtubeUrl if available, otherwise construct from videoId
+  const youtubeUrl = currentVideo ? ((currentVideo as any).youtubeUrl || (currentVideo.videoId ? `https://www.youtube.com/watch?v=${currentVideo.videoId}` : '')) : '';
 
   const handlePrevious = () => {
     if (latestVideos.length > 0) {
@@ -180,7 +182,11 @@ const LatestVideos = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative w-full max-w-full sm:max-w-4xl aspect-video rounded-lg overflow-hidden group cursor-pointer touch-manipulation"
-            onClick={() => navigate(`/video/${encodeURIComponent(currentVideo.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`)}
+            onClick={() => {
+              if (youtubeUrl) {
+                window.open(youtubeUrl, '_blank', 'noopener,noreferrer');
+              }
+            }}
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -204,11 +210,19 @@ const LatestVideos = () => {
                 )}
                 
                 {/* Play Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div 
+                  className="absolute inset-0 flex items-center justify-center"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (youtubeUrl) {
+                      window.open(youtubeUrl, '_blank', 'noopener,noreferrer');
+                    }
+                  }}
+                >
                   <motion.div
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-white rounded-full p-3 sm:p-4 md:p-6 touch-manipulation group glow-pulse"
+                    className="bg-white rounded-full p-3 sm:p-4 md:p-6 touch-manipulation group glow-pulse cursor-pointer"
                   >
                     <Play className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 transition-all duration-200 group-hover:scale-110" style={{ color: '#FF0000', fill: '#FF0000' }} />
                   </motion.div>

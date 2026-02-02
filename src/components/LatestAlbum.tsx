@@ -210,7 +210,7 @@ const LatestAlbum = () => {
                         <Button
                           key={link.id || linkIndex}
                           asChild
-                          className="bg-transparent text-white border border-white rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all duration-200 touch-manipulation min-h-[44px]"
+                          className="bg-white text-black border border-white rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all duration-200 touch-manipulation min-h-[44px] hover:bg-white/90"
                         >
                           <a
                             href={link.url}

@@ -117,7 +117,7 @@ const Music = () => {
                         {firstLink && (
                           <Button
                             asChild
-                            className="bg-transparent text-white border border-white rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all duration-200 hover:bg-white/10 w-full touch-manipulation min-h-[44px]"
+                            className="bg-white text-black border border-white rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all duration-200 hover:bg-white/90 w-full touch-manipulation min-h-[44px]"
                           >
                             <a
                               href={firstLink.url}

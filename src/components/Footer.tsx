@@ -145,25 +145,20 @@ const Footer = () => {
             </div>
           </motion.div>
         )}
-        
-        {/* Bottom Bar */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="border-t border-white/10 pt-8"
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 sm:gap-6 text-sm text-white/60">
-            {/* Copyright */}
-            <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2 order-1 sm:order-1">
-              <span>© {currentYear} NEL NGABO</span>
-              <span className="text-white/40">•</span>
-              <span>ALL RIGHTS RESERVED</span>
-            </div>
 
-            {/* Social Links - Center */}
-            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center order-2 sm:order-2">
+        {/* Social Links Section */}
+        {socialLinks.filter(({ href }) => {
+          const lowerUrl = href.toLowerCase();
+          return !lowerUrl.includes("youtube") && !lowerUrl.includes("mailto:");
+        }).length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-12 hidden md:block"
+          >
+            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
               {socialLinks
                 .filter(({ href }) => {
                   const lowerUrl = href.toLowerCase();
@@ -221,9 +216,27 @@ const Footer = () => {
                 );
               })}
             </div>
+          </motion.div>
+        )}
+        
+        {/* Bottom Bar */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="border-t border-white/10 pt-8"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 items-center gap-4 sm:gap-6 text-sm text-white/60">
+            {/* Copyright */}
+            <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2">
+              <span>© {currentYear} NEL NGABO</span>
+              <span className="text-white/40">•</span>
+              <span>ALL RIGHTS RESERVED</span>
+            </div>
 
             {/* Powered by */}
-            <div className="flex justify-center sm:justify-end order-3 sm:order-3">
+            <div className="flex justify-center sm:justify-end">
               <a
                 href="https://linktr.ee/gadkalisa?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGn0PLsFLZd2YSLpgDw_dOAn18oaBArs7i4qZjbp8TsHDNhIw4mxMo_ffRcGFY_aem_jjk3dfEQVikEqOTBnZsaGQ&brid=NIusz0WLIVMiYQakpSSWLA"
                 target="_blank"

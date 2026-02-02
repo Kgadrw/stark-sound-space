@@ -585,7 +585,7 @@ const Hero = () => {
              href={listenUrl}
              target="_blank"
              rel="noopener noreferrer"
-             className="px-4 py-2 text-sm sm:text-base font-bold uppercase tracking-[0.15em] border border-white rounded-full hover:bg-white hover:text-black transition-all duration-200"
+             className="px-4 py-2 text-sm sm:text-base font-bold uppercase tracking-[0.15em] bg-white text-black rounded-full hover:bg-white/90 transition-all duration-200"
            >
              Listen
            </a>
