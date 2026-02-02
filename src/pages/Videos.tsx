@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ExternalLink, Play, Info } from "lucide-react";
+import { ExternalLink, Play, Info, Youtube } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,6 +20,11 @@ const Videos = () => {
     const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
     return dateB - dateA; // Descending order (newest first)
   });
+
+  // Get YouTube channel URL from streaming platforms
+  const streamingPlatforms = content.hero.streamingPlatforms ?? [];
+  const youtubePlatform = streamingPlatforms.find((platform) => platform.preset === "youtube");
+  const youtubeChannelUrl = youtubePlatform?.url || content.hero.secondaryCta?.url || "https://www.youtube.com/@nelngabo9740";
 
   // Generate structured data for videos
   const videosStructuredData = {
@@ -280,6 +285,46 @@ const Videos = () => {
                     </motion.div>
                   );
                 })}
+                
+                {/* View More Card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: videos.length * 0.05 }}
+                  className="group h-full"
+                >
+                  <a
+                    href={youtubeChannelUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block h-full"
+                  >
+                    <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-xl shadow-xl border border-white/10 flex flex-col overflow-hidden hover:border-white/20 transition-all duration-300 h-full">
+                      {/* Empty Image Area */}
+                      <div className="relative w-full aspect-video flex-shrink-0 bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                        <Youtube className="h-12 w-12 md:h-16 md:w-16 text-red-600" fill="currentColor" />
+                      </div>
+
+                      {/* Info Section */}
+                      <div className="p-4 md:p-6 space-y-2 bg-gradient-to-b from-transparent to-black flex flex-col flex-grow min-h-[120px] md:min-h-[140px]">
+                        <div className="flex-grow flex items-center justify-center">
+                          <div className="text-center">
+                            <h2 className="text-base md:text-lg font-bold text-white mb-0.5">
+                              View More
+                            </h2>
+                            <p className="text-gray-400 text-sm md:text-base">YouTube Channel</p>
+                          </div>
+                        </div>
+
+                        {/* Button Placeholder */}
+                        <div className="pt-1 mt-auto">
+                          <div className="h-[40px] md:h-[48px]"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </motion.div>
               </div>
             </>
           )}
