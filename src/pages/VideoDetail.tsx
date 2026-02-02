@@ -72,16 +72,19 @@ const VideoDetail = () => {
     }
   `;
 
+  // Get YouTube URL - use youtubeUrl if available, otherwise construct from videoId
+  const youtubeUrl = (video as any).youtubeUrl || (video.videoId ? `https://www.youtube.com/watch?v=${video.videoId}` : '');
+
   // Generate structured data for video
   const videoStructuredData = {
     "@context": "https://schema.org",
     "@type": "VideoObject",
     "name": video.title,
     "description": video.description || `${video.title} by Nel Ngabo`,
-    "thumbnailUrl": video.videoId ? getYouTubeThumbnailUrl(video.url) : "https://nelngabo.com/hero.jpeg",
+    "thumbnailUrl": video.videoId ? getYouTubeThumbnailUrl(video.videoId) : "https://nelngabo.com/hero.jpeg",
     "uploadDate": video.createdAt || new Date().toISOString(),
-    "contentUrl": video.url,
-    "embedUrl": embedUrl || video.url,
+    "contentUrl": youtubeUrl,
+    "embedUrl": embedUrl || youtubeUrl,
     "duration": "PT0M0S", // Placeholder, could be enhanced with actual duration
     "publisher": {
       "@type": "MusicGroup",
@@ -94,7 +97,7 @@ const VideoDetail = () => {
       <SEO
         title={video.title}
         description={video.description || `Watch ${video.title} by Nel Ngabo - Official music video`}
-        image={video.videoId ? getYouTubeThumbnailUrl(video.url) : "https://nelngabo.com/hero.jpeg"}
+        image={video.videoId ? getYouTubeThumbnailUrl(video.videoId) : "https://nelngabo.com/hero.jpeg"}
         type="video.other"
         keywords={`Nel Ngabo ${video.title}, Nel Ngabo video, ${video.title} music video, Rwandan music video`}
         publishedTime={video.createdAt}

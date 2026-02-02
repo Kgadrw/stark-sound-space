@@ -27,16 +27,19 @@ const Videos = () => {
     "@type": "ItemList",
     "name": "Nel Ngabo Music Videos",
     "description": "Official music videos and visual content by Nel Ngabo",
-    "itemListElement": videos.map((video, index) => ({
-      "@type": "VideoObject",
-      "position": index + 1,
-      "name": video.title,
-      "description": video.description || `${video.title} by Nel Ngabo`,
-      "thumbnailUrl": getYouTubeThumbnailUrl(video.url),
-      "uploadDate": video.createdAt || new Date().toISOString(),
-      "contentUrl": video.url,
-      "embedUrl": video.url
-    }))
+    "itemListElement": videos.map((video, index) => {
+      const youtubeUrl = (video as any).youtubeUrl || (video.videoId ? `https://www.youtube.com/watch?v=${video.videoId}` : '');
+      return {
+        "@type": "VideoObject",
+        "position": index + 1,
+        "name": video.title,
+        "description": video.description || `${video.title} by Nel Ngabo`,
+        "thumbnailUrl": getYouTubeThumbnailUrl(video.videoId),
+        "uploadDate": video.createdAt || new Date().toISOString(),
+        "contentUrl": youtubeUrl,
+        "embedUrl": youtubeUrl
+      };
+    })
   };
 
   return (
@@ -72,6 +75,8 @@ const Videos = () => {
                 {videos.map((video, index) => {
                   const thumbnailUrl = getYouTubeThumbnailUrl(video.videoId);
                   const videoUrl = `/video/${encodeURIComponent(video.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`;
+                  // Get YouTube URL - use youtubeUrl if available, otherwise construct from videoId
+                  const youtubeUrl = (video as any).youtubeUrl || (video.videoId ? `https://www.youtube.com/watch?v=${video.videoId}` : '');
                   
                   // Card component with cursor tracking
                   const CardWithCursor = () => {
@@ -224,7 +229,7 @@ const Videos = () => {
                                 className="bg-red-600 hover:bg-red-700 text-white font-bold rounded-full px-4 md:px-6 py-2.5 md:py-3 text-sm md:text-base w-full transition-colors duration-200"
                               >
                                 <a
-                                  href={video.url}
+                                  href={youtubeUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="flex items-center justify-center gap-1.5 relative h-full"
