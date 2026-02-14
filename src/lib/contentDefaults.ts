@@ -4,8 +4,8 @@ import { ContentState } from "@/types/content";
 export const initialContent: ContentState = {
   hero: {
     artistName: "NEL NGABO",
-    backgroundImage: "/hero.jpeg",
-    backgroundVideoUrl: "https://youtu.be/lBnokNKI38I",
+    backgroundImage: "",
+    backgroundVideoUrl: "",
     navLinks: [
       { id: createId("nav"), label: "MUSIC", targetType: "scroll", targetValue: "music" },
       { id: createId("nav"), label: "ABOUT", targetType: "route", targetValue: "/about" },
@@ -22,7 +22,7 @@ export const initialContent: ContentState = {
     },
     streamingPlatforms: [],
     socialLinks: [],
-    latestAlbumName: "VIBRANIUM",
+    latestAlbumName: "",
     latestAlbumLink: "/music",
     notificationText: "",
     notificationLink: "",

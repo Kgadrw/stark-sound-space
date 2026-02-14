@@ -60,9 +60,9 @@ const Videos = () => {
       <div className="min-h-screen bg-black relative overflow-hidden pt-24 px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 max-w-7xl mx-auto">
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
-                <div key={i} className="space-y-3">
+                <div key={i} className="space-y-2">
                   <Skeleton className="w-full aspect-video rounded-xl bg-white/10" />
                   <Skeleton className="h-4 w-3/4 bg-white/10" />
                   <Skeleton className="h-3 w-1/2 bg-white/10" />
@@ -76,7 +76,7 @@ const Videos = () => {
           ) : (
             <>
               {/* Videos Grid - Modal Style Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                 {videos.map((video, index) => {
                   const thumbnailUrl = getYouTubeThumbnailUrl(video.videoId);
                   const videoUrl = `/video/${encodeURIComponent(video.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))}`;
@@ -135,7 +135,7 @@ const Videos = () => {
                         onMouseMove={handleMouseMove}
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
-                        className="relative bg-gradient-to-b from-gray-900 to-black rounded-xl shadow-xl flex flex-col overflow-hidden transition-all duration-300 h-full border border-white/10"
+                        className="relative bg-gradient-to-b from-gray-900 to-black rounded-lg shadow-xl flex flex-col overflow-hidden transition-all duration-300 h-full border border-white/10"
                       >
                         {/* Cursor-following border highlight */}
                         {isHovered && closestEdge && (
@@ -195,29 +195,29 @@ const Videos = () => {
                               e.stopPropagation();
                               navigate(videoUrl);
                             }}
-                            className="absolute top-3 right-3 z-10 p-2 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-sm transition-all duration-200 touch-manipulation"
+                            className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-sm transition-all duration-200 touch-manipulation"
                             aria-label="Video details"
                           >
-                            <Info className="h-4 w-4 md:h-5 md:w-5 text-white" />
+                            <Info className="h-3 w-3 md:h-4 md:w-4 text-white" />
                           </button>
                           
                           {/* Red Play Icon - Always Visible */}
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="bg-black/50 rounded-full p-2 md:p-3 backdrop-blur-sm">
-                              <Play className="h-8 w-8 md:h-10 md:w-10 text-red-600" fill="currentColor" />
+                            <div className="bg-black/50 rounded-full p-1.5 md:p-2 backdrop-blur-sm">
+                              <Play className="h-6 w-6 md:h-7 md:w-7 text-red-600" fill="currentColor" />
                             </div>
                           </div>
                         </div>
 
                         {/* Video Info */}
-                        <div className="p-4 md:p-6 space-y-2 bg-gradient-to-b from-transparent to-black flex flex-col flex-grow min-h-[120px] md:min-h-[140px]">
+                        <div className="p-3 md:p-4 space-y-1.5 bg-gradient-to-b from-transparent to-black flex flex-col flex-grow min-h-[100px] md:min-h-[110px]">
                           <div className="flex-grow">
                             {video.title && (
                               <div>
-                                <h2 className="text-base md:text-lg font-bold text-white mb-0.5 break-words line-clamp-2">
+                                <h2 className="text-sm md:text-base font-bold text-white mb-0.5 break-words line-clamp-2">
                                   {video.title}
                                 </h2>
-                                <p className="text-gray-400 text-sm md:text-base">Nel Ngabo</p>
+                                <p className="text-gray-400 text-xs md:text-sm">Nel Ngabo</p>
                               </div>
                             )}
                           </div>
@@ -231,7 +231,7 @@ const Videos = () => {
                             >
                               <Button
                                 asChild
-                                className="bg-red-600 hover:bg-red-700 text-white font-bold rounded-full px-4 md:px-6 py-2.5 md:py-3 text-sm md:text-base w-full transition-colors duration-200"
+                                className="bg-red-600 hover:bg-red-700 text-white font-bold rounded-full px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm w-full transition-colors duration-200"
                               >
                                 <a
                                   href={youtubeUrl}
@@ -247,9 +247,9 @@ const Videos = () => {
                                     transition={{ duration: 0.3, ease: "easeInOut" }}
                                     className="absolute inset-0 flex items-center justify-center gap-1.5 text-white"
                                   >
-                                    <Play className="h-3 w-3 md:h-3.5 md:w-3.5" fill="currentColor" />
+                                    <Play className="h-2.5 w-2.5 md:h-3 md:w-3" fill="currentColor" />
                                     <span>Watch Now</span>
-                                    <ExternalLink className="h-2.5 w-2.5 md:h-3 md:w-3" />
+                                    <ExternalLink className="h-2 w-2 md:h-2.5 md:w-2.5" />
                                   </motion.div>
                                   <motion.div
                                     variants={{
@@ -259,9 +259,9 @@ const Videos = () => {
                                     transition={{ duration: 0.3, ease: "easeInOut" }}
                                     className="flex items-center justify-center gap-1.5 text-white"
                                   >
-                                    <Play className="h-3 w-3 md:h-3.5 md:w-3.5" fill="currentColor" />
+                                    <Play className="h-2.5 w-2.5 md:h-3 md:w-3" fill="currentColor" />
                                     <span>Watch Now</span>
-                                    <ExternalLink className="h-2.5 w-2.5 md:h-3 md:w-3" />
+                                    <ExternalLink className="h-2 w-2 md:h-2.5 md:w-2.5" />
                                   </motion.div>
                                 </a>
                               </Button>
@@ -299,27 +299,27 @@ const Videos = () => {
                     rel="noopener noreferrer"
                     className="block h-full"
                   >
-                    <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-xl shadow-xl border border-white/10 flex flex-col overflow-hidden hover:border-white/20 transition-all duration-300 h-full">
+                    <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-lg shadow-xl border border-white/10 flex flex-col overflow-hidden hover:border-white/20 transition-all duration-300 h-full">
                       {/* Empty Image Area */}
                       <div className="relative w-full aspect-video flex-shrink-0 bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-                        <Youtube className="h-12 w-12 md:h-16 md:w-16 text-red-600" fill="currentColor" />
+                        <Youtube className="h-8 w-8 md:h-10 md:w-10 text-red-600" fill="currentColor" />
                       </div>
 
                       {/* Info Section */}
-                      <div className="p-4 md:p-6 space-y-2 bg-gradient-to-b from-transparent to-black flex flex-col flex-grow min-h-[120px] md:min-h-[140px]">
+                      <div className="p-3 md:p-4 space-y-1.5 bg-gradient-to-b from-transparent to-black flex flex-col flex-grow min-h-[100px] md:min-h-[110px]">
                         <div className="flex-grow flex items-center justify-center">
                           <div className="text-center">
-                            <h2 className="text-base md:text-lg font-bold text-white mb-0.5">
+                            <h2 className="text-sm md:text-base font-bold text-white mb-0.5">
                               View More
                             </h2>
-                            <p className="text-gray-400 text-sm md:text-base">YouTube Channel</p>
+                            <p className="text-gray-400 text-xs md:text-sm">YouTube Channel</p>
                           </div>
                         </div>
 
                         {/* Button Placeholder */}
                         <div className="pt-1 mt-auto">
-                          <div className="h-[40px] md:h-[48px]"></div>
+                          <div className="h-[36px] md:h-[40px]"></div>
                         </div>
                       </div>
                     </div>
