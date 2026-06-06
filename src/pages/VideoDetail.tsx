@@ -39,7 +39,7 @@ const VideoDetail = () => {
       <>
         <Navbar />
         <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24">
-          <div className="relative z-10 max-w-7xl mx-auto text-center">
+          <div className="relative z-10 max-w-[1600px] w-full mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -106,7 +106,7 @@ const VideoDetail = () => {
       <style>{orbitronStyle}</style>
       <Navbar />
       <section className="min-h-screen bg-black relative overflow-hidden pt-20 pb-12 px-4 sm:px-6 md:py-24">
-        <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="relative z-10 max-w-[1600px] w-full mx-auto">
           {/* Back Button */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}

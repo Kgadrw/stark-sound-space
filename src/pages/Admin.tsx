@@ -9,7 +9,7 @@ const Admin = () => {
         className="md:ml-64 min-h-screen pt-16 md:pt-0"
         style={{ fontFamily: "'Montserrat', sans-serif" }}
       >
-        <div className="px-4 sm:px-6 py-6 md:py-10 space-y-6 md:space-y-8 max-w-7xl mx-auto">
+        <div className="px-4 sm:px-6 py-6 md:py-10 space-y-6 md:space-y-8 max-w-[1600px] mx-auto">
           <Outlet />
         </div>
       </div>

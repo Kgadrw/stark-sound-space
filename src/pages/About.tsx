@@ -64,7 +64,7 @@ const About = () => {
       <style>{elmsSansStyle}</style>
       <Navbar />
       <section id="about" className="min-h-screen bg-black relative overflow-hidden pt-20 pb-2 px-4 sm:px-6 md:pt-24 md:pb-4">
-        <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="relative z-10 max-w-[1600px] w-full mx-auto">
           {/* Biography - Full Width */}
           {about.biography && (
             <motion.div

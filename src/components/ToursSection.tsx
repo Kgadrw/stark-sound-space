@@ -16,7 +16,7 @@ const ToursSection = () => {
   if (isLoading) {
     return (
       <section id="tours" className="py-24 bg-background relative overflow-hidden p-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
+        <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
           <Skeleton className="h-16 w-48 mb-16 bg-muted" />
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
@@ -58,7 +58,7 @@ const ToursSection = () => {
         ))}
       </div>
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
+      <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         <h2 className="text-5xl md:text-7xl font-bold mb-16 tracking-tighter text-white">TOURS</h2>
         
         <div className="space-y-4">

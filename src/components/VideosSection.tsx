@@ -36,7 +36,7 @@ const VideosSection = () => {
   if (isLoading) {
     return (
       <section id="videos" className="min-h-screen relative overflow-hidden px-4 sm:px-6 lg:px-12 pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16">
-        <div className="relative z-10 w-full max-w-7xl mx-auto">
+        <div className="relative z-10 w-full max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
             {[...Array(8)].map((_, i) => (
               <Skeleton key={i} className="aspect-video w-full rounded-lg bg-white/10" />
@@ -66,7 +66,7 @@ const VideosSection = () => {
 
   return (
     <section id="videos" className="min-h-screen relative overflow-hidden px-4 sm:px-6 lg:px-12 pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16">
-      <div className="relative z-10 w-full max-w-7xl mx-auto">
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto">
         {/* Videos Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
           {sortedVideos.map((video, index) => {
