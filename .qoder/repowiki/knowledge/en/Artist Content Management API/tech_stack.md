@@ -1,0 +1,5 @@
+- Express 5.x for HTTP routing and middleware.
+- Mongoose 8.x for MongoDB ODM and schema validation.
+- Cloudinary SDK for generating signed upload presets.
+- bcryptjs for hashing admin credentials.
+- swagger-ui-express for API documentation.

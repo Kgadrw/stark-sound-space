@@ -1,0 +1,1 @@
+TypeScript (frontend) and JavaScript (backend) coexist within a monorepo-style structure, leveraging Vite for frontend tooling and Express for server-side logic.

@@ -99,7 +99,7 @@ const LatestAlbum = () => {
   if (isLoading) {
     return (
       <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
-        <div className="relative z-10 w-full max-w-7xl mx-auto">
+        <div className="relative z-10 w-full max-w-[1600px] mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <Skeleton className="aspect-square w-full rounded-lg bg-white/10" />
             <div className="space-y-6">
@@ -125,7 +125,7 @@ const LatestAlbum = () => {
   return (
     <>
     <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12">
-        <div className="relative z-10 w-full max-w-7xl mx-auto">
+        <div className="relative z-10 w-full max-w-[1600px] mx-auto">
         {/* Album Content */}
         <div 
           className="relative flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-8"

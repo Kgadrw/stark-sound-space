@@ -1,0 +1,4 @@
+- Custom hooks (e.g., `useAuth`, `useContent`) are exported from context modules to provide typed access to global state, throwing errors if used outside their providers.
+- API interactions are centralized in `lib/api.ts` using a generic `request` helper that standardizes headers, JSON body serialization, and error handling for all endpoints.
+- Admin forms follow a pattern of optimistic local state updates via `setContent` followed by asynchronous API calls and a subsequent `refreshContent` to ensure data consistency.
+- Component props for complex data structures are typed using shared interfaces from `types/content.ts`, ensuring type safety across public and admin views.

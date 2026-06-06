@@ -1,0 +1,1 @@
+Serves static media resources and defines web application metadata, search engine indexing rules, and site structure for the Nel Ngabo official website.

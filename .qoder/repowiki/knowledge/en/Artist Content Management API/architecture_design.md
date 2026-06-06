@@ -1,0 +1,5 @@
+- Entry point: `src/server.js` initializes Express, connects to MongoDB via Mongoose, and mounts routers.
+- Layering: Routes (`src/routes/`) delegate to Controllers (`src/controllers/`), which interact with Models (`src/models/`) and external Services (`src/services/cloudinary.js`).
+- Routing: Three main route groups: `/api/admin` (content CRUD), `/api/auth` (admin login/credentials), and `/api/youtube` (external search proxy).
+- Documentation: Swagger UI is dynamically configured in `server.js` using `src/swagger.json` to reflect the current server URL.
+- Static Assets: Serves a basic admin dashboard from `public/admin/` at the `/admin` path.

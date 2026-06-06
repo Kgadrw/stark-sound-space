@@ -28,7 +28,7 @@ const LatestTours = () => {
     return (
       <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden">
         <div className="absolute inset-0 bg-black/50 z-0"></div>
-        <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="relative z-10 max-w-[1600px] w-full mx-auto">
           <div className="mb-12 text-center">
             <Skeleton className="h-12 w-32 mx-auto bg-white/10" />
           </div>
@@ -50,7 +50,7 @@ const LatestTours = () => {
     <section className="relative bg-black py-8 sm:py-12 px-4 sm:px-6 lg:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-black/50 z-0"></div>
       
-      <div className="relative z-10 max-w-7xl mx-auto">
+      <div className="relative z-10 max-w-[1600px] w-full mx-auto">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -1,0 +1,6 @@
+- **Frontend Framework**: React 18 with TypeScript.
+- **Routing**: `react-router-dom` v6 for client-side navigation.
+- **Styling**: Tailwind CSS for utility-first styling, merged via `clsx` and `tailwind-merge`.
+- **Animations**: `framer-motion` for complex UI transitions and gestures.
+- **UI Components**: `shadcn/ui` library built on top of `Radix UI` primitives.
+- **Data Fetching**: Native `fetch` API wrapped in a custom client, with `@tanstack/react-query` available for cache management.

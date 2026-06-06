@@ -1,0 +1,1 @@
+Orchestrates a decoupled frontend and backend to deliver a dynamic artist portfolio with real-time content management capabilities.

@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "https://nel-backend-scgp.onrender.com/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? "https://nel-backend.vercel.app/api";
 
 type RequestOptions = RequestInit & { json?: unknown };
 

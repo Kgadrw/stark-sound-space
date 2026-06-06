@@ -1,0 +1,1 @@
+A React-based single-page application for an artist's public portfolio, featuring dynamic content rendering and a protected administrative dashboard for real-time site management.

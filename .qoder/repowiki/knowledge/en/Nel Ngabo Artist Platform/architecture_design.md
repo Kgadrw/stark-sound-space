@@ -1,0 +1,3 @@
+- The root module acts as the deployment and configuration boundary, housing two independently managed runtimes: a Vite-based React frontend and an Express.js backend.
+- Cross-module communication is established via a typed API client (`src/lib/api.ts`) in the frontend that targets the backend's REST endpoints, with the base URL abstracted through environment variables.
+- Isolation is enforced through separate `package.json` manifests and dependency trees, while the root-level `vercel.json` and `vite.config.ts` coordinate the build and routing strategy for production deployment.

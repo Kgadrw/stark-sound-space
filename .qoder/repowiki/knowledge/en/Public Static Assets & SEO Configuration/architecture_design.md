@@ -1,0 +1,3 @@
+- Centralized public asset repository containing brand imagery (logos, backgrounds) and media thumbnails.
+- Web Application Manifest (`manifest.json`) configures PWA capabilities, including standalone display mode, theme colors, and installable icons.
+- SEO and crawler management is handled via `robots.txt` (restricting administrative and API paths) and `sitemap.xml` (defining priority and change frequency for core content routes like music, videos, and tours).

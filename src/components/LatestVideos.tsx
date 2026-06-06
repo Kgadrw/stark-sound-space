@@ -100,7 +100,7 @@ const LatestVideos = () => {
   if (isLoading) {
     return (
       <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
-        <div className="relative z-10 w-full max-w-7xl mx-auto space-y-8">
+        <div className="relative z-10 w-full max-w-[1600px] mx-auto space-y-8">
           <div className="flex items-center justify-between">
             <Skeleton className="h-12 w-32 bg-white/10" />
             <Skeleton className="h-10 w-24 bg-white/10" />
@@ -118,7 +118,7 @@ const LatestVideos = () => {
 
   return (
     <section className="min-h-0 lg:min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-2 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12">
-      <div className="relative z-10 w-full max-w-7xl mx-auto space-y-6 sm:space-y-8">
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto space-y-6 sm:space-y-8">
         {/* Header with VIDEOS and VIEW ALL */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -181,7 +181,7 @@ const LatestVideos = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative w-full max-w-full sm:max-w-4xl aspect-video rounded-lg overflow-hidden group cursor-pointer touch-manipulation"
+            className="relative w-full max-w-full sm:max-w-5xl aspect-video rounded-lg overflow-hidden group cursor-pointer touch-manipulation"
             onClick={() => {
               if (youtubeUrl) {
                 window.open(youtubeUrl, '_blank', 'noopener,noreferrer');

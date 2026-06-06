@@ -188,7 +188,7 @@ const AudioMusicSection = () => {
   if (isLoading) {
     return (
       <section id="audio-music" className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
-        <div className="relative z-10 w-full max-w-7xl mx-auto">
+        <div className="relative z-10 w-full max-w-[1600px] mx-auto">
           <Skeleton className="h-8 w-32 bg-white/10 mb-8" />
           <div className="flex gap-4 overflow-hidden">
             {[...Array(6)].map((_, i) => (
@@ -206,7 +206,7 @@ const AudioMusicSection = () => {
 
   return (
     <section id="audio-music" className="bg-black relative overflow-hidden px-4 sm:px-6 lg:px-12 py-12 sm:py-16">
-      <div className="relative z-10 w-full max-w-7xl mx-auto">
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto">
         {/* Section Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

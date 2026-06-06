@@ -1,0 +1,4 @@
+- Controllers export named handler functions that are imported and mapped to HTTP methods in route modules.
+- Models use Mongoose schemas with `timestamps: true` to automatically manage `createdAt` and `updatedAt` fields.
+- Error handling is centralized in `server.js` using a global error-handling middleware that catches errors passed via `next(error)`.
+- Input normalization helpers (e.g., `normalizeTracks`, `extractVideoId`) are defined at the top of controller files to sanitize request data before processing.

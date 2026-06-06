@@ -1,0 +1,1 @@
+Provides RESTful endpoints for managing artist portfolio content including albums, videos, tours, and hero settings.

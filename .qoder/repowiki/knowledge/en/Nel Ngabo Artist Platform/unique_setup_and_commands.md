@@ -1,0 +1,1 @@
+Development requires running two separate local servers: the frontend via `npm run dev` (port 8080) and the backend via `npm run dev` in the `backend/` directory, coordinated through environment-specific API URLs.
